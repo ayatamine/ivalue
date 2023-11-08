@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+body ,span , h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{
+    font-family: 'Noto Sans Arabic', sans-seri;
+    font-weight:400!important;
+}
+
+.tippy-popper{
+    display: none;
+}
+form .btn.btn-primary{
+    width: 100%;
+}
+body .table{
+    background: gainsboro;
+}
+.main-menu.menu-light .navigation > li ul.menu-content .menu-content a{
+    font-size: 15px;
+ }
+.action-edit i{
+    color: green;
+    font-size: 15px;
+    font-weight: bolder;
+
+}
+.act-delete i{
+    color:red;
+    font-size: 15px;
+    font-weight: bolder;
+}
+.video_create , .blah_create{
+    display: none;
+}
+#blah ,#blah2,#blah3,#blah4,#blah5,#blah6,#blah7,#blah8{
+    width:200px;
+    height: 200px;
+}
+#blah2{
+    width:200px;
+    height: 200px;
+}
+#blah3{
+    width:200px;
+    height: 200px;
+}
+#blah4{
+    width:200px;
+    height: 200px;
+}
+input#image{
+    padding:10px;
+    background:#2d2d2d;
+}
+
+.col-image .fieldset{
+    height: 100%;
+}
+
+#video{
+    border: 1px solid black;
+    margin: 0 auto;
+}
+
+/************ end multi image uploader ***********/
+.multi-images .btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+.multi-images .btn{
+    width: 100%;
+    background: #262C49;
+    font-weight: bold;
+    color: #2e6e9e;
+}
+.multi-images .fileinput-button {
+    position: relative;
+    overflow: hidden;
+}
+
+.multi-images .fileinput-button input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    opacity: 0;
+    -ms-filter: "alpha(opacity=0)";
+    font-size: 200px;
+    direction: ltr;
+    cursor: pointer;
+}
+
+.multi-images .thumb {
+    height: 80px;
+    width: 100px;
+    border: 1px solid #000;
+}
+
+.multi-images ul.thumb-Images li {
+    width: 120px;
+    display: inline-block;
+    vertical-align: top;
+    height: 120px;
+}
+
+.multi-images .img-wrap {
+    position: relative;
+    display: inline-block;
+    font-size: 0;
+}
+
+.multi-images .img-wrap .close {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    z-index: 100;
+    background-color: #d0e5f5;
+    padding: 5px 2px 2px;
+    color: #000;
+    font-weight: bolder;
+    cursor: pointer;
+    opacity: 0.5;
+    font-size: 23px;
+    line-height: 10px;
+    border-radius: 50%;
+}
+
+.multi-images .img-wrap:hover .close {
+    opacity: 1;
+    background-color: #ff0000;
+}
+
+.multi-images .FileNameCaptionStyle {
+    font-size: 12px;
+}
+/************ end multi image uploader ***********/
+.error{
+    color: rgba(255, 0, 0, 0.78)!important;
+    font-size: 15px;
+    font-weight: 900;
+}
+.dt-buttons.btn-group{
+    display: none;
+}
+/**********************/
