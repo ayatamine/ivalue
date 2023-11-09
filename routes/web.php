@@ -17,6 +17,7 @@ use App\Http\Controllers\User\CategoryController;
 use App\Http\Controllers\User\TechniqueController;
 use App\Http\Controllers\User\Notificationontroller;
 use App\Http\Controllers\User\TechniqueTypeController;
+use App\Http\Controllers\User\Incomes\InvestmentController;
 use App\Http\Controllers\User\Incomes\Substitution\FarmController;
 use App\Http\Controllers\User\Incomes\Substitution\LandController;
 use App\Http\Controllers\User\Incomes\Substitution\BuildController;
@@ -41,8 +42,8 @@ View::creator('frontend.layout.master', function ($view) {
 Route::group([ 'middleware' => 'auth'], function () {
     Route::get('/', [HomeController::class,'index'])->name('home');
     Route::resource('front_estates', EstateController::class)->only('index','show');
-    // Route::resource('investments', Incomes\InvestmentController::class, ['only' => ['index','create','store','show']]);
-    // Route::get('investment_delete/{id}', [Incomes\InvestmentController::class,'delete'])->name('investment_delete');
+    Route::resource('investments', InvestmentController::class)->only(['index','create','store','show']);
+    Route::get('investment_delete/{id}', [InvestmentController::class,'delete'])->name('investment_delete');
     Route::get('show_calendar/{slug}', [EstateController::class,'show_calendar'])->name('show_calendar');
     Route::get('show_report/{slug}', [EstateController::class,'show_report'])->name('show_report');
     Route::get('show_reports/{slug}', [EstateController::class,'show_reports'])->name('show_reports');

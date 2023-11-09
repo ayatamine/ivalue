@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class DashNotification extends Model
 {
     public function user()
     {
-        return $this->belongsTo('App\User' , 'user_id');
+        return $this->belongsTo(User::class , 'user_id');
     }
 }

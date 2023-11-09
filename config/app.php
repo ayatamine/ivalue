@@ -174,6 +174,7 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         OwenIt\Auditing\AuditingServiceProvider::class,
         PDFAnony\TCPDF\AnonyServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 
     ])->toArray(),
 
@@ -194,6 +195,8 @@ return [
         'PDFFF' => Meneses\LaravelMpdf\Facades\LaravelMpdf::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Debugbar' => Barryvdh\Debugbar\Facades\Debugbar::class,
+
     ])->toArray(),
 
 ];

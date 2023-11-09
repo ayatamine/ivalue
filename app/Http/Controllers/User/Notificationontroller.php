@@ -10,7 +10,7 @@ use App\Models\EstateInput;
 use App\Models\EstatePayment;
 use App\Traits\DashNotificationTrait;
 use App\Traits\UploadTrait;
-use App\User;
+use App\Models\User;
 use DB;
 use Illuminate\Http\Request;
 

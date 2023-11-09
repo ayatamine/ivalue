@@ -8,7 +8,7 @@ use Illuminate\Http\Request as Req;
 use Illuminate\Support\Facades\Auth;
 use Request;
 use Response;
-use App\User;
+use App\Models\User;
 
 
 class HomeController extends Controller

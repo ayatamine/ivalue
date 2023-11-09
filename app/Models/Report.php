@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Cviebrock\EloquentSluggable\Sluggable;
-use OwenIt\Auditing\Contracts\Auditable;
+use App\Models\User;
 use Illuminate\Support\Arr;
+use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class Report extends Model implements Auditable
 {
@@ -29,7 +30,7 @@ class Report extends Model implements Auditable
     ];
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(User::class);
     }
     public function estate()
     {

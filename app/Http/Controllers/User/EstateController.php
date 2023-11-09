@@ -13,7 +13,7 @@ use App\Models\EstateInput;
 use App\Models\Kind;
 use App\Traits\DashNotificationTrait;
 use App\Traits\UploadTrait;
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class EstateController extends Controller
