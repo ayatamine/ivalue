@@ -39,7 +39,7 @@ use App\Http\Controllers\User\Incomes\Substitution\PetrolStationController;
 View::creator('frontend.layout.master', function ($view) {
     $view->with('option' , \App\Models\Option::find(1));
 });
-Route::group([ 'middleware' => 'auth'], function () {
+Route::group([ 'middleware' => ['auth','is_not_client']], function () {
     Route::get('/', [HomeController::class,'index'])->name('home');
     Route::resource('front_estates', EstateController::class)->only('index','show');
     Route::resource('investments', InvestmentController::class)->only(['index','create','store','show']);
