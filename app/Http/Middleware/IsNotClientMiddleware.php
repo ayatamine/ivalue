@@ -15,9 +15,9 @@ class IsNotClientMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth()->user()->membership_level == 'client')
+        if(auth()->check() && auth()->user()->membership_level == 'client')
         {
-            return back();
+            return redirect('client/dashboard');
         }
         return $next($request);
     }
