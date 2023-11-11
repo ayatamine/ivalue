@@ -44,14 +44,17 @@ return [
 
     'email' => 'بريدك الالكتروني',
     'password' => 'الرقم السري',
+    'remember' => 'تذكرني',
     'confirm_password' => 'اعادة الرقم السري',
     'sign_in' => 'تسجيل دخول',
     'sign_up' => 'تسجيل جديد',
     'forget_pass' => 'نسيت الرقم السري',
+    'already_registered' => 'مسجل من قبل؟',
     'confirm' => 'نسيت الرقم السري',
     'phone' => 'رقم الهاتف',
     'name' => 'الاسم كاملا',
     'message' => 'رسالتك',
+    'back' => 'رجوع',
     /******** Shopping Bag *********/
     'shopping_bag'=>'حقيبة المشتريات ',
     'sar'=>'ريال',

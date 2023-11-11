@@ -38,7 +38,13 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
-
+    protected function redirectTo()
+    {
+        if (auth()->user()->membership_level == 'client') {
+            return '/';
+        }
+        return $this->redirectTo;
+    }
     protected function credentials(Request $request)
     {
         if(is_numeric($request->get('email'))){

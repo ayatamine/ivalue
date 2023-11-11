@@ -72,7 +72,13 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
     }
-
+    protected function redirectTo()
+    {
+        if (auth()->user()->membership_level == 'client') {
+            return '/';
+        }
+        return $this->redirectTo;
+    }
     public function register(Request $request)
     {
         $this->validator($request->all())->validate();

@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap');
+
+
+*{
+    font-family: 'Cairo', sans-serif;
+}
+
+.fi-sidebar{
+    background-color: #fff !important;
+}
+.fi-wi-stats-overview-stat span:not(.fi-wi-stats-overview-stat-description){
+    display: none !important;
+}
+
+[new-card-design] svg {
+    color: white;
+    height: 39px;
+    width: 41px;
+   
+    border-radius: 8px;
+    padding: 3px 0px;
+   
+}
+[primary-card] svg{
+    background: #928AE9;
+    box-shadow: 0px 1px 5px #928AE9;
+}
+[green-card] svg{
+    background: green;
+    box-shadow: 0px 1px 5px green;
+}
+[danger-card] svg{
+    background: red;
+    box-shadow: 0px 1px 5px #cc1d1d;
+}
+[warning-card] svg{
+    background: #f4a851;
+    box-shadow: 0px 1px 5px #f4a851;
+}
+
+[primary-card]{@apply bg-primary !important}
+[green-card]{@apply bg-success !important}
+[danger-card]{@apply bg-danger !important}
+[warning-card]{@apply bg-warning !important}

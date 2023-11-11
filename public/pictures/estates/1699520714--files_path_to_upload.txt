@@ -1,0 +1,9 @@
+files paths
+page.sql (to upload on database)
+pages.svg 					==> resources/svg/
+normal_page.blade.php 			==> resources/views/
+HomeController.php			==> app/Http/Controllers/
+resouces(folder) 				==> app/filament/
+Page.php					==> app/Models
+messages.php				==> resource/lang/ar/
+2023_10_31_072319_create_pages_table.php ==> database/migrations
