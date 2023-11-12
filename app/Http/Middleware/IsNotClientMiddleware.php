@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class IsNotClientMiddleware
@@ -15,9 +16,9 @@ class IsNotClientMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth()->check() && auth()->user()->membership_level == 'client')
+        if(auth()->check() && (auth()->user()->membership_level == 'client' || auth()->user()->membership_level == 'client'))
         {
-            return redirect('client/dashboard');
+            abort(403);
         }
         return $next($request);
     }

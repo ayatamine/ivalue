@@ -38,7 +38,7 @@
     box-shadow: 0px 1px 5px #f4a851;
 }
 
-[primary-card]{@apply bg-primary !important}
+/* [primary-card]{@apply bg-primary !important}
 [green-card]{@apply bg-success !important}
 [danger-card]{@apply bg-danger !important}
-[warning-card]{@apply bg-warning !important}
+[warning-card]{@apply bg-warning !important} */
