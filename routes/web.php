@@ -8,6 +8,7 @@ use App\Http\Controllers\User\HomeController;
 use App\Http\Controllers\User\KindController;
 use App\Http\Controllers\User\PageController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Middleware\IsNotClientMiddleware;
 use App\Http\Controllers\User\EstateController;
 use App\Http\Controllers\User\ReportController;
 use App\Http\Controllers\User\CountryController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\User\SettingController;
 use App\Http\Controllers\User\CategoryController;
 use App\Http\Controllers\User\TechniqueController;
 use App\Http\Controllers\User\Notificationontroller;
+use App\Http\Controllers\User\ClientEstateController;
 use App\Http\Controllers\User\TechniqueTypeController;
 use App\Http\Controllers\User\Incomes\InvestmentController;
 use App\Http\Controllers\User\Incomes\Substitution\FarmController;
@@ -23,7 +25,6 @@ use App\Http\Controllers\User\Incomes\Substitution\LandController;
 use App\Http\Controllers\User\Incomes\Substitution\BuildController;
 use App\Http\Controllers\User\Incomes\Substitution\ParkingController;
 use App\Http\Controllers\User\Incomes\Substitution\PetrolStationController;
-use App\Http\Middleware\IsNotClientMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -125,8 +126,11 @@ Route::group([ 'middleware' => 'auth'], function () {
     Route::get('farm_delete/{id}', [FarmController::class,'delete'])->name('farm_delete');
 });
 
-
-
+Route::get('/client/dashboard', [HomeController::class,'clientDashboard'])->name('client_home');
+Route::resource('client/estates', ClientEstateController::class,[
+    'as' => 'client'
+])->except(['show']);
+Route::get('client/archive', [ClientEstateController::class,'archive'])->name('client.archive');
 // Auth::routes();
 
 Route::post('/dark_mode', [App\Http\Controllers\User\HomeController::class,'darkmode']);

@@ -5,22 +5,39 @@
             <li class="nav-item mr-auto">
                 <a class="navbar-brand" href="#">
                     <div class="brand-logo"></div>
-                    <h2 class="brand-text mb-0"> لوحة تحكم </h2>
+                    <h2 class="brand-text mb-0"> لوحة التحكم </h2>
                 </a>
             </li>
-            <li class="nav-item nav-toggle"><a class="nav-link modern-nav-toggle pr-0" data-toggle="collapse"><i class="feather icon-x d-block d-xl-none font-medium-4 primary toggle-icon"></i><i class="toggle-icon feather icon-disc font-medium-4 d-none d-xl-block collapse-toggle-icon primary" data-ticon="icon-disc"></i></a></li>
+
+            <li class="nav-item nav-toggle">
+                <a class="nav-link modern-nav-toggle pr-0" data-toggle="collapse">
+                <i class="feather icon-x d-block d-xl-none font-medium-4 primary toggle-icon"></i>
+                <i class="toggle-icon feather icon-disc font-medium-4 d-none d-xl-block collapse-toggle-icon primary" data-ticon="icon-disc"></i></a></li>
+
         </ul>
     </div>
     <div class="shadow-bottom"></div>
     <div class="main-menu-content">
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-            <li class="{{ Request::is('/')? 'active': '' }} nav-item"><a href="https://devforest.info/estate/public/"><i class="feather icon-home"></i><span class="menu-title" data-i18n="Dashboard">الصفحة الرئيسية</span></a>
+            @if(auth()->user()->membership_level == 'client')
+            <li class="{{ Request::is('/client/dashboard')? 'active': '' }} nav-item"><a href="{{route('client_home')}}"><i class="feather icon-home"></i><span class="menu-title" data-i18n="Dashboard">الصفحة الرئيسية</span></a>
             </li>
+            @else
+            <li class="{{ Request::is('/')? 'active': '' }} nav-item"><a href="{{route('home')}}"><i class="feather icon-home"></i><span class="menu-title" data-i18n="Dashboard">الصفحة الرئيسية</span></a>
+            </li>
+            @endif
 
-            <li class="nav-item has-sub"><a href="#"><i class="fa fa-building-o"></i><span class="menu-title" data-i18n="Card">الطلبات الاولية</span></a>
+            <li class="nav-item has-sub"><a href="#"><i class="fa fa-building-o"></i><span class="menu-title" data-i18n="Card">طلباتي الأولية</span></a>
                 <ul class="menu-content">
+                    @if(auth()->user()->membership_level == 'client')
+                    <li class="{{ Request::is('client/estates')? 'active': '' }}"><a href="{{ route('client.estates.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الطلبات</span></a>
+                    </li>
+                    <li class="{{ Request::is('client/estates/create')? 'active': '' }}"><a href="{{ route('client.estates.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">اضافة طلب جديد</span></a>
+                    </li>
+                    @else
                     <li class="{{ Request::is('estates')? 'active': '' }}"><a href="{{ route('estates.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الطلبات</span></a>
                     </li>
+                    @endif
                     @if(auth()->user()->membership_level == 'admin' || auth()->user()->membership_level == 'entre')
                     <li class="{{ Request::is('estates/create')? 'active': '' }}"><a href="{{ route('estates.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">اضافة طلب جديد</span></a>
                     </li>
@@ -28,11 +45,15 @@
                 </ul>
             </li>
             
-            <li class="nav-item has-sub"><a href="#"><i class="fa fa-building-o"></i><span class="menu-title" data-i18n="Card"> الارشيف</span></a>
+            <li class="nav-item has-sub"><a href="#"><i class="fa fa-building-o"></i><span class="menu-title" data-i18n="Card"> الطلبات المؤرشفة</span></a>
                 <ul class="menu-content">
+                    @if(auth()->user()->membership_level == 'client')
+                    <li class="{{ Request::is('client/archive')? 'active': '' }}"><a href="{{ route('client.archive') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic"> الارشيف</span></a>
+                    </li>
+                    @else
                     <li class="{{ Request::is('archive')? 'active': '' }}"><a href="{{ route('archive') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic"> الارشيف</span></a>
                     </li>
-                   
+                   @endif
                 </ul>
             </li>
             @if(auth()->user()->membership_level == 'admin' || auth()->user()->membership_level == 'entre')

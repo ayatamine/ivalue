@@ -17,6 +17,7 @@ class HomeController extends Controller
     {
         try{
 //            $estates = Estate::where('user_id' , Auth::user()->id)->active()->orderBy('id' , 'desc')->get();
+            if(auth()->user()->membership_level == 'client') return redirect()->route('client_home');
             return view('frontend.home' );
         }catch(\Exception $e){
             return redirect()->back()->with('error', 'Error Try Again !!');
@@ -34,6 +35,16 @@ class HomeController extends Controller
             $user->dark_mode = 1;
             $user->save();
             return response()->json(['status' => 'dark'], 201);
+        }
+    }
+    public function clientDashboard()
+    {
+        try{
+            
+           $estates = Estate::with('kind:id,name')->with('category:id,name')->where('user_id' , Auth::user()->id)->active()->orderBy('id' , 'desc')->limit(5)->get();
+            return view('frontend.client_home',compact('estates'));
+        }catch(\Exception $e){
+            return redirect()->back()->with('error', 'Error Try Again !!');
         }
     }
 }

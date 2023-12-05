@@ -21,6 +21,8 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
+                if(auth()->user()->membership_level == 'client')       return redirect('/client/dashboard');
+
                 return redirect(RouteServiceProvider::HOME);
             }
         }

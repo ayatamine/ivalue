@@ -33,17 +33,24 @@ new #[Layout('layouts.guest')] class extends Component
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+        $validated['membership_level'] = 'client';
 
         event(new Registered($user = User::create($validated)));
 
         Auth::login($user);
-
-        $this->redirect(RouteServiceProvider::HOME, navigate: true);
+        if (auth()->user()->membership_level == 'client') {
+            $this->redirect( 'client/dashboard', navigate: true);
+        }else {
+            $this->redirect(
+            session('url.intended', $this->redirectTo()),
+            navigate: true
+            );
+        }
     }
     protected function redirectTo()
     {
         if (auth()->user()->membership_level == 'client') {
-            return 'client/dashboard';
+            return '/client/dashboard';
         }
         return $this->redirectTo;
     }

@@ -2,30 +2,31 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Models\City;
+use App\Models\Kind;
+use App\Models\User;
+use App\Models\Estate;
+use App\Models\Country;
+use App\Models\Category;
+use App\Models\EstateInput;
+use App\Traits\UploadTrait;
+use Illuminate\Http\Request;
+use App\Models\EstatePayment;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EstateRequest;
-use App\Models\Category;
-use App\Models\City;
-use App\Models\Country;
-use App\Models\EstatePayment;
-use App\Models\Estate;
-use App\Models\EstateInput;
-use App\Models\Kind;
 use App\Traits\DashNotificationTrait;
-use App\Traits\UploadTrait;
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Requests\ClientEstateRequest;
+use App\Http\Requests\UpdateClientEstateRequest;
 
-class EstateController extends Controller
+class ClientEstateController extends Controller
 {
     use UploadTrait, DashNotificationTrait;
 
     public function index()
     {
         try {
-            $estates = auth()->user()->membership_level !== 'client' ? Estate::all()
-                                                                     : Estate::whereUserId(auth()->id())->get() ;
-            return view('frontend.estates.index', compact('estates'));
+            $estates =  Estate::with('kind:id,name')->with('city:id,name')->whereUserId(auth()->id())->get() ;
+            return view('frontend.estates.client.index', compact('estates'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -33,8 +34,8 @@ class EstateController extends Controller
     public function archive()
     {
         try {
-            $estates = Estate::where('archive' , 1)->get();
-            return view('frontend.estates.archive', compact('estates'));
+            $estates = Estate::where('archive' , 1)->whereUserId(auth()->id())->get();
+            return view('frontend.estates.client.archive', compact('estates'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -45,7 +46,7 @@ class EstateController extends Controller
     {
         try {
             $estate = Estate::find($estate_id);
-            return view('frontend.estates.paid', compact('estate'));
+            return view('frontend.estates.client.paid', compact('estate'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -56,10 +57,10 @@ class EstateController extends Controller
         try {
             $cities = City::all();
             $countries = Country::all();
-            $users = User::where('membership_level', 'client')->get();
+            // $users = User::where('membership_level', 'client')->get();
             $categories = Category::all();
             $kinds = Kind::all();
-            return view('frontend.estates.create', compact('cities', 'users', 'categories', 'kinds', 'countries'));
+            return view('frontend.estates.client.create', compact('cities', 'categories', 'kinds', 'countries'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -106,19 +107,19 @@ class EstateController extends Controller
         }
     }
 
-    public function store(EstateRequest $request)
+    public function store(ClientEstateRequest $request)
     {
 
         $estate = new Estate();
         $estate->name_arabic = $request->name_arabic;
-//            $estate->name_english = $request->name_english;
+        $estate->name_english = $request->name_english;
         $estate->address = $request->address;
         $estate->about = $request->about;
         $estate->land_size = $request->land_size;
         $estate->build_size = $request->build_size;
         $estate->age = $request->age ?: 1;
         $estate->level = $request->level;
-        $estate->user_id = $request->user_id;
+        $estate->user_id = auth()->id();
         $estate->category_id = $request->category_id;
         $estate->city_id = $request->city_id;
         $estate->kind_id = $request->kind_id;
@@ -169,7 +170,7 @@ class EstateController extends Controller
         }
         
 
-        return redirect()->route('estates.index')->with('done', 'تم الاضافة بنجاح والارسال الى مدير التقييم ....');
+        return redirect()->route('client.estates.index')->with('done', 'تم الاضافة بنجاح والارسال الى مدير التقييم ....');
 
     }
 
@@ -177,7 +178,7 @@ class EstateController extends Controller
     {
         $estate = Estate::where('slug', $slug)->first();
         if (isset($estate)) {
-            return view('frontend.estates.show', compact('estate'));
+            return view('frontend.estates.client.show', compact('estate'));
         } else {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -187,7 +188,7 @@ class EstateController extends Controller
     {
         $estate = Estate::where('slug', $slug)->first();
         if (isset($estate)) {
-            return view('frontend.estates.calendar', compact('estate'));
+            return view('frontend.estates.client.calendar', compact('estate'));
         } else {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -195,20 +196,20 @@ class EstateController extends Controller
 
     public function edit($id)
     {
-        $estate = Estate::where('id', $id)->first();
+        $estate = Estate::whereUserId(auth()->id())->where('id', $id)->firstOrFail();
         if (isset($estate)) {
             $cities = City::all();
             $countries = Country::all();
-            $users = User::where('membership_level', 'client')->get();
+            // $users = User::where('membership_level', 'client')->get();
             $categories = Category::all();
             $kinds = Kind::all();
-            return view('frontend.estates.edit', compact('estate', 'cities', 'users', 'categories', 'kinds', 'countries'));
+            return view('frontend.estates.client.edit', compact('estate', 'cities', 'categories', 'kinds', 'countries'));
         } else {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
     }
 
-    public function update(EstateRequest $request, $id)
+    public function update(UpdateClientEstateRequest $request, $id)
     {
 
         $estate = Estate::find($id);
@@ -256,7 +257,7 @@ class EstateController extends Controller
             $input->user_id = auth()->user()->id;
             $input->save();
         }
-        return redirect()->route('estates.index')->with('done', 'تم التعديل بنجاح ....');
+        return redirect()->route('client.estates.index')->with('done', 'تم التعديل بنجاح ....');
 
     }
 
@@ -301,7 +302,7 @@ class EstateController extends Controller
         try {
             $estate = Estate::where('slug', $slug)->first();
             $audits = $estate->audits;
-            return view('frontend.estates.log', compact('audits', 'estate'));
+            return view('frontend.estates.client.log', compact('audits', 'estate'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }

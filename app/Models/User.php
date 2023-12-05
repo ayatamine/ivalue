@@ -23,7 +23,7 @@ class User extends Authenticatable implements FilamentUser
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email','phone','active','password','created_at' , 'updated_at'
+        'name', 'email','phone','active','password','created_at' , 'updated_at','membership_level'
     ];
 
     /**

@@ -41,7 +41,7 @@ class LoginController extends Controller
     protected function redirectTo()
     {
         if (auth()->user()->membership_level == 'client') {
-            return '/';
+            return '/client/estates';
         }
         return $this->redirectTo;
     }

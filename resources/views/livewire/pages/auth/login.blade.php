@@ -24,18 +24,23 @@ new #[Layout('layouts.guest')] class extends Component
 
         $this->form->authenticate();
 
-        Session::regenerate();
-
-        $this->redirect(
+        Session::regenerate();  
+ 
+        if (auth()->user()->membership_level == 'client') {
+            $this->redirect( 'client/dashboard', navigate: true);
+        }else {
+            $this->redirect(
             session('url.intended', $this->redirectTo()),
             navigate: true
-        );
+            );
+        }
+        
     }
     protected function redirectTo()
     {
 
         if (auth()->user()->membership_level == 'client') {
-            return '/client/dashboard';
+            return 'client/dashboard';
         }
         return $this->redirectTo;
     }
