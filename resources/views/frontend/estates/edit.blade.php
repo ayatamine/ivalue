@@ -65,6 +65,98 @@
         .form-row {
             width: 100%;
         }
+        #files-area {
+            /* width: 30%; */
+            margin: 0 auto;
+        }
+        #files-names{
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+        .file-block {
+            border-radius: 10px;
+            background-color: rgba(144, 163, 203, 0.2);
+            margin: 5px;
+            color: initial;
+            display: flex;
+            height: 140px;
+            flex-direction: column;
+            padding: 1rem;
+            width: 150px;
+    overflow: hidden;
+    white-space: nowrap;
+        }
+        .file-block img{
+            height: 70px;
+            width: 70px;
+            margin: auto;
+            margin-top: 0.5rem;
+        }
+        .file-block > span.name {
+            padding-right: 10px;
+            width: max-content;
+            display: inline-flex;
+        }
+        .file-delete {
+            display: flex;
+            width: 24px;
+            color: initial;
+            background-color: #6eb4ff 0;
+            font-size: large;
+            justify-content: center;
+            margin-right: 3px;
+            cursor: pointer;
+        }
+        .file-delete:hover {
+            background-color: rgba(144, 163, 203, 0.2);
+            border-radius: 10px;
+        }
+        .file-delete > span {
+            transform: rotate(45deg);
+        }
+        .file-upload-container {
+  border: 1px dashed #ddd;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.file-upload-container .icon-plus {
+  font-size: 2em;
+  color: #ddd;
+}
+
+#preview-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#preview-container img {
+  width: 150px;
+  height: 150px;
+  margin: 10px;
+  border: 1px solid #ddd;
+}
+
+.remove-file {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.remove-file span {
+  display: inline-block;
+  font-size: 12px;
+  line-height: 12px;
+  padding: 0 5px;
+}
     </style>
     <!-- END: Custom CSS-->
 @endsection
@@ -277,13 +369,35 @@
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    @if($estate->file_urls)
+                                    <p id="files-area">
+                                        <span id="filesList">
+                                            <span id="files-names">
+                                        @if($estate->file_urls)
                                         @foreach($estate->file_urls as $file_url)
-                                            <a href="{{ $file_url }}">
+                                            
+                                            {{-- <a href="{{ $file_url }}">
                                                 <i class="fa fa-file"></i>
-                                            </a>
+                                            </a> --}}
+                                            <span class="file-block">
+                                                {{-- <span class="file-delete"><span>+</span></span> --}}
+                                                {{-- <span class="name">location_mark.svg</span> --}}
+                                                @if(strpos( mime_content_type($file_url), "image/") === 0)
+                                                <img src="{{ $file_url }}">
+                                                @else 
+                                                <a target="_blink" href="{{ $file_url }}" style="display: block;height: 70px;
+                                                width: 70px;
+                                                margin: auto;
+                                                margin-top: 0.5rem;">
+                                                    <i class="fa fa-file"></i>
+                                                </a>
+                                                @endif
+                                            </span>
+                                            
                                         @endforeach
-                                    @endif
+                                       @endif
+                                    </span>
+                                        </span>
+                                    </p>
                                     <div class="form-row">
                                         <div class="col-md-12">
                                             <div class="panel panel-default">

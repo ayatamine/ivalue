@@ -39,7 +39,7 @@ class UpdateClientEstateRequest extends FormRequest
                         // 'category_id' => 'required',
                         'kind_id' => 'required',
 //                        'image' => 'required|mimes:jpg,jpeg,png,svg|max:5000',
-                        'files*' => 'required',
+                        'files*' => 'sometimes',
                     ];
                 }
                 break;

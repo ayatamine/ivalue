@@ -110,9 +110,11 @@
                         </div>
                     </div>
                     <?php
-                            $estate = \App\Models\Estate::count();
-                            $not_estate = \App\Models\DashNotification::where('user_id' , 11)->count();
-                            $nott_estate = \App\Models\Estate::whereNotNull('client_reason')->count();
+                            $estate = \App\Models\Estate::whereUserId(auth()->id())->count();
+                            $not_estate = \App\Models\DashNotification::where('user_id' , 11)
+                            ->whereIn('estate_id',\App\Models\Estate::whereUserId(auth()->id())->pluck('id'))
+                            ->count();
+                            $nott_estate = \App\Models\Estate::whereUserId(auth()->id())->whereNotNull('client_reason')->count();
                         ?>
                     <h2 class="text-bold-700 mt-1 mb-25">{{ $estate }}</h2>
                     <p class="mb-0">تقرير مازالت تحت المراجعة</p>

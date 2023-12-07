@@ -23,8 +23,7 @@ class EstateController extends Controller
     public function index()
     {
         try {
-            $estates = auth()->user()->membership_level !== 'client' ? Estate::all()
-                                                                     : Estate::whereUserId(auth()->id())->get() ;
+            $estates = Estate::whereDraftedBy(null)->get();
             return view('frontend.estates.index', compact('estates'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
@@ -35,6 +34,15 @@ class EstateController extends Controller
         try {
             $estates = Estate::where('archive' , 1)->get();
             return view('frontend.estates.archive', compact('estates'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'حدث خطأ !!');
+        }
+    }
+    public function drafts()
+    {
+        try {
+            $estates = Estate::where('drafted_by' , auth()->id())->get();
+            return view('frontend.estates.drafts', compact('estates'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -64,12 +72,12 @@ class EstateController extends Controller
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
     }
-    
+
     public function estate_paid_post($estate_id,Request $request)
     {
         try {
              $estate = Estate::where('id', $estate_id)->first();
-           
+
                 $this->validate($request, [
                     'payment' => 'required',
                 ]);
@@ -130,6 +138,10 @@ class EstateController extends Controller
         } else {
             $estate->active = 0;
         }
+        if ($request->cancel) {
+            $estate->drafted_by = auth()->id();
+            $estate->draft_note = $request->draft_note;
+        }
         $estate->save();
 //            if ($request->hasFile('image')) {
 //                $this->saveimage($request->image, 'pictures/estates', $estate->id , Estate::class, 'main');
@@ -156,6 +168,7 @@ class EstateController extends Controller
         if(!$request->report_type){
              return redirect()->back()->with('error' , 'يرجى اختيار المرحلة التالية');
         }
+        if (!$request->cancel) {
         if($request->report_type == 'new'){
             $users = User::where('membership_level', 'rater_manager')->pluck('id');
             $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', 'طلب جديد في مرحلة المراجعة');
@@ -167,7 +180,8 @@ class EstateController extends Controller
         }else{
             return redirect()->back()->with('error' , 'يرجى اختيار المرحلة التالية');
         }
-        
+        }
+
 
         return redirect()->route('estates.index')->with('done', 'تم الاضافة بنجاح والارسال الى مدير التقييم ....');
 

@@ -67,15 +67,33 @@
         }
 
         #files-area {
-            width: 30%;
+            /* width: 30%; */
             margin: 0 auto;
+        }
+        #files-names{
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
         }
         .file-block {
             border-radius: 10px;
             background-color: rgba(144, 163, 203, 0.2);
             margin: 5px;
             color: initial;
-            display: inline-flex;
+            display: flex;
+            height: 140px;
+            flex-direction: column;
+            padding: 1rem;
+            width: 150px;
+    overflow: hidden;
+    white-space: nowrap;
+        }
+        .file-block img{
+            height: 70px;
+            width: 70px;
+            margin: auto;
+            margin-top: 0.5rem;
         }
         .file-block > span.name {
             padding-right: 10px;
@@ -99,6 +117,47 @@
         .file-delete > span {
             transform: rotate(45deg);
         }
+        .file-upload-container {
+  border: 1px dashed #ddd;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.file-upload-container .icon-plus {
+  font-size: 2em;
+  color: #ddd;
+}
+
+#preview-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#preview-container img {
+  width: 150px;
+  height: 150px;
+  margin: 10px;
+  border: 1px solid #ddd;
+}
+
+.remove-file {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.remove-file span {
+  display: inline-block;
+  font-size: 12px;
+  line-height: 12px;
+  padding: 0 5px;
+}
 
     </style>
     <!-- END: Custom CSS-->
@@ -377,9 +436,9 @@
 
                                         </p>
                                         <p id="files-area">
-	<span id="filesList">
-		<span id="files-names"></span>
-	</span>
+                                            <span id="filesList">
+                                                <span id="files-names"></span>
+                                            </span>
                                         </p>
                                         @error('files')
                                         <span class="text-danger">{{ $message }}</span>
@@ -701,10 +760,19 @@
 
         $("#attachment").on('change', function(e){
             for(var i = 0; i < this.files.length; i++){
+                const reader = new FileReader();
+                const img = document.createElement('img');
+                reader.onload = function(event) {
+                    
+                    img.src = event.target.result;
+                    // previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(this.files.item(i));
                 let fileBloc = $('<span/>', {class: 'file-block'}),
                     fileName = $('<span/>', {class: 'name', text: this.files.item(i).name});
                 fileBloc.append('<span class="file-delete"><span>+</span></span>')
-                    .append(fileName);
+                    .append(fileName)
+                    .append(img);
                 $("#filesList > #files-names").append(fileBloc);
             };
             // Ajout des fichiers dans l'objet DataTransfer
@@ -731,6 +799,7 @@
                 document.getElementById('attachment').files = dt.files;
             });
         });
+        
     </script>
 @endsection
 

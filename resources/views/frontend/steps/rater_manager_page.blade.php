@@ -90,12 +90,12 @@
                                 @endif
                                 <div class="col-md-3 col-12 mb-3">
                                     <label for="report_standards">معايير التقييم</label>
-                                    
-                                           
+
+
                                            <div class="form-group">
                                                     <select name="report_standards" id="report_standards"
                                                             class="select2 form-control" required>
-                                                        
+
                                                         <option value="2020"> 2020</option>
                                                         <!--<option value="2021"> 2021</option>-->
                                                         <option value="2022"> 2022</option>
@@ -106,8 +106,8 @@
                                     <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
-                                
-                                
+
+
 
                                 <div class="col-md-3 col-12 mb-3">
                                     <label for="report_users">مستخدم التقرير (يتم الفصل بين الاسامي بـ "-")</label>
@@ -232,7 +232,7 @@
                                         <div class="form-row">
                                             <div class="col-sm-12 col-12">
                                                 <label for="size_kind">
-                                                    العملة 
+                                                    العملة
                                                 </label>
                                                 <?php
                                                     $currencies = \DB::table('currncies')->get();
@@ -256,10 +256,10 @@
                                     <div class="form-group">
                                                     <select name="report_desc" id="report_desc"
                                                             class="select2 form-control">
-                                                        
+
                                                         <option value="ورقي">ورقي </option>
                                                         <option value="الكتروني">الكتروني </option>
-                                                    
+
                                                     </select>
                                                 </div>
                                     @error('report_desc')

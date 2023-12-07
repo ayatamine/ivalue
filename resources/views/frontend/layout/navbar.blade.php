@@ -27,7 +27,7 @@
             </li>
             @endif
 
-            <li class="nav-item has-sub"><a href="#"><i class="fa fa-building-o"></i><span class="menu-title" data-i18n="Card">طلباتي الأولية</span></a>
+            <li class="nav-item has-sub"><a href="#"><i class="fa fa-building-o"></i><span class="menu-title" data-i18n="Card">الطلبات الأولية</span></a>
                 <ul class="menu-content">
                     @if(auth()->user()->membership_level == 'client')
                     <li class="{{ Request::is('client/estates')? 'active': '' }}"><a href="{{ route('client.estates.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الطلبات</span></a>
@@ -44,7 +44,7 @@
                     @endif
                 </ul>
             </li>
-            
+
             <li class="nav-item has-sub"><a href="#"><i class="fa fa-building-o"></i><span class="menu-title" data-i18n="Card"> الطلبات المؤرشفة</span></a>
                 <ul class="menu-content">
                     @if(auth()->user()->membership_level == 'client')
@@ -56,6 +56,14 @@
                    @endif
                 </ul>
             </li>
+            @if(auth()->user()->membership_level !== 'client')
+            <li class="nav-item has-sub"><a href="#"><i class="fa fa-building-o"></i><span class="menu-title" data-i18n="Card"> الطلبات في المسودة</span></a>
+                <ul class="menu-content">
+                    <li class="{{ Request::is('drafts')? 'active': '' }}"><a href="{{ route('drafts') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic"> الكل</span></a>
+                    </li>
+                </ul>
+            </li>
+            @endif
             @if(auth()->user()->membership_level == 'admin' || auth()->user()->membership_level == 'entre')
             <li class="nav-item has-sub {{ (Request::is('countries') ? 'sidebar-group-active' : '' || Request::is('countries/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-globe"></i><span class="menu-title" data-i18n="Card">الموقع الجغرافي</span></a>
                 <ul class="menu-content">

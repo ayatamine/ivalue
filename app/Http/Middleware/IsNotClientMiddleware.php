@@ -18,7 +18,8 @@ class IsNotClientMiddleware
     {
         if(auth()->check() && (auth()->user()->membership_level == 'client' || auth()->user()->membership_level == 'client'))
         {
-            abort(403);
+            // abort(403);
+            return redirect('client/dashboard');
         }
         return $next($request);
     }

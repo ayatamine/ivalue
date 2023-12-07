@@ -45,7 +45,7 @@ class Estate extends Model implements Auditable
     }
     public function user()
     {
-        return $this->belongsTo('App\User' , 'user_id');
+        return $this->belongsTo('App\Models\User' , 'user_id');
     }
     public function kind()
     {
@@ -54,7 +54,7 @@ class Estate extends Model implements Auditable
 
     public function directions()
     {
-        return $this->hasMany('App\EstateDirection');
+        return $this->hasMany('App\Models\EstateDirection');
     }
     public function payments()
     {

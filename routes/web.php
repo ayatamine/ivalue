@@ -81,6 +81,7 @@ Route::group([ 'middleware' => ['auth',IsNotClientMiddleware::class]], function 
     /***********  estates route ***********/
     Route::resource('estates', EstateController::class)->except(['show']);
     Route::get('archive', [EstateController::class,'archive'])->name('archive');
+    Route::get('drafts', [EstateController::class,'drafts'])->name('drafts');
     Route::get('estate_paid/{estate_id}',  [EstateController::class,'estate_paid'])->name('estate_paid');
     Route::post('estate_paid/{estate_id}', [EstateController::class,'estate_paid_post'])->name('estate_paid_post');
 
@@ -95,7 +96,7 @@ Route::group([ 'middleware' => ['auth',IsNotClientMiddleware::class]], function 
 //    settings
     Route::get('settings', [SettingController::class,'index'])->name('settings');
     Route::patch('update_settings', [SettingController::class,'update_settings'])->name('update_settings');
-    
+
     Route::get('edit_archive/{estate_id}', [Notificationontroller::class,'edit_archive'])->name('edit_archive');
 Route::post('edit_archive_post/{estate_id}',[Notificationontroller::class,'edit_archive_post'])->name('edit_archive_post');
 });

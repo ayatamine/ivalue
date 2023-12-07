@@ -67,15 +67,33 @@
         }
 
         #files-area {
-            width: 30%;
+            /* width: 30%; */
             margin: 0 auto;
+        }
+        #files-names{
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
         }
         .file-block {
             border-radius: 10px;
             background-color: rgba(144, 163, 203, 0.2);
             margin: 5px;
             color: initial;
-            display: inline-flex;
+            display: flex;
+            height: 140px;
+            flex-direction: column;
+            padding: 1rem;
+            width: 150px;
+    overflow: hidden;
+    white-space: nowrap;
+        }
+        .file-block img{
+            height: 70px;
+            width: 70px;
+            margin: auto;
+            margin-top: 0.5rem;
         }
         .file-block > span.name {
             padding-right: 10px;
@@ -175,7 +193,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="member col-md-3 col-12 mb-3">
                                        <div class="row">
                                            <div class="col-md-12 col-12 mb-3">
@@ -424,7 +442,7 @@
                                            <!--        </div>-->
                                            <!--    </div>-->
                                            <!--</div>-->
-                                           
+
                                            <div class="col-md-3 col-12 mb-3">
                                                <label for="build_size">مساحة المبني</label>
                                                <input type="number" name="build_size"
@@ -472,7 +490,7 @@
                                                <span class="text-danger">{{ $message }}</span>
                                                @enderror
                                            </div>
-                                    
+
                                     <div class="col-md-6">
                                         <div class="form-row">
                                             <div class="col-sm-12 col-12">
@@ -492,8 +510,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                   
+
+
                                     <div class="col-md-6 col-12 mb-3">
                                         <div class="form-row">
                                             <div class="col-sm-12 col-12">
@@ -547,18 +565,18 @@
                                         <div class="form-row">
                                             <div class="col-sm-12 col-12">
                                                 <label for="report_type">
-                                                    المرحلة التالبة  
+                                                    المرحلة التالبة
                                                 </label>
                                                 <div class="form-group">
                                                     <select name="report_type" id="report_type"
                                                             class="select2 form-control">
                                                         <option selected hidden disabled value="">اختر نوع عملية الادخال
                                                         </option>
-                                                        <option value="new">ادخال جديد   
+                                                        <option value="new">ادخال جديد
                                                         </option>
-                                                        <option value="old"> اعتماد مسبق   
+                                                        <option value="old"> اعتماد مسبق
                                                         </option>
-                                                        
+
                                                     </select>
                                                 </div>
                                                 @error('kind_id')
@@ -567,9 +585,14 @@
                                             </div>
                                         </div>
                                     </div>
-                                <hr>
-                                <button class="btn btn-primary" type="submit">اضافة</button>
+
+                                <hr id="last_hr">
+                                <div class="d-flex justify-content-between align-items-center" style="    gap: 1%;" >
+                                    <span class="btn btn-danger w-50" id="cancel_order">الغاء وحفظ كمسودة</span>
+                                    <button class="btn btn-primary w-50" type="submit">اضافة</button>
+                                </div>
                             </form>
+
                         </div>
                     </div>
                 </div>
@@ -597,6 +620,7 @@
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
     <script>
         $(document).ready(function () {
+
             // validate signup form on keyup and submit
             $("#myform").validate({
                 rules: {
@@ -622,6 +646,24 @@
                     },
                 }
             });
+            console.log('yes arre')
+            $('#cancel_order').click(function (e) {
+                e.preventDefault();
+                console.log('yes clicked')
+                $('#myform').append('<input type="text" class="d-none" name="cancel" value="cancel" >')
+                if($('#draft_note').length){
+                    $('#myform').submit();
+                }else{
+
+                    $(`<div class="col-md-12 col-12 mb-3">
+                                        <label for="draft_note"> ملاحظة على المسودة </label>
+                                        <textarea rows="5" type="text" name="draft_note"
+                                                  class="form-control" id="draft_note" placeholder="اكتب ملاحظة على المسودة "
+                                                  value=""></textarea>
+                                    </div>`).insertBefore('#last_hr')
+                }
+
+             });
         });
         // if ($('#kind_id').val() != 1) {
         //     $('.member').show();
@@ -639,6 +681,7 @@
                 $('.no_member').show();
             }
         });
+
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script>
@@ -692,10 +735,19 @@
 
         $("#attachment").on('change', function(e){
             for(var i = 0; i < this.files.length; i++){
+                const reader = new FileReader();
+                const img = document.createElement('img');
+                reader.onload = function(event) {
+
+                    img.src = event.target.result;
+                    // previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(this.files.item(i));
                 let fileBloc = $('<span/>', {class: 'file-block'}),
                     fileName = $('<span/>', {class: 'name', text: this.files.item(i).name});
                 fileBloc.append('<span class="file-delete"><span>+</span></span>')
-                    .append(fileName);
+                    .append(fileName)
+                    .append(img);
                 $("#filesList > #files-names").append(fileBloc);
             };
             // Ajout des fichiers dans l'objet DataTransfer
