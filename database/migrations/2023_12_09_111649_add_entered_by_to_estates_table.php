@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('estates', function (Blueprint $table) {
-            $table->unsignedBigInteger('drafted_by')->nullable()->constrained()->references('users')->onDelete('cascade');
-            $table->string('draft_note')->nullable();
+            $table->unsignedBigInteger('entered_by')->nullable()->constrained()->references('users')->onDelete('cascade');
         });
     }
 
@@ -23,8 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('estates', function (Blueprint $table) {
-            $table->dropColumn('draft_note');
-            $table->dropColumn('drafted_by');
+            $table->dropColumn('entered_by');
         });
     }
 };

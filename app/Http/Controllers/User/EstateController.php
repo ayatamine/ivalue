@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Models\City;
+use App\Models\Kind;
+use App\Models\User;
+use App\Models\Estate;
+use App\Models\Country;
+use App\Models\Category;
+use App\Models\EstateInput;
+use App\Traits\UploadTrait;
+use Illuminate\Http\Request;
+use App\Models\EstatePayment;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EstateRequest;
-use App\Models\Category;
-use App\Models\City;
-use App\Models\Country;
-use App\Models\EstatePayment;
-use App\Models\Estate;
-use App\Models\EstateInput;
-use App\Models\Kind;
 use App\Traits\DashNotificationTrait;
-use App\Traits\UploadTrait;
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Requests\UpdateEstateRequest;
 
 class EstateController extends Controller
 {
@@ -133,6 +134,7 @@ class EstateController extends Controller
         $estate->lat = $request->lat;
         $estate->lng = $request->lng;
         $estate->report_type = $request->report_type;
+
         if ($request->active) {
             $estate->active = 1;
         } else {
@@ -142,6 +144,7 @@ class EstateController extends Controller
             $estate->drafted_by = auth()->id();
             $estate->draft_note = $request->draft_note;
         }
+        $estate->entered_by =auth()?->id();
         $estate->save();
 //            if ($request->hasFile('image')) {
 //                $this->saveimage($request->image, 'pictures/estates', $estate->id , Estate::class, 'main');
@@ -222,7 +225,7 @@ class EstateController extends Controller
         }
     }
 
-    public function update(EstateRequest $request, $id)
+    public function update(UpdateEstateRequest $request, $id)
     {
 
         $estate = Estate::find($id);

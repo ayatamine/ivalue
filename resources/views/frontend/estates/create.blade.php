@@ -589,7 +589,7 @@
                                 <hr id="last_hr">
                                 <div class="d-flex justify-content-between align-items-center" style="    gap: 1%;" >
                                     <span class="btn btn-danger w-50" id="cancel_order">الغاء وحفظ كمسودة</span>
-                                    <button class="btn btn-primary w-50" type="submit">اضافة</button>
+                                    <button class="btn btn-primary w-50" type="submit" id="submit_order">اضافة</button>
                                 </div>
                             </form>
 
@@ -646,11 +646,10 @@
                     },
                 }
             });
-            console.log('yes arre')
+
             $('#cancel_order').click(function (e) {
                 e.preventDefault();
-                console.log('yes clicked')
-                $('#myform').append('<input type="text" class="d-none" name="cancel" value="cancel" >')
+                $('#myform').append('<input type="text" class="d-none" name="cancel" id="draft_cancel" value="cancel" >')
                 if($('#draft_note').length){
                     $('#myform').submit();
                 }else{
@@ -663,6 +662,12 @@
                                     </div>`).insertBefore('#last_hr')
                 }
 
+             });
+             $('#submit_order').click(function (e) {
+               e.preventDefault();
+               $('#draft_cancel').remove();
+               $('#draft_note').remove();
+               $('#myform').submit();
              });
         });
         // if ($('#kind_id').val() != 1) {

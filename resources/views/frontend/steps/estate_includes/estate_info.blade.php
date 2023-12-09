@@ -5,6 +5,7 @@
             <th>#</th>
             <th>#</th>
             <th>اسم طالب التقييم</th>
+            <th>كود التقرير </th>
             <th>نوع </th>
             <th>صاحب </th>
             <th>مساحة الارض</th>
@@ -19,7 +20,7 @@
                 @elseif(auth()->user()->membership_level == 'approver')
                  <th>موعد تسليم المرحلة </th>
                 @endif
-            
+
             <th>العمر</th>
             <th>وحدة القياس</th>
             <th>  مدر للدخل</th>
@@ -32,13 +33,14 @@
                 <img src="{{ $estate->image_url }}">
             </td>
             <td class="product-name">{{ $estate->name_arabic }}</td>
+            <td>{{ $estate->id }}</td>
             <td>{{ $estate->kind->name }}</td>
             <td>{{ $estate->user->name }}</td>
             <td>{{$estate->land_size}}</td>
             <td>{{$estate->category? $estate->category->name: ''}}</td>
             <td>{{$estate->build_size}}</td>
             <td>{{$estate->age ? $estate->age . ' سنة ' : ''}}</td>
-            
+
                 @if(auth()->user()->membership_level == 'previewer')
                    <td> {{ $estate->perviewer_date ?: '----' }}</td>
                 @elseif(auth()->user()->membership_level == 'rater')
@@ -53,7 +55,7 @@
                  <td>
                     {{  $estate->approver_date ?: '----' }}
                      </td>
-               
+
                 @endif
             </td>
             <td>{{ $estate->size_kind == 1 ? 'المتر المربع' : 'المتر المكعب'}}</td>
@@ -79,9 +81,9 @@
                             <th>{{ $inp->key ?: ''}}</th>
                         @endif
                         <td>
-                            
+
                             {{$inp->value ?: ''}}
-                            
+
                         </td>
                     </tr>
                 @endforeach

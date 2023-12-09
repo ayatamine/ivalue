@@ -92,13 +92,14 @@ Route::group([ 'middleware' => ['auth',IsNotClientMiddleware::class]], function 
     Route::get('notification-level/{not_id}', [Notificationontroller::class,'not_open'])->name('not_open');
     Route::patch('level-refuse/{estate_id}/{type}', [Notificationontroller::class,'level_refuse'])->name('level_refuse');
     Route::patch('level_inputs/{estate_id}', [Notificationontroller::class,'level_inputs'])->name('level_inputs');
+    Route::get('complete_entry/{estate_id}',[Notificationontroller::class,'completeEntry'])->name('complete_entry');
 
 //    settings
     Route::get('settings', [SettingController::class,'index'])->name('settings');
     Route::patch('update_settings', [SettingController::class,'update_settings'])->name('update_settings');
 
     Route::get('edit_archive/{estate_id}', [Notificationontroller::class,'edit_archive'])->name('edit_archive');
-Route::post('edit_archive_post/{estate_id}',[Notificationontroller::class,'edit_archive_post'])->name('edit_archive_post');
+    Route::post('edit_archive_post/{estate_id}',[Notificationontroller::class,'edit_archive_post'])->name('edit_archive_post');
 });
 
 Route::get('pdf', [PdfController::class,'generatePDF'])->name('pdf');

@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\User;
 
-use App\EstateDirection;
-use App\Http\Controllers\Controller;
-use App\Models\DashNotification;
-use App\Models\Estate;
-use App\Models\EstateInput;
-use App\Models\EstatePayment;
-use App\Traits\DashNotificationTrait;
-use App\Traits\UploadTrait;
 use App\Models\User;
-use DB;
+use App\Models\Estate;
+use App\EstateDirection;
+use App\Models\EstateInput;
+use App\Traits\UploadTrait;
 use Illuminate\Http\Request;
+use App\Models\EstatePayment;
+use App\Models\DashNotification;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Traits\DashNotificationTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Notificationontroller extends Controller
 {
@@ -44,7 +45,7 @@ class Notificationontroller extends Controller
             $estate = Estate::where('id', $not->estate_id)->first();
             return view('frontend.steps.entre_second_page', compact('estate'));
         }
-        
+
         if (auth()->user()->membership_level == 'qima_approver') {
             $not = DashNotification::find($not_id);
             $estate = Estate::where('id', $not->estate_id)->first();
@@ -82,16 +83,32 @@ class Notificationontroller extends Controller
             $estate = Estate::where('id', $not->estate_id)->first();
             return view('frontend.steps.reviewer_page', compact('estate'));
         }
-        
-         if (auth()->user()->membership_level == 'approver') {
+
+        if (auth()->user()->membership_level == 'approver') {
             $not = DashNotification::find($not_id);
             $estate = Estate::where('id', $not->estate_id)->first();
             return view('frontend.steps.manager_page', compact('estate'));
         }
-
     }
 
+    public function completeEntry($estate_id)
+    {
 
+        try {
+            $not = DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->firstOrFail();
+            //reactivate the estate
+            $estate = Estate::where('id', $estate_id)->first();
+            $estate->drafted_by = null;
+            $estate->draft_note = null;
+            $estate->save();
+        } catch (\Exception $ex) {
+            if ($ex instanceof ModelNotFoundException) {
+                return back()->with('error', 'لم يتم العثور على أي  مدخلات تخص هدا التقرير');
+            }
+            throw $ex;
+        }
+        return redirect()->route('not_open', ['not_id' => $not->id]);
+    }
     public function level_refuse($estate_id, $type)
     {
         $estate = Estate::where('id', $estate_id)->first();
@@ -120,19 +137,64 @@ class Notificationontroller extends Controller
             DB::beginTransaction();
             $estate = Estate::where('id', $estate_id)->first();
             if (!$estate) {
-                 DB::rollBack();
+                DB::rollBack();
                 return redirect()->route('home')->with('done', 'عقار غير موجود');
             }
 
             if (auth()->user()->membership_level == 'rater_manager') {
-                if($estate->report_type == 'new'){
-                     $this->validate($request, [
-                    'works' => 'required',
-                    'price' => 'required|numeric',
-                    'qty' => 'required|numeric',
-                ]);
+                if ($request->cancel) {
+
+                    $estate = Estate::where('id', $estate_id)->first();
+                    $estate->drafted_by = auth()->id();
+                    $estate->draft_note = $request->draft_note;
+                    $estate->save();
+
+                    $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
+                    if ($inputs->count() > 0) {
+                        foreach ($inputs as $inp) {
+                            $inp->delete();
+                        }
+                    }
+                    //TODO:: add show/hide for notitication
+                    // DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+                    DB::commit();
+                    return redirect()->route('home')->with('done', 'تم الالغاء والحفظ كمسودة');
                 }
-               
+                if ($request->return) {
+
+                    $estate = Estate::where('id', $estate_id)->first();
+                    //delete from draft if exists
+                    $estate->drafted_by =null;
+                    $estate->draft_note = $request->draft_note;
+                    $estate->save();
+
+                    DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+
+                    $users = User::whereId($estate->user_id)->pluck('id');
+                    if($estate->entered_by) $users = User::where('id', $estate->entered_by)->pluck('id');
+
+                    $this->send_notification($users, '' . $estate->id . '', '#FF0000', 'fa fa-times',  'تم رفض الطلب من قبل مدير التفييم مع ملاحظات');
+
+
+                    $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
+                    if ($inputs->count() > 0) {
+                        foreach ($inputs as $inp) {
+                            $inp->delete();
+                        }
+                    }
+                    //TODO:: add show/hide for notitication
+                    // DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+                    DB::commit();
+                    return redirect()->route('home')->with('done', 'تم رفض الطلب وإعادته للادخال');
+                }
+                if ($estate->report_type == 'new') {
+                    $this->validate($request, [
+                        'works' => 'required',
+                        'price' => 'required|numeric',
+                        'qty' => 'required|numeric',
+                    ]);
+                }
+
                 $estate = Estate::where('id', $estate_id)->first();
 
                 $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
@@ -141,6 +203,7 @@ class Notificationontroller extends Controller
                         $inp->delete();
                     }
                 }
+
                 $input_works = new EstateInput();
                 $input_works->key = 'نطاق العمل والاتعاب';
                 $input_works->value = $request->works;
@@ -154,37 +217,36 @@ class Notificationontroller extends Controller
                 $input_works->estate_id = $estate_id;
                 $input_works->user_id = auth()->user()->id;
                 $input_works->save();
-                 if($estate->report_type == 'new'){
-                      $input_works = new EstateInput();
-                $input_works->key = 'مده العمل';
-                $input_works->value = $request->works_delay;
-                $input_works->estate_id = $estate_id;
-                $input_works->user_id = auth()->user()->id;
-                $input_works->save();
-                
-                 $price_value = $request->price / $request->qty;
-                for ($i = 0; $i < $request->qty; $i++) {
-                    $input_price = new EstatePayment();
-                    $input_price->price = $price_value;
-                    $input_price->estate_id = $estate_id;
-                    $input_price->save();
-                }
-                $input_works = new EstateInput();
-                $input_works->key = 'مدة عرض السعر';
-                $input_works->value = $request->price_delay;
-                $input_works->estate_id = $estate_id;
-                $input_works->user_id = auth()->user()->id;
-                $input_works->save();
+                if ($estate->report_type == 'new') {
+                    $input_works = new EstateInput();
+                    $input_works->key = 'مده العمل';
+                    $input_works->value = $request->works_delay;
+                    $input_works->estate_id = $estate_id;
+                    $input_works->user_id = auth()->user()->id;
+                    $input_works->save();
 
-                $input_works = new EstateInput();
-                $input_works->key = 'اضافة اشتراطات وافتراضات خاصة';
-                $input_works->value = $request->special_order;
-                $input_works->estate_id = $estate_id;
-                $input_works->user_id = auth()->user()->id;
-                $input_works->save();
-                
-                 }
-               
+                    $price_value = $request->price / $request->qty;
+                    for ($i = 0; $i < $request->qty; $i++) {
+                        $input_price = new EstatePayment();
+                        $input_price->price = $price_value;
+                        $input_price->estate_id = $estate_id;
+                        $input_price->save();
+                    }
+                    $input_works = new EstateInput();
+                    $input_works->key = 'مدة عرض السعر';
+                    $input_works->value = $request->price_delay;
+                    $input_works->estate_id = $estate_id;
+                    $input_works->user_id = auth()->user()->id;
+                    $input_works->save();
+
+                    $input_works = new EstateInput();
+                    $input_works->key = 'اضافة اشتراطات وافتراضات خاصة';
+                    $input_works->value = $request->special_order;
+                    $input_works->estate_id = $estate_id;
+                    $input_works->user_id = auth()->user()->id;
+                    $input_works->save();
+                }
+
 
                 $input_works = new EstateInput();
                 $input_works->key = 'عملة التقييم';
@@ -235,7 +297,7 @@ class Notificationontroller extends Controller
                 $input_works->estate_id = $estate_id;
                 $input_works->user_id = auth()->user()->id;
                 $input_works->save();
-                
+
                 $input_works = new EstateInput();
                 $input_works->key = 'نوع التقرير';
                 $input_works->value = $request->report_kind;
@@ -243,26 +305,24 @@ class Notificationontroller extends Controller
                 $input_works->user_id = auth()->user()->id;
                 $input_works->save();
 
-                
 
-               
+
+
 
                 DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
-                 if($estate->report_type == 'new'){
+                if ($estate->report_type == 'new') {
                     $users = User::where('membership_level', 'manager')->pluck('id');
                     $this->send_notification($users, '' . $estate->id . '', '#4B0082', 'fa fa-user-secret', 'طلب مراجعة الى مدير المنشأة');
                     DB::commit();
 
-                return redirect()->route('home')->with('done', 'تم الارسال الى مدير المنشأة بنجاح');
-                 }else{
+                    return redirect()->route('home')->with('done', 'تم الارسال الى مدير المنشأة بنجاح');
+                } else {
                     $users = User::where('membership_level', 'entre')->pluck('id');
                     $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', '  تم الارسال لاكمال المدخلات');
                     DB::commit();
 
-                return redirect()->route('home')->with('done', 'تم  الارسال الى مرحة الادخال ');
-                 }
-               
-                  
+                    return redirect()->route('home')->with('done', 'تم  الارسال الى مرحة الادخال ');
+                }
             }
             if (auth()->user()->membership_level == 'manager') {
                 $estate = Estate::where('id', $estate_id)->first();
@@ -283,8 +343,8 @@ class Notificationontroller extends Controller
                     //         $payment->save();
                     //     }
                     // }
-//                $users = User::where('membership_level', 'client')->pluck('id');
-//                $this->send_notification($users, '' . $estate->id . '', '#2E8B57', 'fa fa-user', 'طلب مراجعة الى صاحب المنشأة');
+                    //                $users = User::where('membership_level', 'client')->pluck('id');
+                    //                $this->send_notification($users, '' . $estate->id . '', '#2E8B57', 'fa fa-user', 'طلب مراجعة الى صاحب المنشأة');
                     $users = User::where('membership_level', 'entre')->pluck('id');
                     $this->send_notification($users, '' . $estate->id . '', '#2E8B57', 'fa fa-user', 'اكمال عملية ادخال البيانات');
 
@@ -296,7 +356,7 @@ class Notificationontroller extends Controller
                     $input->save();
 
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
-                      DB::commit();
+                    DB::commit();
 
                     return redirect()->route('home')->with('done', 'تم الارسال الى مرحلة ادخال باقي المعلومات');
                 }
@@ -318,56 +378,56 @@ class Notificationontroller extends Controller
                     $input->save();
 
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
-                      DB::commit();
+                    DB::commit();
 
                     return redirect()->route('home')->with('done', 'تم الارجاع الى مدخل البيانات');
                 }
             }
-//        if (auth()->user()->membership_level == 'client') {
-//            $estate = Estate::where('id', $estate_id)->first();
-//            if ($request->accept == 1) {
-//                $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
-//                if ($inputs->count() > 0) {
-//                    foreach ($inputs as $inp) {
-//                        $inp->delete();
-//                    }
-//                }
-//                $users = User::where('membership_level', 'entre')->pluck('id');
-//                $this->send_notification($users, '' . $estate->id . '', '#2E8B57', 'fa fa-user', 'اكمال عملية ادخال البيانات');
-//
-//                $input = new EstateInput();
-//                $input->key = 'موافقة العميل';
-//                $input->value = 'موافقة';
-//                $input->estate_id = $estate_id;
-//                $input->user_id = auth()->user()->id;
-//                $input->save();
-//
-//                DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
-//
-//                return redirect()->route('home')->with('done', 'تم الموافقة والارسال الى المرحلة التالية');
-//            }
-//            if ($request->accept == 2) {
-//                $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
-//                if ($inputs->count() > 0) {
-//                    foreach ($inputs as $inp) {
-//                        $inp->delete();
-//                    }
-//                }
-//                $users = User::where('membership_level', 'manager')->pluck('id');
-//                $this->send_notification($users, '' . $estate->id . '', '#8B0000', 'fa fa-user', 'تم الرفض من العميل والارجاع الى مدير المنشأة');
-//
-//                $input = new EstateInput();
-//                $input->key = 'موافقة  العميل';
-//                $input->value = 'رفض';
-//                $input->estate_id = $estate_id;
-//                $input->user_id = auth()->user()->id;
-//                $input->save();
-//
-//                DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
-//
-//                return redirect()->route('home')->with('done', 'تم الارجاع الى مدير المنشأة');
-//            }
-//        }
+            //        if (auth()->user()->membership_level == 'client') {
+            //            $estate = Estate::where('id', $estate_id)->first();
+            //            if ($request->accept == 1) {
+            //                $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
+            //                if ($inputs->count() > 0) {
+            //                    foreach ($inputs as $inp) {
+            //                        $inp->delete();
+            //                    }
+            //                }
+            //                $users = User::where('membership_level', 'entre')->pluck('id');
+            //                $this->send_notification($users, '' . $estate->id . '', '#2E8B57', 'fa fa-user', 'اكمال عملية ادخال البيانات');
+            //
+            //                $input = new EstateInput();
+            //                $input->key = 'موافقة العميل';
+            //                $input->value = 'موافقة';
+            //                $input->estate_id = $estate_id;
+            //                $input->user_id = auth()->user()->id;
+            //                $input->save();
+            //
+            //                DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+            //
+            //                return redirect()->route('home')->with('done', 'تم الموافقة والارسال الى المرحلة التالية');
+            //            }
+            //            if ($request->accept == 2) {
+            //                $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
+            //                if ($inputs->count() > 0) {
+            //                    foreach ($inputs as $inp) {
+            //                        $inp->delete();
+            //                    }
+            //                }
+            //                $users = User::where('membership_level', 'manager')->pluck('id');
+            //                $this->send_notification($users, '' . $estate->id . '', '#8B0000', 'fa fa-user', 'تم الرفض من العميل والارجاع الى مدير المنشأة');
+            //
+            //                $input = new EstateInput();
+            //                $input->key = 'موافقة  العميل';
+            //                $input->value = 'رفض';
+            //                $input->estate_id = $estate_id;
+            //                $input->user_id = auth()->user()->id;
+            //                $input->save();
+            //
+            //                DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+            //
+            //                return redirect()->route('home')->with('done', 'تم الارجاع الى مدير المنشأة');
+            //            }
+            //        }
 
             if (auth()->user()->membership_level == 'entre') {
                 $estate = Estate::where('id', $estate_id)->first();
@@ -397,7 +457,6 @@ class Notificationontroller extends Controller
                         $input->user_id = auth()->user()->id;
                         $input->save();
                     }
-
                 }
 
                 foreach ($limit_list as $price) {
@@ -414,7 +473,7 @@ class Notificationontroller extends Controller
                 $users = User::where('membership_level', 'coordinator')->pluck('id');
                 DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                 $this->send_notification($users, '' . $estate->id . '', '#00FA9A', 'fa fa-user', 'اكمال عملية التنسيق لاكمال باقي المراحل');
-                  DB::commit();
+                DB::commit();
                 return redirect()->route('home')->with('done', 'تم الارسال الى المنسق لاكمال باقي المراحل');
             }
 
@@ -438,7 +497,6 @@ class Notificationontroller extends Controller
                         $input->user_id = auth()->user()->id;
                         $input->save();
                     }
-
                 }
                 if ($request->file('files')) {
                     $this->saveimages($request->file('files'), 'pictures/estates', $estate->id, Estate::class, 'file');
@@ -446,7 +504,7 @@ class Notificationontroller extends Controller
                 $users = User::where('id', $estate->rater_id)->pluck('id');
                 DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                 $this->send_notification($users, '' . $estate->id . '', '#FFFF2E', 'fa fa-star', 'اكمال عملية التنسيق لاكمال باقي المراحل');
-                  DB::commit();
+                DB::commit();
                 return redirect()->route('home')->with('done', 'تم الارسال الى المقيم لاكمال باقي المراحل');
             }
 
@@ -514,24 +572,23 @@ class Notificationontroller extends Controller
                     //            $users = User::where('id', $estate->user_id)->pluck('id');
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     $this->send_notification($users, '' . $estate->id . '', '#40E0D0', 'fa fa-user', 'الاطلاع على المعطيات والاءسال للعميل');
-                      DB::commit();
+                    DB::commit();
                     return redirect()->route('home')->with('done', 'تم الارسال الى المعتمد والمراجعة');
                 } elseif ($request->accept == 2) {
                     $users = User::where('membership_level', 'rater')->pluck('id');
                     //            $users = User::where('id', $estate->user_id)->pluck('id');
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     $this->send_notification($users, '' . $estate->id . '', '#40E0D0', 'fa fa-user', 'عملية رفض على ما تم تقييمة');
-                      DB::commit();
+                    DB::commit();
                     return redirect()->route('home')->with('done', 'تم الارسال الى المقيم مرة اخرى');
-                }elseif ($request->accept == 3) {
+                } elseif ($request->accept == 3) {
                     $users = User::where('membership_level', 'coordinator')->pluck('id');
                     //            $users = User::where('id', $estate->user_id)->pluck('id');
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     $this->send_notification($users, '' . $estate->id . '', '#40E0D0', 'fa fa-user', 'عملية رفض   وتم الارسال الى المنسق ');
-                      DB::commit();
+                    DB::commit();
                     return redirect()->route('home')->with('done', 'تم الارسال الى المنسق مرة اخرى');
                 }
-
             }
 
             if (auth()->user()->membership_level == 'coordinator') {
@@ -564,7 +621,7 @@ class Notificationontroller extends Controller
                 $estate->save();
                 DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                 $this->send_notification($users, '' . $estate->id . '', '#D18700', 'fa fa-eye', 'يرجى المراجعة لاكمال باقي المراحل');
-                  DB::commit();
+                DB::commit();
                 return redirect()->route('home')->with('done', 'تم الارسال الى المعاين لاكمال باقي المراحل');
             }
             if (auth()->user()->membership_level == 'approver') {
@@ -580,15 +637,14 @@ class Notificationontroller extends Controller
                     // $input->user_id = auth()->user()->id;
                     // $input->save();
 
-                    try{
+                    try {
                         DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                         $users = User::where('membership_level', 'qima_approver')->pluck('id');
-                    //            $users = User::where('id', $estate->user_id)->pluck('id');
-                    $this->send_notification($users, '' . $estate->id . '', '#000', 'fa fa-user', 'تم الارسال الى معتمد قيمة');
-                    }catch(\Exception $e){
-                        
+                        //            $users = User::where('id', $estate->user_id)->pluck('id');
+                        $this->send_notification($users, '' . $estate->id . '', '#000', 'fa fa-user', 'تم الارسال الى معتمد قيمة');
+                    } catch (\Exception $e) {
                     }
-                      DB::commit();
+                    DB::commit();
 
                     return redirect()->route('home')->with('done', 'تمت الموافقة والارسال الى مراجع قيمة ');
                 }
@@ -610,65 +666,65 @@ class Notificationontroller extends Controller
                     $input->save();
 
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
-                      DB::commit();
+                    DB::commit();
 
                     return redirect()->route('home')->with('done', 'تم الارجاع الى مدخل البيانات');
                 }
             }
-             if (auth()->user()->membership_level == 'qima_approver') {
+            if (auth()->user()->membership_level == 'qima_approver') {
                 $estate = Estate::where('id', $estate_id)->first();
-                
-                 $estate->qema = $request->qema_code;
-                    $estate->save();
-                    $input = new EstateInput();
-                    $input->key = 'رقم التسجيل في قيمة';
-                    $input->value = $request->qema_code ?: '1';
-                    $input->estate_id = $estate_id;
-                    $input->user_id = auth()->user()->id;
-                    $input->save();
 
-                    try{
-                        DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
-                    }catch(\Exception $e){
-                        
-                    }
-                      DB::commit();
+                $estate->qema = $request->qema_code;
+                $estate->save();
+                $input = new EstateInput();
+                $input->key = 'رقم التسجيل في قيمة';
+                $input->value = $request->qema_code ?: '1';
+                $input->estate_id = $estate_id;
+                $input->user_id = auth()->user()->id;
+                $input->save();
 
-                    return redirect()->route('home')->with('done', 'تمت الموافقة والارسال الى الارشيف ');
+                try {
+                    DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+                } catch (\Exception $e) {
+                }
+                DB::commit();
+
+                return redirect()->route('home')->with('done', 'تمت الموافقة والارسال الى الارشيف ');
             }
-            
         } catch (\Exception $e) {
-                DB::rollBack();
-                // return $request->infos;
-           return redirect()->back()->with('error', ' من فضلك قم بملئ جميع الحقول');
+            DB::rollBack();
+            // return $request->infos;
+            return redirect()->back()->with('error', ' من فضلك قم بملئ جميع الحقول');
         }
     }
-    
-     public function edit_archive($estate_id){
-        try{ 
+
+    public function edit_archive($estate_id)
+    {
+        try {
             $estate = Estate::where('id', $estate_id)->first();
-            $inputs = \DB::table('estate_inputs')->where('estate_id' , $estate_id)->get();
-               return view('frontend.estates.edit_archive', compact('estate','inputs'));
+            $inputs = \DB::table('estate_inputs')->where('estate_id', $estate_id)->get();
+            return view('frontend.estates.edit_archive', compact('estate', 'inputs'));
         } catch (\Exception $e) {
-           return redirect()->back()->with('error', ' يوجد مشكلة يرجى التواصل مع صاحب الخدمة');
+            return redirect()->back()->with('error', ' يوجد مشكلة يرجى التواصل مع صاحب الخدمة');
         }
     }
-    
-    public function edit_archive_post($estate_id, Request $request){
-        try{ 
+
+    public function edit_archive_post($estate_id, Request $request)
+    {
+        try {
             DB::beginTransaction();
             $estate = Estate::where('id', $estate_id)->first();
-            $inputs = EstateInput::where('estate_id' , $estate_id)->get();
-            foreach($inputs as $key => $input){
-                $input->value = $request->input("req.".$key."");
+            $inputs = EstateInput::where('estate_id', $estate_id)->get();
+            foreach ($inputs as $key => $input) {
+                $input->value = $request->input("req." . $key . "");
                 $input->save();
             }
-             DB::commit();
-              return redirect()->route('home')->with('done', 'تمت التعديل  بنجاح  ');
+            DB::commit();
+            return redirect()->route('home')->with('done', 'تمت التعديل  بنجاح  ');
         } catch (\Exception $e) {
-                DB::rollBack();
-                // return $request->infos;
-          return redirect()->back()->with('error', ' من فضلك قم بملئ جميع الحقول');
+            DB::rollBack();
+            // return $request->infos;
+            return redirect()->back()->with('error', ' من فضلك قم بملئ جميع الحقول');
         }
     }
 }

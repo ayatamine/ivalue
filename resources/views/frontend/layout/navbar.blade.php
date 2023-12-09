@@ -57,11 +57,7 @@
                 </ul>
             </li>
             @if(auth()->user()->membership_level !== 'client')
-            <li class="nav-item has-sub"><a href="#"><i class="fa fa-building-o"></i><span class="menu-title" data-i18n="Card"> الطلبات في المسودة</span></a>
-                <ul class="menu-content">
-                    <li class="{{ Request::is('drafts')? 'active': '' }}"><a href="{{ route('drafts') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic"> الكل</span></a>
-                    </li>
-                </ul>
+            <li class="{{ Request::is('drafts')? 'active': '' }} nav-item"><a href="{{route('drafts')}}"><i class="feather icon-home"></i><span class="menu-title" data-i18n="Dashboard">الطلبات في المسودة</span></a>
             </li>
             @endif
             @if(auth()->user()->membership_level == 'admin' || auth()->user()->membership_level == 'entre')

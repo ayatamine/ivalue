@@ -47,6 +47,23 @@
                             <li class="scrollable-container media-list ps">
                                 @if($nots->count() > 0)
                                 @foreach($nots as $key => $not)
+                                @if($not->title =='تم رفض الطلب من قبل مدير التفييم مع ملاحظات')
+                                <a class="d-flex justify-content-between" href="{{ route('estates.edit' , $not->estate_id) }}">
+                                    <div class="media d-flex align-items-start">
+                                        <div style="display: flex;align-items: center;height: 100%" class="media-left">
+                                            <i style="color: {{ $not->color }}" class="{!! $not->icon !!} font-medium-5"></i>
+                                        </div>
+                                        <div class="media-body">
+                                            <h6 style="color: {{ $not->color }}" class="media-heading">اشعار جديد لك </h6>
+                                            <small class="notification-text"> {{ $not->title ? $not->title : '' }}</small>
+                                        </div>
+                                        <small>
+                                            <time class="media-meta" datetime="2015-06-11T18:29:20+08:00">{{$not->created_at->diffForHumans()}}
+                                            </time>
+                                        </small>
+                                    </div>
+                                </a>
+                                @endif
                                 <a class="d-flex justify-content-between" href="{{ route('not_open' , $not->id) }}">
                                     <div class="media d-flex align-items-start">
                                         <div style="display: flex;align-items: center;height: 100%" class="media-left">

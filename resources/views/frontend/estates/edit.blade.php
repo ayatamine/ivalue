@@ -374,7 +374,7 @@
                                             <span id="files-names">
                                         @if($estate->file_urls)
                                         @foreach($estate->file_urls as $file_url)
-                                            
+
                                             {{-- <a href="{{ $file_url }}">
                                                 <i class="fa fa-file"></i>
                                             </a> --}}
@@ -383,7 +383,7 @@
                                                 {{-- <span class="name">location_mark.svg</span> --}}
                                                 @if(strpos( mime_content_type($file_url), "image/") === 0)
                                                 <img src="{{ $file_url }}">
-                                                @else 
+                                                @else
                                                 <a target="_blink" href="{{ $file_url }}" style="display: block;height: 70px;
                                                 width: 70px;
                                                 margin: auto;
@@ -392,7 +392,7 @@
                                                 </a>
                                                 @endif
                                             </span>
-                                            
+
                                         @endforeach
                                        @endif
                                     </span>
@@ -581,7 +581,7 @@
                         maxlength: 100,
                     },
                     name_english: {
-                        required: true,
+                        required: false,
                         minlength: 3,
                         maxlength: 100,
                     },

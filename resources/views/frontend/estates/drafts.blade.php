@@ -68,21 +68,30 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($estates as $user)
+                    @foreach($estates as $estate)
                         <tr >
                             <td>{{ $loop->index + 1 }}</td>
                             {{--<td class="product-img">--}}
-                                {{--<img src="{{ $user->image_url }}">--}}
+                                {{--<img src="{{ $estate->image_url }}">--}}
                             {{--</td>--}}
-                            <td class="product-name">{{ $user->name_arabic }}</td>
-                            <td class="product-name">{{ $user->id }}</td>
-                            <td>{{ $user->level_name }}</td>
-                            <td>{{ $user->draft_note }}</td>
-                            <td>{{ $user->qema ?: 'لم يتم التحديد' }}</td>
+                            <td class="product-name">{{ $estate->name_arabic }}</td>
+                            <td class="product-name">{{ $estate->id }}</td>
+                            <td>{{ $estate->level_name }}</td>
+                            <td>{{ $estate->draft_note }}</td>
+                            <td>{{ $estate->qema ?: 'لم يتم التحديد' }}</td>
                             <td class="product-action">
-                                <span class="text-danger"><a href="{{ route('pdf_pro' , $user->id) }}"><i class="feather icon-file text-danger"></i></a></span>
-                                <span class="text-primary"><a href="{{ route('edit_archive' , $user->id) }}"><i class="feather icon-edit text-primary"></i></a></span>
-                                <a title="" onclick="return false;" object_id="{{ $user->id }}"
+                                <span class="text-danger"><a href="{{ route('pdf_pro' , $estate->id) }}"><i class="feather icon-file text-danger"></i></a></span>
+                                @switch(auth()->user()->membership_level)
+                                @case('rater_manager')
+                                <span class="text-primary"><a href="{{ route('complete_entry' , $estate->id) }}"><i
+                                            class="feather icon-edit text-primary"></i></a></span>
+                                @break
+
+                                @default
+                                <span class="text-primary"><a href="{{ route('edit_archive' , $estate->id) }}"><i
+                                            class="feather icon-edit text-primary"></i></a></span>
+                                @endswitch
+                                <a title="" onclick="return false;" object_id="{{ $estate->id }}"
                                    delete_url="/estate/public/estates/" class="edit-btn-table remove-alert" href="#">
                                     <i class="feather icon-trash"></i></a>
                             </td>
