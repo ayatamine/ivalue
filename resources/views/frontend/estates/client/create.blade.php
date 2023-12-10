@@ -242,7 +242,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="member col-md-3 col-12 mb-3">
                                        <div class="row">
                                            <div class="col-md-12 col-12 mb-3">
@@ -492,7 +492,7 @@
                                            <!--        </div>-->
                                            <!--    </div>-->
                                            <!--</div>-->
-                                           
+
                                            <div class="col-md-3 col-12 mb-3">
                                                <label for="build_size">مساحة المبني</label>
                                                <input type="number" name="build_size"
@@ -540,7 +540,7 @@
                                                <span class="text-danger">{{ $message }}</span>
                                                @enderror
                                            </div>
-                                    
+
                                     <div class="col-md-6">
                                         <div class="form-row">
                                             <div class="col-sm-12 col-12">
@@ -560,8 +560,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                   
+
+
                                     <div class="col-md-6 col-12 mb-3">
                                         <div class="form-row">
                                             <div class="col-sm-12 col-12">
@@ -615,18 +615,18 @@
                                         <div class="form-row">
                                             <div class="col-sm-12 col-12">
                                                 <label for="report_type">
-                                                    المرحلة التالبة  
+                                                    المرحلة التالبة
                                                 </label>
                                                 <div class="form-group">
                                                     <select name="report_type" id="report_type"
                                                             class="select2 form-control">
                                                         <option selected hidden disabled value="">اختر نوع عملية الادخال
                                                         </option>
-                                                        <option value="new">ادخال جديد   
+                                                        <option value="new">ادخال جديد
                                                         </option>
-                                                        <option value="old"> اعتماد مسبق   
+                                                        <option value="old"> اعتماد مسبق
                                                         </option>
-                                                        
+
                                                     </select>
                                                 </div>
                                                 @error('kind_id')
@@ -763,7 +763,7 @@
                 const reader = new FileReader();
                 const img = document.createElement('img');
                 reader.onload = function(event) {
-                    
+
                     img.src = event.target.result;
                     // previewContainer.appendChild(img);
                 };
@@ -799,7 +799,7 @@
                 document.getElementById('attachment').files = dt.files;
             });
         });
-        
+
     </script>
 @endsection
 

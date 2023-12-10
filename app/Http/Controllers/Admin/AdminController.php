@@ -35,4 +35,13 @@ class AdminController extends Controller
         $notification->delete();
         return response()->json(['status' => 'success'], 201);
     }
+
+    public function roles(){
+        try {
+
+            return view('frontend.roles.index');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'حدث خطأ !!');
+        }
+    }
 }

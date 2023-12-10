@@ -91,6 +91,14 @@
                     </li>
                 </ul>
             </li>
+            <li class="nav-item has-sub {{ (Request::is('users') ? 'sidebar-group-active' : '' || Request::is('users/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-user-secret"></i><span class="menu-title" data-i18n="Card">العضويات</span></a>
+                <ul class="menu-content">
+                    <li class="{{ Request::is('roles')? 'active': '' }}"><a href="{{ route('roles.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع العضويات</span></a>
+                    </li>
+                    <li class="{{ Request::is('roles/create')? 'active': '' }}"><a href="{{ route('roles.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة عضوية جديدة</span></a>
+                    </li>
+                </ul>
+            </li>
             @endif
              @if(auth()->user()->membership_level == 'admin' || auth()->user()->membership_level == 'entre')
             <li class="nav-item has-sub {{ (Request::is('users') ? 'sidebar-group-active' : '' || Request::is('users/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-users"></i><span class="menu-title" data-i18n="Card"> العملاء</span></a>

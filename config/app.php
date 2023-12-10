@@ -176,6 +176,7 @@ return [
         OwenIt\Auditing\AuditingServiceProvider::class,
         PDFAnony\TCPDF\AnonyServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
 
     ])->toArray(),
 

@@ -587,9 +587,9 @@
                                     </div>
 
                                 <hr id="last_hr">
-                                <div class="d-flex justify-content-between align-items-center" style="    gap: 1%;" >
-                                    <span class="btn btn-danger w-50" id="cancel_order">الغاء وحفظ كمسودة</span>
-                                    <button class="btn btn-primary w-50" type="submit" id="submit_order">اضافة</button>
+                                <div class="flex-column d-flex flex-md-row  justify-content-between align-items-center" style="    gap: 1%;" >
+                                    <span class="btn btn-danger w-50  mb-1 mb-md-0" id="cancel_order">الغاء وحفظ كمسودة</span>
+                                    <button class="btn btn-primary w-50  mb-1 mb-md-0" type="submit" id="submit_order">اضافة</button>
                                 </div>
                             </form>
 

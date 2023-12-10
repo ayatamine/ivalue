@@ -178,6 +178,12 @@
                                 @csrf
                                 {{ method_field('PATCH') }}
                                 <div class="form-row">
+                                    <div class="col-md-12 col-12 mb-3">
+                                        <label for="name_arabic">الملاحظات </label>
+                                        <p>
+                                            {{$estate->draft_note}}
+                                        </p>
+                                    </div>
                                     {{--<div class="col-lg-12 col-md-12 col-image">--}}
                                     {{--<fieldset class="form-group">--}}
                                     {{--<label for="basicInputFile">الصورة الخاصة بالعقار</label>--}}
