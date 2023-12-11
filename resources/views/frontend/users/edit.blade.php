@@ -88,7 +88,7 @@
                                     <div class="col-md-4 col-12 mb-3">
                                         <label for="name_en">الاسم بالانجليزية </label>
                                         <input type="text" name="name_en" class="form-control" id="name_en"
-                                               placeholder="الاسم بالانجليزية" value="{{$user->name_en}}" required>
+                                               placeholder="الاسم بالانجليزية" value="{{$user->name_en}}" >
                                         @error('name_en')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -113,7 +113,7 @@
                                         <label for="phone_1">الهاتف الاول </label>
                                         <input type="tel" name="phone_1"
                                                class="form-control" id="phone_1" placeholder="رقم الهاتف الاول"
-                                               value="{{$user->phone_1}}" required>
+                                               value="{{$user->phone_1}}" >
                                         @error('phone_1')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -145,7 +145,7 @@
                                     </div>
                                 </div>
                                 <div class="form-row">
-                                    <div class="col-sm-12 col-12">
+                                    {{-- <div class="col-sm-12 col-12">
                                         <label for="membership_level">
                                             نوع العضوية
                                         </label>
@@ -164,6 +164,26 @@
                                         @error('membership_level')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
+                                    </div> --}}
+                                    <input type="hidden" value="not_client" name="membership_type">
+                                    <div class="py-2">
+                                        <h3
+                                            class="d-inline-block text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight dark:text-slate-200 py-4 block sm:inline-block flex">
+                                            الأدوار</h3>
+                                        <div class="row  ">
+                                            @forelse ($roles as $role)
+                                            <div class="col-sm-6 col-md-4 col-lg-3 mb-1">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" name="roles[]" value="{{ $role->name }}"
+                                                    {{ in_array($role->id, $user_roles) ? 'checked' : '' }}
+                                                    class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                                    {{ $role->name }}
+                                                </label>
+                                            </div>
+                                            @empty
+                                            ----
+                                            @endforelse
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="member">
@@ -365,7 +385,7 @@
                         maxlength: 100,
                     },
                     password: {
-                        required: true,
+                        required: false,
                         minlength: 3,
                         maxlength: 100,
                     },

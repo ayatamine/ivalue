@@ -83,19 +83,19 @@
             </li>
             @endif
             @if(auth()->user()->membership_level == 'admin')
-            <li class="nav-item has-sub {{ (Request::is('users') ? 'sidebar-group-active' : '' || Request::is('users/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-user-secret"></i><span class="menu-title" data-i18n="Card">عضويات الادارة</span></a>
+            <li class="nav-item has-sub {{ (Request::is('users') ? 'sidebar-group-active' : '' || Request::is('users/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-user-secret"></i><span class="menu-title" data-i18n="Card">إدراة الموظفين</span></a>
                 <ul class="menu-content">
-                    <li class="{{ Request::is('admins')? 'active': '' }}"><a href="{{ route('admins') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع العضويات</span></a>
+                    <li class="{{ Request::is('admins')? 'active': '' }}"><a href="{{ route('admins') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الموظفين</span></a>
                     </li>
-                    <li class="{{ Request::is('users/create')? 'active': '' }}"><a href="{{ route('users.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة عضو جديد</span></a>
+                    <li class="{{ Request::is('users/create')? 'active': '' }}"><a href="{{ route('users.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة موظف جديد</span></a>
                     </li>
                 </ul>
             </li>
-            <li class="nav-item has-sub {{ (Request::is('users') ? 'sidebar-group-active' : '' || Request::is('users/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-user-secret"></i><span class="menu-title" data-i18n="Card">العضويات</span></a>
+            <li class="nav-item has-sub {{ (Request::is('users') ? 'sidebar-group-active' : '' || Request::is('users/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-user-secret"></i><span class="menu-title" data-i18n="Card">الصلاحيات والأدوار</span></a>
                 <ul class="menu-content">
-                    <li class="{{ Request::is('roles')? 'active': '' }}"><a href="{{ route('roles.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع العضويات</span></a>
+                    <li class="{{ Request::is('roles')? 'active': '' }}"><a href="{{ route('roles.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic"> الأدوار</span></a>
                     </li>
-                    <li class="{{ Request::is('roles/create')? 'active': '' }}"><a href="{{ route('roles.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة عضوية جديدة</span></a>
+                    <li class="{{ Request::is('permissions')? 'active': '' }}"><a href="{{ route('permissions.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">الصلاحيات</span></a>
                     </li>
                 </ul>
             </li>

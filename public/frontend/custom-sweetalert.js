@@ -72,6 +72,64 @@ $(document).on('click', '.success-alert', function(e) {
 
 
 //remove-alert
+$(document).on('click', '.delete-row', function(e) {
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: true
+    })
+    swalWithBootstrapButtons.fire({
+        title: 'هل أنت متأكد؟',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'نعم',
+        cancelButtonText: 'لا',
+    }).then((result) => {
+        if (result.value) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            })
+            var id = $(this).attr('object_id');
+
+            var d_url = $(this).attr('delete_url');
+            var elem = $(this).parent('td').parent('tr');
+
+            $.ajax({
+                type: 'post',
+                url:  d_url ,
+                data: {
+                    _method: 'delete',
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                success: function(result) {
+                    elem.remove();
+
+                    swalWithBootstrapButtons.fire({
+                        title: 'تم الحذف  بنجاح',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                }
+            });
+        } else if (
+            // / Read more about handling dismissals below /
+            result.dismiss === Swal.DismissReason.cancel
+        ) {
+            swalWithBootstrapButtons.fire({
+                title: 'تم إلإلغاء',
+                showConfirmButton: false,
+                timer: 1000
+            });
+
+        }
+    })
+
+});
 $(document).on('click', '.remove-alert', function(e) {
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {

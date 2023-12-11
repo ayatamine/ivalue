@@ -40,6 +40,9 @@
             width: 100%;
             direction: ltr;
         }
+        .hh{
+            display: none;
+        }
     </style>
     <!-- END: Custom CSS-->
 @endsection
@@ -47,52 +50,33 @@
     <section class="tooltip-validations" id="tooltip-validation">
         <div class="row">
             <div class="col-12">
+                @include('common.done')
                 @include('common.errors')
             </div>
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title"> تعديل العضوية  {{$role->name}} </h4>
+                        <h4 class="card-title">اضافة عضوية جديدة</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form method="post" action="{{ route('roles.update' , $role->id) }}" id="myform" >
+                            <form method="post" action="{{ route('permissions.store') }}" id="myform" enctype="multipart/form-data">
                                 @csrf
-                                {{ method_field('PATCH') }}
                                 <div class="form-row">
                                     <div class="col-12 mb-3">
                                         <label for="name">الاسم </label>
                                         <input type="text" name="name" class="form-control" id="name"
-                                               placeholder="الاسم" value="{{$role->name}}" required>
+                                               placeholder="الاسم" value="{{old('name')}}" required>
                                         @error('name')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="py-2">
-                                    <h3
-                                        class="inline-block text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight dark:text-slate-200 py-4 block sm:inline-block flex">
-                                        الصلاحيات</h3>
-                                    <div class="grid grid-cols-4 gap-4">
-                                        @forelse ($permissions as $permission)
-                                        <div class="col-span-4 sm:col-span-2 md:col-span-1">
-                                            <label class="form-check-label">
-                                                <input type="checkbox" name="permissions[]" value="{{ $permission->name }}"
-                                                {{ in_array($permission->id, $roleHasPermissions) ? 'checked' : '' }}
-                                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                                {{ $permission->name }}
-                                            </label>
-                                        </div>
-                                        @empty
-                                        ----
-                                        @endforelse
-                                    </div>
-                                </div>
                                 <hr>
                                 <div class="text-center mt-1 d-flex justify-center " style="gap: 1%">
-                                    <button class="btn btn-primary w-50" type="submit">حفظ</button>
-                                    <a href="{{route('roles.index')}}" class="btn btn-danger w-50" type="submit">رجوع</a>
-                                </div>
+                                    <button class="btn btn-primary w-50" type="submit">إضافة</button>
+                                    <a href="{{route('permissions.index')}}" class="btn btn-danger w-50" type="submit">رجوع</a>
+                                </div>>
                             </form>
                         </div>
                     </div>
@@ -165,16 +149,18 @@
                 }
             });
         });
-        if ($('#membership_level').val() != 'client') {
-            $('.member').show();
-        } else {
-            $('.member').hide();
-        }
+
         $('#membership_level').change(function () {
             if ($('#membership_level').val() != 'client') {
                 $('.member').show();
+                $('.client').hide();
+                $('.admin').show();
+                $('.hh').show();
             } else {
                 $('.member').hide();
+                $('.admin').hide();
+                $('.client').show();
+                $('.hh').show();
             }
         });
     </script>

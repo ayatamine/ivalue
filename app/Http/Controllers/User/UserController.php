@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\UserRequest;
+use App\Models\User;
 use App\Models\Address;
 use App\Traits\UploadTrait;
-use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
+use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -29,7 +30,8 @@ class UserController extends Controller
     public function admins()
     {
         try {
-            $users = User::where('membership_level','!=','client')->orderBy('id', 'desc')->get();
+            $users = User::where('membership_level','!=','client')->orWhereNull('membership_level')->orderBy('id', 'desc')->get();
+            setPermissionsTeamId(1);
             return view('frontend.users.index',compact('users'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
@@ -78,7 +80,8 @@ class UserController extends Controller
     public function create()
     {
         try {
-            return view('frontend.users.create');
+            $roles = Role::all();
+            return view('frontend.users.create',compact('roles'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -115,12 +118,16 @@ class UserController extends Controller
                 $randomString .= $characters[rand(0, $charactersLength - 1)];
             }
             $user->membership_no = $randomString;
-            $user->membership_level = $request->membership_level;
+            $user->membership_level = $request->membership_level ?? null;
 
-            if($user->membership_level == 'client'){
+            setPermissionsTeamId(1);
+            $roles = $request->roles ?? [];
+            $user->assignRole($roles);
+
+            if($user->membership_type == 'client'){
                 $user->estate = 1;
             }
-            if($user->membership_level != 'client'){
+            if($user->membership_type != 'client'){
                 $user->membership_expire = $request->membership_expire;
                 $user->contract_expire = $request->contract_expire;
                 $user->contract_delay = $request->contract_delay;
@@ -139,12 +146,12 @@ class UserController extends Controller
             $user->active = $request->active ? 1 : 0;
             $request->request->add(['password' => Hash::make($request->password)]);
             $user->save();
-            if($user->membership_level == 'client'){
+            if($user->membership_type == 'client'){
                 return redirect()->route('users.index')->with('done', 'تم الاضافة بنجاح ....');
             }else{
                 return redirect()->route('admins')->with('done', 'تم الاضافة بنجاح ....');
             }
-            
+
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -175,8 +182,11 @@ class UserController extends Controller
     public function edit($slug)
     {
         $user = User::where('slug',$slug)->first();
+        setPermissionsTeamId(1);
+        $roles = Role::all();
+        $user_roles = array_column(json_decode($user->roles, true), 'id');
         if (isset($user)) {
-            return view('frontend.users.edit', compact('user'));
+            return view('frontend.users.edit', compact('user','roles','user_roles'));
         } else {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -213,12 +223,15 @@ class UserController extends Controller
                 $randomString .= $characters[rand(0, $charactersLength - 1)];
             }
             $user->membership_no = $randomString;
-            $user->membership_level = $request->membership_level;
+            $user->membership_level = $request->membership_level ?? null;
+            setPermissionsTeamId(1);
+            $roles = $request->roles ?? [];
+            $user->syncRoles($roles);
 
-            if($user->membership_level == 'client'){
+            if($user->membership_type == 'client'){
                 $user->estate = 1;
             }
-            if($user->membership_level != 'client'){
+            if($user->membership_type != 'client'){
                 $user->membership_expire = $request->membership_expire;
                 $user->contract_expire = $request->contract_expire;
                 $user->contract_delay = $request->contract_delay;
@@ -237,13 +250,14 @@ class UserController extends Controller
             $user->active = $request->active ? 1 : 0;
             $request->request->add(['password' => Hash::make($request->password)]);
             $user->save();
-             if($user->membership_level == 'client'){
+             if($user->membership_type == 'client'){
                 return redirect()->route('users.index')->with('done', 'تم التعديل بنجاح');
             }else{
                 return redirect()->route('admins')->with('done', 'تم التعديل بنجاح ....');
             }
-          
+
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
     }

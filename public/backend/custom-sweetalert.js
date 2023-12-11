@@ -346,3 +346,63 @@ $(document).on('click', '.delete-all-folderfile', function(e) {
     })
 
 });
+$(document).on('click', '.delete-row', function(e) {
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: true
+    })
+    swalWithBootstrapButtons.fire({
+        icon: 'question',
+        title: 'هل أنت متأكد',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'نعم، حدف!',
+        cancelButtonText: 'لا، إلغاء',
+    }).then((result) => {
+        if (result.value) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            })
+            var id = $(this).attr('object_id');
+
+            var d_url = $(this).attr('delete_url');
+            var elem = $(this).parent('td').parent('tr');
+
+            $.ajax({
+                type: 'post',
+                url: d_url,
+                data: {
+                    _method: 'delete',
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                success: function(result) {
+                    elem.remove();
+                    swalWithBootstrapButtons.fire({
+                        icon: 'success',
+                        title: 'Deleted Successfully....',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                }
+            });
+        } else if (
+            // / Read more about handling dismissals below /
+            result.dismiss === Swal.DismissReason.cancel
+        ) {
+            swalWithBootstrapButtons.fire({
+                icon: 'error',
+                title: 'Cancelled',
+                showConfirmButton: false,
+                timer: 1000
+            });
+
+        }
+    })
+
+});

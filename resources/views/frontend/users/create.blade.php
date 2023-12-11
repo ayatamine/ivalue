@@ -62,7 +62,8 @@
                         <div class="card-body">
                             <form method="post" action="{{ route('users.store') }}" id="myform" enctype="multipart/form-data">
                                 @csrf
-                                <div class="form-row">
+                                <input type="hidden" value="not_client" name="membership_type">
+                                {{-- <div class="form-row">
                                     <div class="col-sm-12 col-12">
                                         <label for="membership_level">
                                             نوع العضوية
@@ -87,6 +88,24 @@
                                         @error('membership_level')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
+                                    </div>
+                                </div> --}}
+                                <div class="py-2">
+                                    <h3
+                                        class="d-inline-block text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight dark:text-slate-200 py-4 block sm:inline-block flex">
+                                        الأدوار</h3>
+                                    <div class="row  ">
+                                        @forelse ($roles as $role)
+                                        <div class="col-sm-6 col-md-4 col-lg-3 mb-1">
+                                            <label class="form-check-label">
+                                                <input type="checkbox" name="roles[]" value="{{ $role->name }}"
+                                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                                {{ $role->name }}
+                                            </label>
+                                        </div>
+                                        @empty
+                                        ----
+                                        @endforelse
                                     </div>
                                 </div>
                                 <div class="form-row">

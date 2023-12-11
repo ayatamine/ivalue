@@ -134,4 +134,6 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->membership_level =='client';
     }
+    protected function getDefaultGuardName(): string { return 'web'; }
+
 }

@@ -61,6 +61,7 @@
                     </tr>
                     </thead>
                     <tbody>
+
                     @foreach($users as $user)
                         <tr >
                             <td>{{ $loop->index + 1 }}</td>
@@ -68,7 +69,9 @@
                                 <img src="{{ $user->image_url }}">
                             </td>
                             <td class="product-name">{{ $user->name }}</td>
-                            <td>{{ $user->member }}</td>
+                            <td>
+                                {{implode(',',$user->getRoleNames()->toArray())}}
+                            </td>
                             <td>{{ $user->getActive() }}</td>
                             <td>{{ $user->email }}</td>
                             @if(Request::is('users'))

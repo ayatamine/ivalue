@@ -47,7 +47,7 @@
                         خيارات
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="{{ route('roles.create') }}"><i class="fa fa-plus"></i>اضافة جديد</a>
+                        <a class="dropdown-item" href="{{ route('permissions.create') }}"><i class="fa fa-plus"></i>اضافة جديد</a>
                     </div>
                 </div>
             </div>
@@ -63,15 +63,15 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($roles as $role)
+                    @foreach($permissions as $permission)
                         <tr >
                             <td>{{ $loop->index + 1 }}</td>
-                            <td class="product-name">{{ $role->name }}</td>
+                            <td class="product-name">{{ $permission->name }}</td>
 
                             <td class="product-action">
-                                <span class="action-edit"><a href="{{ route('roles.edit' , $role->id) }}"><i class="feather icon-edit"></i></a></span>
-                                <a title="" onclick="return false;" object_id="{{ $role->id }}"
-                                   delete_url="{{ route('roles.destroy' , $role->id) }}" class="edit-btn-table delete-row" href="#">
+                                <span class="action-edit"><a href="{{ route('permissions.edit' , $permission->id) }}"><i class="feather icon-edit"></i></a></span>
+                                <a title="" onclick="return false;" object_id="{{ $permission->id }}"
+                                   delete_url="{{ route('permissions.destroy' , $permission->id) }}" class="edit-btn-table delete-row" href="#">
                                     <i class="feather icon-trash"></i></a>
                             </td>
                         </tr>

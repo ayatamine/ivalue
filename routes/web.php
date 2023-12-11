@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -89,6 +90,7 @@ Route::group([ 'middleware' => ['auth',IsNotClientMiddleware::class]], function 
     Route::get('admins', [UserController::class,'admins'])->name('admins');
     Route::resource('users', UserController::class)->except(['show']);
     Route::resource('roles', RoleController::class)->except(['show']);
+    Route::resource('permissions', PermissionController::class)->except(['show']);
 
 //    level report
     Route::get('notification-level/{not_id}', [Notificationontroller::class,'not_open'])->name('not_open');
