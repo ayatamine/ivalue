@@ -19,32 +19,36 @@
     <div class="shadow-bottom"></div>
     <div class="main-menu-content">
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-            @if(auth()->user()->membership_level == 'client')
+            {{-- @if(auth()->user()->membership_level == 'client')
             <li class="{{ Request::is('/client/dashboard')? 'active': '' }} nav-item"><a href="{{route('client_home')}}"><i class="feather icon-home"></i><span class="menu-title" data-i18n="Dashboard">الصفحة الرئيسية</span></a>
             </li>
             @else
             <li class="{{ Request::is('/')? 'active': '' }} nav-item"><a href="{{route('home')}}"><i class="feather icon-home"></i><span class="menu-title" data-i18n="Dashboard">الصفحة الرئيسية</span></a>
             </li>
-            @endif
+            @endif --}}
 
+            @if(auth()->user()->membership_level == 'client')
             <li class="nav-item has-sub"><a href="#"><i class="fa fa-building-o"></i><span class="menu-title" data-i18n="Card">الطلبات الأولية</span></a>
                 <ul class="menu-content">
-                    @if(auth()->user()->membership_level == 'client')
+
                     <li class="{{ Request::is('client/estates')? 'active': '' }}"><a href="{{ route('client.estates.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الطلبات</span></a>
                     </li>
                     <li class="{{ Request::is('client/estates/create')? 'active': '' }}"><a href="{{ route('client.estates.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">اضافة طلب جديد</span></a>
                     </li>
-                    @else
-                    <li class="{{ Request::is('estates')? 'active': '' }}"><a href="{{ route('estates.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الطلبات</span></a>
-                    </li>
-                    @endif
-                    @if(auth()->user()->membership_level == 'admin' || auth()->user()->membership_level == 'entre')
-                    <li class="{{ Request::is('estates/create')? 'active': '' }}"><a href="{{ route('estates.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">اضافة طلب جديد</span></a>
-                    </li>
-                    @endif
                 </ul>
             </li>
+            @endif
 
+            @if(auth()->user()->hasRole('enter'))
+            <li class="nav-item has-sub"><a href="#"><i class="fa fa-building-o"></i><span class="menu-title" data-i18n="Card">الطلبات الأولية</span></a>
+                <ul class="menu-content">
+                    <li class="{{ Request::is('estates')? 'active': '' }}"><a href="{{ route('estates.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الطلبات</span></a>
+                    </li>
+                    <li class="{{ Request::is('estates/create')? 'active': '' }}"><a href="{{ route('estates.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">اضافة طلب جديد</span></a>
+                    </li>
+                </ul>
+            </li>
+            @endif
             <li class="nav-item has-sub"><a href="#"><i class="fa fa-building-o"></i><span class="menu-title" data-i18n="Card"> الطلبات المؤرشفة</span></a>
                 <ul class="menu-content">
                     @if(auth()->user()->membership_level == 'client')
@@ -60,7 +64,7 @@
             <li class="{{ Request::is('drafts')? 'active': '' }} nav-item"><a href="{{route('drafts')}}"><i class="feather icon-home"></i><span class="menu-title" data-i18n="Dashboard">الطلبات في المسودة</span></a>
             </li>
             @endif
-            @if(auth()->user()->membership_level == 'admin' || auth()->user()->membership_level == 'entre')
+            @if(auth()->user()->hasAnyRole('admin','enter') || auth()->user()->hasAnyPermission(['manage cities','manage countries']))
             <li class="nav-item has-sub {{ (Request::is('countries') ? 'sidebar-group-active' : '' || Request::is('countries/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-globe"></i><span class="menu-title" data-i18n="Card">الموقع الجغرافي</span></a>
                 <ul class="menu-content">
                     <li class="nav-item has-sub {{ (Request::is('countries') ? 'sidebar-group-active' : '' || Request::is('countries/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-circle"></i><span class="menu-title" data-i18n="Card">الدول</span></a>
@@ -82,7 +86,7 @@
                 </ul>
             </li>
             @endif
-            @if(auth()->user()->membership_level == 'admin')
+            @if(auth()->user()->hasRole('admin'))
             <li class="nav-item has-sub {{ (Request::is('users') ? 'sidebar-group-active' : '' || Request::is('users/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-user-secret"></i><span class="menu-title" data-i18n="Card">إدراة الموظفين</span></a>
                 <ul class="menu-content">
                     <li class="{{ Request::is('admins')? 'active': '' }}"><a href="{{ route('admins') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الموظفين</span></a>
@@ -100,7 +104,7 @@
                 </ul>
             </li>
             @endif
-             @if(auth()->user()->membership_level == 'admin' || auth()->user()->membership_level == 'entre')
+               @if(auth()->user()->hasAnyRole('admin','enter') || auth()->user()->hasPermissionTo('manage users'))
             <li class="nav-item has-sub {{ (Request::is('users') ? 'sidebar-group-active' : '' || Request::is('users/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-users"></i><span class="menu-title" data-i18n="Card"> العملاء</span></a>
                 <ul class="menu-content">
                     <li class="{{ Request::is('users')? 'active': '' }}"><a href="{{ route('users.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع العملاء</span></a>
@@ -110,7 +114,7 @@
                 </ul>
             </li>
             @endif
-            @if(auth()->user()->membership_level == 'admin' )
+            @if(auth()->user()->hasRole('admin')  || auth()->user()->hasPermissionTo('view kinds') || auth()->user()->hasPermissionTo('view categories'))
                 <li class="nav-item has-sub {{ ((Request::is('kinds') ? 'sidebar-group-active' : '' || Request::is('kinds/*')) ? 'sidebar-group-active' : '' ||  Request::is('categories')) ? 'sidebar-group-active' : ('' || Request::is('categories/*') ? 'sidebar-group-active' : '')}}"><a href="#"><i class="fa fa-bars"></i><span class="menu-title" data-i18n="Card">خصائص العقارات</span></a>
                     <ul class="menu-content">
                         <li class="nav-item has-sub {{ (Request::is('categories') ? 'sidebar-group-active' : '' || Request::is('categories/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-circle"></i><span class="menu-title" data-i18n="Card">التصنيفات</span></a>
@@ -133,7 +137,7 @@
                 </li>
             @endif
 
-            {{--@if(auth()->user()->membership_level == 'admin' || auth()->user()->membership_level == 'entre')--}}
+            {{--  @if(auth()->user()->hasAnyRole('admin','enter'))--}}
                 {{--<li class="nav-item has-sub {{ Request::is('techniques') ? 'sidebar-group-active' : '' || Request::is('techniques/*') ? 'sidebar-group-active' : '' ||  Request::is('technique-types') ? 'sidebar-group-active' : '' || Request::is('technique-types/*') ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-ravelry"></i><span class="menu-title" data-i18n="Card">اساليب التقييم</span></a>--}}
                     {{--<ul class="menu-content">--}}
                         {{--<li class="nav-item has-sub {{ Request::is('categories') ? 'sidebar-group-active' : '' || Request::is('categories/*') ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-circle"></i><span class="menu-title" data-i18n="Card">اساليب التقييم</span></a>--}}
@@ -156,7 +160,7 @@
                 {{--</li>--}}
             {{--@endif--}}
 
-            @if(auth()->user()->membership_level == 'admin' || auth()->user()->membership_level == 'rater')
+             @if(auth()->user()->hasAnyRole('admin','enter'))
                 <li class="nav-item has-sub"><a href="#"><i class="fa fa-ravelry"></i><span class="menu-title" data-i18n="Card">اساليب التقييم</span></a>
                     <ul class="menu-content">
                         <li class="nav-item has-sub"><a href="#"><span class="menu-title" data-i18n="Card">اسلوب السوق</span></a>
@@ -205,7 +209,7 @@
                 </li>
             @endif
 
-            @if(auth()->user()->membership_level == 'admin' || auth()->user()->membership_level == 'entre')
+              @if(auth()->user()->hasAnyRole('admin','enter') || auth()->user()->hasPermissionTo('export reports'))
                 <li class=""><a href="{{ route('report_page') }}"><i class="feather icon-file"></i><span class="menu-item" data-i18n="Basic">استخراج تقارير</span></a>
                 </li>
             @endif

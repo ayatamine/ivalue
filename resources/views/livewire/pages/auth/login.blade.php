@@ -24,8 +24,10 @@ new #[Layout('layouts.guest')] class extends Component
 
         $this->form->authenticate();
 
-        Session::regenerate();  
- 
+        Session::regenerate();
+        //set session team id for spatie permissions
+        Session::put('team_id',1);
+
         if (auth()->user()->membership_level == 'client') {
             $this->redirect( 'client/dashboard', navigate: true);
         }else {
@@ -34,7 +36,7 @@ new #[Layout('layouts.guest')] class extends Component
             navigate: true
             );
         }
-        
+
     }
     protected function redirectTo()
     {
@@ -91,7 +93,7 @@ new #[Layout('layouts.guest')] class extends Component
                 </a>
             @endif
 
-          
+
         </div>
     </form>
 </div>

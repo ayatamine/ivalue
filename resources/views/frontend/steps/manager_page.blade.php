@@ -88,8 +88,8 @@
                                     @enderror
                                 </div>
                             </div>
-                            
-                            @if(auth()->user()->membership_level == 'manager')
+
+                            {{-- @if(auth()->user()->hasRole('manager'))
                             <div class="form-row">
                                 <div class="col-sm-12 col-12">
                                     <label for="accept">
@@ -107,7 +107,8 @@
                                     @enderror
                                 </div>
                             </div>
-                            @else
+                            @else --}}
+                            @if(!auth()->user()->hasRole('manager'))
                             <a href="{{ route('pdf_pro' , $estate->id) }}">تصفح التقرير</a>
                             <br>
                             <div class="form-row">
@@ -127,7 +128,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            
+
                             <!--<div class="form-row rel_part">-->
                             <!--    <div class="col-sm-12 col-12">-->
                             <!--        <label for="accept">-->
@@ -135,22 +136,31 @@
                             <!--        </label>-->
                             <!--        <div class="form-group">-->
                             <!--             <div class="col-sm-12 col-12">-->
-                                
+
                             <!--       <div class="form-group">-->
                             <!--            <input placeholder="رقم التسجيل في قيمة  " name="qema_code" id="qema_code"-->
                             <!--                    class="form-control" type="number" required>-->
-                                            
+
                             <!--        </div>-->
-                                   
-                                   
+
+
                             <!--    </div>-->
                             <!--        </div>-->
-                                   
+
                             <!--    </div>-->
                             <!--</div>-->
                             @endif
-                            <hr>
-                            <button class="btn btn-primary" type="submit">حفظ</button>
+                            <hr id="last_hr">
+                            <div class="flex-column d-flex flex-md-row justify-content-between align-items-center " style="    gap: 1%;" >
+                                @if(auth()->user()->hasRole('manager'))
+                                <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="submit_order">موافقة وإرسال إلى العميل </button>
+                                <span class="btn btn-warning w-50 mb-1 mb-md-0" id="return_order">رفض وإرجاع لمدير التقييم</span>
+                                @else
+                                <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="submit_order">اعتماد التقرير و وارسالة الى اعتماد قيمة   </button>
+                                <span class="btn btn-warning w-50 mb-1 mb-md-0" id="return_order">رفض والرجوع الى مدير التقييم</span>
+                                @endif
+                                <span class="btn btn-danger w-50 mb-1 mb-md-0" id="cancel_order">الغاء وحفظ كمسودة</span>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -163,6 +173,51 @@
 @section('frontend-footer')
     <!-- BEGIN: Vendor JS-->
     <script src="{{ asset('frontend') }}/app-assets/vendors/js/vendors.min.js"></script>
+    <script>
+        $(document).ready(function () {
+        $('#cancel_order').click(function (e) {
+                e.preventDefault();
+                $('#order_return').remove();
+                $(this).text('انقر للتأكيد ...')
+                $('#myform').append('<input type="text" class="d-none" name="cancel" id="draft_cancel" value="cancel" >')
+                if($('#draft_note').length){
+                    $('#myform').submit();
+                }else{
+                    $(`<div class="col-md-12 col-12 mb-3">
+                                        <label for="draft_note"> ملاحظة على المسودة </label>
+                                        <textarea rows="5" type="text" name="draft_note"
+                                                  class="form-control" id="draft_note" placeholder="اكتب ملاحظة على المسودة "
+                                                  value=""></textarea>
+                                    </div>`).insertBefore('#last_hr')
+                }
+
+        });
+        $('#return_order').click(function (e) {
+                e.preventDefault();
+                $('#draft_cancel').remove();
+                $(this).text('انقر للتأكيد ...')
+                $('#myform').append('<input type="text" class="d-none" name="return" id="order_return" value="return" >')
+                if($('#draft_note').length){
+                    $('#myform').submit();
+                }else{
+                    $(`<div class="col-md-12 col-12 mb-3">
+                                        <label for="draft_note"> ملاحظة على الطلب </label>
+                                        <textarea rows="5" type="text" name="draft_note"
+                                                  class="form-control" id="draft_note" placeholder="اكتب ملاحظة على الطلب "
+                                                  value=""></textarea>
+                                    </div>`).insertBefore('#last_hr')
+                }
+
+        });
+        $('#submit_order').click(function (e) {
+               e.preventDefault();
+               $('#draft_cancel').remove();
+               $('#order_return').remove();
+               $('#draft_note').remove();
+               $('#myform').submit();
+        });
+      })
+    </script>
     <!-- BEGIN Vendor JS-->
     <!-- BEGIN: Page Vendor JS-->
     <script src="{{ asset('frontend') }}/app-assets/vendors/js/extensions/dropzone.min.js"></script>
@@ -173,6 +228,7 @@
     <script src="{{ asset('frontend') }}/app-assets/vendors/js/tables/datatable/dataTables.select.min.js"></script>
     <script src="{{ asset('frontend') }}/app-assets/vendors/js/tables/datatable/datatables.checkboxes.min.js"></script>
     <!-- END: Page Vendor JS-->
+
     <!-- BEGIN: Theme JS-->
     <script src="{{ asset('frontend') }}/app-assets/js/core/app-menu.js"></script>
     <script src="{{ asset('frontend') }}/app-assets/js/core/app.js"></script>
@@ -195,14 +251,14 @@
             map: map,
             draggable: false
         });
-        
-        
+
+
         $('#accept').change(function(){
   if($('.rel_status').val() == 1) {
-    $('.rel_part').show(); 
+    $('.rel_part').show();
   } else {
-    $('.rel_part').hide(); 
-  } 
+    $('.rel_part').hide();
+  }
 });
     </script>
 @endsection
