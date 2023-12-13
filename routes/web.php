@@ -93,10 +93,11 @@ Route::group([ 'middleware' => ['auth',IsNotClientMiddleware::class]], function 
     Route::resource('permissions', PermissionController::class)->except(['show']);
 
 //    level report
-    Route::get('notification-level/{not_id}', [Notificationontroller::class,'not_open'])->name('not_open');
+    Route::get('notification-level/{not_id}', [Notificationontroller::class,'not_open'])->name('not_open')->withoutMiddleware(['is_not_client']);
     Route::patch('level-refuse/{estate_id}/{type}', [Notificationontroller::class,'level_refuse'])->name('level_refuse');
     Route::patch('level_inputs/{estate_id}', [Notificationontroller::class,'level_inputs'])->name('level_inputs');
     Route::get('complete_entry/{estate_id}',[Notificationontroller::class,'completeEntry'])->name('complete_entry');
+    Route::get('estate_order_reopen/{estate_id}',[Notificationontroller::class,'reopenEstateOrder'])->name('reopen_estate_order');
 
 //    settings
     Route::get('settings', [SettingController::class,'index'])->name('settings');

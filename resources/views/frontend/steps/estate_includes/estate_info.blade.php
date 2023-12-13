@@ -69,15 +69,15 @@
 
                 </div>
                 @endif
-                <div class="col-md-6 row">
+                <div class="col-md-6 row" style="padding:0.3rem">
                     <h5 class="card-title col-md-6">العمر:</h5>
                     <p class="card-text col-md-6">{{$estate->age ? $estate->age . ' سنة ' : ''}}</p>
                 </div>
-                <div class="col-md-6 row">
+                <div class="col-md-6 row" style="padding:0.3rem">
                     <h5 class="card-title col-md-6">وحدة القياس:</h5>
                     <p class="card-text col-md-6">{{ $estate->size_kind == 1 ? 'المتر المربع' : 'المتر المكعب'}}</p>
                 </div>
-                <div class="col-md-6 row">
+                <div class="col-md-6 row" style="padding:0.3rem">
                     <h5 class="card-title col-md-6">مدر للدخل:</h5>
                     <p class="card-text col-md-6">{{ $estate->diuretic ? 'نعم' : 'لا'}}</p>
                 </div>
@@ -85,7 +85,16 @@
         </div>
     </div>
 </div>
-
+@if($estate->drafted_by)
+<div class="card mt-1">
+    <div class="card-body">
+        <div class=" row" style="padding:0.3rem">
+            <h5 class="card-title col-md-6 text-danger">ملاحظة (سبب الرفض):</h5>
+            <p class="card-text col-md-6">{{$estate->draft_note}}</p>
+        </div>
+    </div>
+</div>
+@endif
 {{-- <div class="table-responsive">
 
 

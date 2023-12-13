@@ -38,6 +38,9 @@ new #[Layout('layouts.guest')] class extends Component
         event(new Registered($user = User::create($validated)));
 
         Auth::login($user);
+        //set session team id for spatie permissions
+        Session::put('team_id',1);
+
         if (auth()->user()->membership_level == 'client') {
             $this->redirect( 'client/dashboard', navigate: true);
         }else {
