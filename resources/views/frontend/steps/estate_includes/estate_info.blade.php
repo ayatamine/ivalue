@@ -88,9 +88,32 @@
 @if($estate->drafted_by)
 <div class="card mt-1">
     <div class="card-body">
-        <div class=" row" style="padding:0.3rem">
-            <h5 class="card-title col-md-6 text-danger">ملاحظة (سبب الرفض):</h5>
-            <p class="card-text col-md-6">{{$estate->draft_note}}</p>
+        <div class=" " style="padding:0.3rem">
+            <h5 class="card-title  text-danger">ملاحظة (سبب الرفض):</h5>
+            <p class="card-text ">{{$estate->draft_note}}</p>
+        </div>
+    </div>
+</div>
+@endif
+{{-- notes from the previous step --}}
+@php
+    $note = null;
+@endphp
+@if(auth()->user()->membership_level == 'manager' || auth()->user()->hasRole('manager'))
+@php
+$note = \App\Models\OrderProcessingNote::whereEstateId($estate->id)->where('step_number',6)->first()
+@endphp
+@elseif(auth()->user()->membership_level == 'rater_manager' || auth()->user()->hasRole('rater_manager'))
+@php
+$note = \App\Models\OrderProcessingNote::whereEstateId($estate->id)->whereIn('step_number',[4,5,7])->first()
+@endphp
+@endif
+@if($note)
+<div class="card mt-1">
+    <div class="card-body">
+        <div class=" " style="padding:0.3rem">
+            <h5 class="card-title  text-danger">ملاحظة :</h5>
+            <p class="card-text">{{$note->note}}</p>
         </div>
     </div>
 </div>
