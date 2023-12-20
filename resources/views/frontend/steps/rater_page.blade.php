@@ -55,15 +55,33 @@
         }
 
         #files-area {
-            width: 30%;
+            /* width: 30%; */
             margin: 0 auto;
+        }
+        #files-names{
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
         }
         .file-block {
             border-radius: 10px;
             background-color: rgba(144, 163, 203, 0.2);
             margin: 5px;
             color: initial;
-            display: inline-flex;
+            display: flex;
+            height: 140px;
+            flex-direction: column;
+            padding: 1rem;
+            width: 150px;
+    overflow: hidden;
+    white-space: nowrap;
+        }
+        .file-block img{
+            height: 70px;
+            width: 70px;
+            margin: auto;
+            margin-top: 0.5rem;
         }
         .file-block > span.name {
             padding-right: 10px;
@@ -87,9 +105,6 @@
         .file-delete > span {
             transform: rotate(45deg);
         }
-        .rate_info{
-            display:none;
-        }
     </style>
 @endsection
 @section('frontend-main')
@@ -110,7 +125,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form method="post" action="{{ route('level_refuse' , ['estate_id'=>$estate->id,'type'=>auth()->user()->membership_level]) }}">
+                            <form method="post" action="{{ route('level_refuse' , ['estate_id'=>$estate->id,'type'=>'rater']) }}">
                             @csrf
                             {{ method_field('PATCH') }}
                                 <div class="form-row">
@@ -171,10 +186,10 @@
                                 {{--</div>--}}
                             {{--</div>--}}
                             {{--<hr>--}}
-                            
-                             
-                                             
-                            
+
+
+
+
                             <div class="col-md-12 col-12 mb-3">
                                 <label for="files">ارفاق المستندات</label>
                                 <p class="mt-5 text-center">
@@ -186,16 +201,15 @@
 
                                 </p>
                                 <p id="files-area">
-	<span id="filesList">
-		<span id="files-names"></span>
-	</span>
+                                    <span id="filesList">
+                                        <span id="files-names"></span>
+                                    </span>
                                 </p>
                                 @error('files')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                             <hr>
-                                 <div class="col-md-3 col-12 mb-3">
                                         <div class="form-row">
                                             <div class="col-sm-12 col-12">
                                                 <label for="assessment">
@@ -226,8 +240,7 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                    </div>
-                                    
+
                                     <!--<div class="rate_info">-->
                                     <!--    <div class="col-md-12">-->
                                     <!--            <div class="row">-->
@@ -240,7 +253,7 @@
                                     <!--                    <select name="infos[0][value]" class="form-control" required>-->
                                     <!--                        <option value="نعم">نعم</option>-->
                                     <!--                        <option value="لا">لا</option>-->
-                                                           
+
 
                                     <!--                    </select>-->
                                     <!--                </div>-->
@@ -260,14 +273,14 @@
                                     <!--                   <input type="text" name="infos[1][value]" class="form-control"-->
                                     <!--                           placeholder=" ملاحظات  وتوصيات " value="   "-->
                                     <!--                           required>-->
-                                                        
+
                                     <!--                </div>-->
                                     <!--            </div>-->
                                     <!--            @error('product_price_list')-->
                                     <!--            <div class="alert" style="color:#a94442">{{ $message }}</div>-->
                                     <!--            @enderror-->
                                     <!--        </div>-->
-                                            
+
                                     <!--        <div class="col-md-12">-->
                                     <!--            <div class="row">-->
                                     <!--                <div class="col-md-6 col-6 mb-3">-->
@@ -279,7 +292,7 @@
                                     <!--                   <input type="text" name="infos[2][value]" class="form-control"-->
                                     <!--                           placeholder="  الافتراضات الخاصة  " value="   "-->
                                     <!--                           required>-->
-                                                        
+
                                     <!--                </div>-->
                                     <!--            </div>-->
                                     <!--            @error('product_price_list')-->
@@ -298,14 +311,14 @@
                                     <!--                   <input type="text" name="infos[3][value]" class="form-control"-->
                                     <!--                           placeholder="  الشروط الخاصة  " value="   "-->
                                     <!--                           required>-->
-                                                        
+
                                     <!--                </div>-->
                                     <!--            </div>-->
                                     <!--            @error('product_price_list')-->
                                     <!--            <div class="alert" style="color:#a94442">{{ $message }}</div>-->
                                     <!--            @enderror-->
                                     <!--        </div>-->
-                                            
+
                                     <!--        <div class="col-md-12">-->
                                     <!--            <div class="row">-->
                                     <!--                <div class="col-md-6 col-6 mb-3">-->
@@ -317,7 +330,7 @@
                                     <!--                   <input type="date" name="infos[4][value]" class="form-control"-->
                                     <!--                           placeholder="     " value="   "-->
                                     <!--                           required>-->
-                                                        
+
                                     <!--                </div>-->
                                     <!--            </div>-->
                                     <!--            @error('product_price_list')-->
@@ -325,8 +338,12 @@
                                     <!--            @enderror-->
                                     <!--        </div>-->
                                     <!--</div>-->
-                            <hr>
-                            <button class="btn btn-primary" type="submit">بدأ التقييم</button>
+                                    <hr id="last_hr">
+                                    <div class="mb-3 px-2 flex-column d-flex flex-md-row justify-content-between align-items-center " style="    gap: 1%;" >
+                                        <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="submit_order">إرسال الطلب للمراجع</button>
+                                        <span class="btn btn-warning w-50 mb-1 mb-md-0 "  id="return_coordinator">إعادة الطلب للمنسق</span>
+                                        <span class="btn btn-danger w-50 mb-1 mb-md-0 "  id="return_previewer">إعادة الطلب للمعاين</span>
+                                    </div>
                         </form>
                     </div>
                 </div>
@@ -340,6 +357,51 @@
     <!-- BEGIN: Vendor JS-->
     <script src="{{ asset('frontend') }}/app-assets/vendors/js/vendors.min.js"></script>
     <!-- BEGIN Vendor JS-->
+    <script>
+        $(document).ready(function () {
+        $('#return_coordinator').click(function (e) {
+                e.preventDefault();
+                $('#return_previewer').text('إعادة الطلب للمعاين')
+                $(this).text('انقر للتأكيد ...')
+                $('#myform').append(`<input type="text" class="d-none" name="return" id="order_return" value="coordinator" >`)
+                if($('#reject_note').length){
+                    $('#myform').submit();
+                }else{
+                    $(`<div class="col-md-12 col-12 mb-3">
+                                        <label for="reject_note"> ملاحظة على سبب الإرجاع </label>
+                                        <textarea rows="5" type="text" name="reject_note"
+                                                  class="form-control" id="reject_note" placeholder="اكتب ملاحظة على سبب الإرجاع "
+                                                  value=""></textarea>
+                                    </div>`).insertBefore('#last_hr')
+                }
+
+        });
+        $('#return_previewer').click(function (e) {
+                e.preventDefault();
+                $('#return_coordinator').text('إعادة الطلب للمنسق')
+                $(this).text('انقر للتأكيد ...')
+                $('#myform').append(`<input type="text" class="d-none" name="return" id="order_return" value="previewer" >`)
+                if($('#reject_note').length){
+                    console.log('yess')
+                    $('#myform').submit();
+                }else{
+                    $(`<div class="col-md-12 col-12 mb-3">
+                                        <label for="reject_note"> ملاحظة على سبب الإرجاع </label>
+                                        <textarea rows="5" type="text" name="reject_note"
+                                                  class="form-control" id="reject_note" placeholder="اكتب ملاحظة على سبب الإرجاع "
+                                                  value=""></textarea>
+                                    </div>`).insertBefore('#last_hr')
+                }
+
+        });
+        $('#submit_order').click(function (e) {
+               e.preventDefault();
+               $('#order_return').remove();
+               $('#reject_note').remove();
+               $('#myform').submit();
+        });
+      })
+    </script>
     <!-- BEGIN: Page Vendor JS-->
     <script src="{{ asset('frontend') }}/app-assets/vendors/js/extensions/dropzone.min.js"></script>
     <script src="{{ asset('frontend') }}/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
@@ -423,10 +485,19 @@
 
         $("#attachment").on('change', function(e){
             for(var i = 0; i < this.files.length; i++){
+                const reader = new FileReader();
+                const img = document.createElement('img');
+                reader.onload = function(event) {
+
+                    img.src = event.target.result;
+                    // previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(this.files.item(i));
                 let fileBloc = $('<span/>', {class: 'file-block'}),
                     fileName = $('<span/>', {class: 'name', text: this.files.item(i).name});
                 fileBloc.append('<span class="file-delete"><span>+</span></span>')
-                    .append(fileName);
+                    .append(fileName)
+                    .append(img);
                 $("#filesList > #files-names").append(fileBloc);
             };
             // Ajout des fichiers dans l'objet DataTransfer
@@ -453,7 +524,7 @@
                 document.getElementById('attachment').files = dt.files;
             });
         });
-        
+
         $(function () {
   $("#assessment").change(function() {
     $(".rate_info").show();

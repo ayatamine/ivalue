@@ -111,9 +111,9 @@
                                     <div class="form-group">
                                         <select name="accept" id="accept"
                                                 class="select2 form-control">
-                                            <option value="1">موافقة وارسال الى المعتمد  </option>
-                                            <option value="2">رفض والرجوع الى المقيم</option>
-                                            <option value="3"> الارسال الى المنسق</option>
+                                            <option value="manager">موافقة وارسال الى مدير المنشأة  </option>
+                                            <option value="rater"> الارجاع الى المقيم</option>
+                                            <option value="previewer"> الارجاع الى المعاين </option>
                                         </select>
                                     </div>
                                     @error('accept')
@@ -121,7 +121,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <hr>
+                            <hr id="last_hr">
                             <button class="btn btn-primary" type="submit">حفظ</button>
                         </form>
                     </div>
@@ -136,6 +136,27 @@
     <!-- BEGIN: Vendor JS-->
     <script src="{{ asset('frontend') }}/app-assets/vendors/js/vendors.min.js"></script>
     <!-- BEGIN Vendor JS-->
+    <script>
+        $(document).on('change','#accept',function(e){
+            e.preventDefault();
+            //create on change event jquery
+
+            if($(this).val() == 'rater'|| $(this).val() == 'previewer'){
+                if(!$('#reject_note').length)
+                {
+                $(`<div class="mb-3">
+                                        <label for="reject_note"> ملاحظة على سبب الإرجاع </label>
+                                        <textarea rows="5" type="text" name="reject_note"
+                                                  class="form-control mt-1" id="reject_note" placeholder="اكتب ملاحظة على سبب الإرجاع "
+                                                  value=""></textarea>
+                                    </div>`).insertBefore('#last_hr')
+                }
+            }
+            else{
+                $('#reject_note').parent().remove()
+            }
+        })
+    </script>
     <!-- BEGIN: Page Vendor JS-->
     <script src="{{ asset('frontend') }}/app-assets/vendors/js/extensions/dropzone.min.js"></script>
     <script src="{{ asset('frontend') }}/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
@@ -167,6 +188,7 @@
             map: map,
             draggable: false
         });
+
     </script>
 
     <script>

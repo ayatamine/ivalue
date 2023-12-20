@@ -39,7 +39,7 @@ class ParkingController extends Controller
             $estates = Estate::whereNotIn('id',$types)->get();
             return view('frontend.incomes.substitution.parking.creat', compact('estates'));
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error Try Again !!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -54,7 +54,7 @@ class ParkingController extends Controller
         DB::beginTransaction();
 
         try {
-            
+
              $estate = Estate::where('id', $request->estate_id)->first();
              $estate_id = $estate->id;
 
@@ -283,7 +283,7 @@ class ParkingController extends Controller
             return redirect()->route('parking.show' , $request->estate_id)->with('done', 'تم الاضافة بالنجاح ....');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->back()->with('error', 'Error Try Again !!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 

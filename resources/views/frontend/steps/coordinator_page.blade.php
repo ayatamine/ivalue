@@ -56,7 +56,7 @@
     <div class="content-body">
         <!-- Data list view starts -->
         <section id="data-thumb-view" class="data-thumb-view-header">
-        @include('frontend.steps.estate_includes.estate_info')
+        {{-- @include('frontend.steps.estate_includes.estate_info') --}}
             <!-- dataTable ends -->
 
             <div class="card">
@@ -70,6 +70,26 @@
                             @csrf
                             {{ method_field('PATCH') }}
                             <div class="form-row">
+                                <div class="row mx-0 col-12">
+                                    <div class="col-md-6 pl-0">
+                                        <div class="form-group">
+                                            <label for="process_start_date">
+                                                تاريخ بداية الطلب
+                                            </label>
+                                            <input placeholder="تاريخ بدايةالطلب " name="process_start_date" id="process_start_date"
+                                                    class="form-control" type="datetime-local" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 pr-0">
+                                        <div class="form-group">
+                                            <label for="process_end_date">
+                                                تاريخ إنتهاء الطلب
+                                            </label>
+                                            <input placeholder="تاريخ إنهاء الطلب " name="process_end_date" id="process_end_date"
+                                                    class="form-control" type="datetime-local" required>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col-sm-12 col-12">
                                     <label for="perviewer_id">
                                         المعاين
@@ -83,11 +103,11 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="form-group">
+                                    {{-- <div class="form-group">
                                         <input placeholder="تاريخ التسليم للمعاين" name="perviewer_date" id="perviewer_date"
                                                 class="form-control" type="date" required>
-                                            
-                                    </div>
+
+                                    </div> --}}
                                     @if($estate->previewer_reason)
                                         <textarea readonly class="form-control"> سبب الرفض : {{ $estate->previewer_reason ? $estate->previewer_reason : '' }}</textarea>
                                     @endif
@@ -111,11 +131,11 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                     <div class="form-group">
+                                     {{-- <div class="form-group">
                                         <input placeholder="تاريخ التسليم للمقيم" name="rater_date" id="rater_date"
                                                 class="form-control" type="date" required>
-                                            
-                                    </div>
+
+                                    </div> --}}
                                     @if($estate->rater_reason)
                                         <textarea readonly class="form-control"> سبب الرفض : {{ $estate->rater_reason ? $estate->rater_reason : '' }}</textarea>
                                     @endif
@@ -139,11 +159,11 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="form-group">
+                                    {{-- <div class="form-group">
                                         <input placeholder="تاريخ التسليم للمراجع" name="reviewer_date" id="reviewer_date"
                                                 class="form-control" type="date" required>
-                                            
-                                    </div>
+
+                                    </div> --}}
                                     @if($estate->reviewer_reason)
                                         <textarea readonly class="form-control"> سبب الرفض : {{ $estate->reviewer_reason ? $estate->reviewer_reason : '' }}</textarea>
                                     @endif
@@ -167,11 +187,11 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="form-group">
+                                    {{-- <div class="form-group">
                                         <input placeholder="تاريخ التسليم للمعتمد" name="approver_date" id="approver_date"
                                                 class="form-control" type="date" required>
-                                            
-                                    </div>
+
+                                    </div> --}}
                                     @if($estate->approver_reason)
                                         <textarea readonly class="form-control"> سبب الرفض : {{ $estate->approver_reason ? $estate->approver_reason : '' }}</textarea>
                                     @endif
@@ -180,8 +200,11 @@
                                     @enderror
                                 </div>
                             </div>
-                            <hr>
-                            <button class="btn btn-primary" type="submit">ارسال</button>
+                            <hr id="last_hr">
+                            <div class="mb-3 px-2 flex-column d-flex flex-md-row justify-content-between align-items-center " style="    gap: 1%;" >
+                                <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="submit_order">تحويل الطلب إلى المعاين</button>
+                                <span class="btn btn-danger w-50 mb-1 mb-md-0" id="return_order">إعادة الطلب للادخال</span>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -195,6 +218,33 @@
     <!-- BEGIN: Vendor JS-->
     <script src="{{ asset('frontend') }}/app-assets/vendors/js/vendors.min.js"></script>
     <!-- BEGIN Vendor JS-->
+    <script>
+        $(document).ready(function () {
+        $('#return_order').click(function (e) {
+                e.preventDefault();
+
+                $(this).text('انقر للتأكيد ...')
+                $('#myform').append('<input type="text" class="d-none" name="return" id="order_return" value="return" >')
+                if($('#reject_note').length){
+                    $('#myform').submit();
+                }else{
+                    $(`<div class="col-md-12 col-12 mb-3">
+                                        <label for="reject_note"> ملاحظة على سبب الإرجاع </label>
+                                        <textarea rows="5" type="text" name="reject_note"
+                                                  class="form-control" id="reject_note" placeholder="اكتب ملاحظة على سبب الإرجاع "
+                                                  value=""></textarea>
+                                    </div>`).insertBefore('#last_hr')
+                }
+
+        });
+        $('#submit_order').click(function (e) {
+               e.preventDefault();
+               $('#order_return').remove();
+               $('#reject_note').remove();
+               $('#myform').submit();
+        });
+      })
+    </script>
     <!-- BEGIN: Page Vendor JS-->
     <script src="{{ asset('frontend') }}/app-assets/vendors/js/extensions/dropzone.min.js"></script>
     <script src="{{ asset('frontend') }}/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>

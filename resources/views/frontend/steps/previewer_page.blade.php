@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css"
           href="{{ asset('frontend') }}/app-assets/vendors/css/tables/datatable/extensions/dataTables.checkboxes.css">
     <!-- END: Vendor CSS-->
-    
+
     <!-- BEGIN: Theme CSS-->
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend') }}/app-assets/css-rtl/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend') }}/app-assets/css-rtl/bootstrap-extended.css">
@@ -52,21 +52,39 @@
         .fc .fc-daygrid-day.fc-day-today {
             background-color: #adb5bd;
         }
-        
+
         .form-row {
             width: 100%;
         }
 
         #files-area {
-            width: 30%;
+            /* width: 30%; */
             margin: 0 auto;
+        }
+        #files-names{
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
         }
         .file-block {
             border-radius: 10px;
             background-color: rgba(144, 163, 203, 0.2);
             margin: 5px;
             color: initial;
-            display: inline-flex;
+            display: flex;
+            height: 140px;
+            flex-direction: column;
+            padding: 1rem;
+            width: 150px;
+    overflow: hidden;
+    white-space: nowrap;
+        }
+        .file-block img{
+            height: 70px;
+            width: 70px;
+            margin: auto;
+            margin-top: 0.5rem;
         }
         .file-block > span.name {
             padding-right: 10px;
@@ -417,7 +435,7 @@
                                                    placeholder="شاغرية العقار" value="شاغرية العقار" readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            
+
                                             <select multiple class="form-control selectpicker" name="infos[12][value][]">
                                                 <option value="مأهول">مأهول</option>
                                                 <option value="المالك">المالك</option>
@@ -430,7 +448,7 @@
                                     <div class="alert" style="color:#a94442">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -446,7 +464,7 @@
                                     <div class="alert" style="color:#a94442">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -454,7 +472,7 @@
                                                    placeholder=" مميزات موقع العقار" value=" مميزات موقع العقار" readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            
+
                                             <select multiple class="form-control selectpicker" name="infos[67][value][]">
                                                 <option value="بالقرب من الطرق الرئيسية">بالقرب من الطرق الرئيسية</option>
                                                 <option value="سهولة الوصول للموقع">سهولة الوصول للموقع</option>
@@ -480,7 +498,7 @@
                                     <div class="alert" style="color:#a94442">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -488,7 +506,7 @@
                                                    placeholder=" مميزات موقع العقار" value=" سلبيات موقع العقار" readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            
+
                                             <select multiple class="form-control selectpicker" name="infos[68][value][]">
                                                 <option value="سهولة صعوبة للموقع">صعوبة الوصول للموقع</option>
                                                 <option value="سهولة صعوبة على الموقع">صعوبة الاستدلال على الموقع</option>
@@ -503,7 +521,7 @@
                                                 <option value=" ارض سبخة مائية"> ارض سبخة مائية </option>
                                                 <option value=" ارض دفان مخلفات">  ارض دفان مخلفات</option>
                                                 <option value="ارض غير مستوية او جبلية "> ارض غير مستوية او جبلية </option>
-                                               
+
                                             </select>
                                         </div>
                                     </div>
@@ -524,7 +542,7 @@
                                             <select name="infos[13][value][]"  multiple class="form-control selectpicker" required>
                                                 <option value="سهل الوصول">سهل الوصول</option>
                                                 <option value="سهل الاستدلال">سهل الاستدلال</option>
-                                                
+
                                                 <option value="صعب الوصول">صعب الوصول</option>
                                                 <option value="صعب الاستدلال">صعب الاستدلال</option>
                                             </select>
@@ -640,7 +658,7 @@
                                                 <option value="دفاع مدني">دفاع مدني</option>
                                                 <option value="بريد">بريد</option>
                                             </select>
-                                            
+
                                         </div>
                                     </div>
                                     @error('product_price_list')
@@ -960,7 +978,7 @@
                                             <!--                <option value="بريد ">بريد </option>-->
                                             <!--                <option value="مجمع تجاري ">مجمع تجاري </option>-->
                                             <!--                <option value="دفاع مدني ">دفاع مدني </option>-->
-                                                            
+
                                             <!--            </select>-->
                                             <!--        </div>-->
                                             <!--    </div>-->
@@ -1047,7 +1065,7 @@
                                                 @enderror
                                             </div>
 
-                                           
+
 
                                             <div class="col-md-12">
                                                 <div class="row">
@@ -1165,7 +1183,7 @@
                                                                value="ارضيات الفناء الخارجي" readonly>
                                                     </div>
                                                     <div class="col-md-6 col-6 mb-3">
-                                                      
+
                                                         <select name="infos[35][value][]" multiple class="form-control selectpicker">
                                                             <option value="بلاط ">بلاط</option>
                                                             <option value="رخام">رخام</option>
@@ -1190,7 +1208,7 @@
                                                                readonly>
                                                     </div>
                                                     <div class="col-md-6 col-6 mb-3">
-                                                        
+
                                                         <select name="infos[36][value][]" multiple class="form-control selectpicker">
                                                             <option value="بلاط ">بلاط</option>
                                                             <option value="رخام">رخام</option>
@@ -1215,7 +1233,7 @@
                                                                value="نوع ارضيات الملحق الخارجي" readonly>
                                                     </div>
                                                     <div class="col-md-6 col-6 mb-3">
-                                                        
+
                                                         <select multiple class="form-control selectpicker" name="infos[37][value][]">
                                                             <option value="بلاط ">بلاط</option>
                                                             <option value="رخام">رخام</option>
@@ -1240,7 +1258,7 @@
                                                                value="نوع ارضيات غرفة السائق / الحارس" readonly>
                                                     </div>
                                                     <div class="col-md-6 col-6 mb-3">
-                                                    
+
                                                         <select multiple class="form-control selectpicker" name="infos[38][value][]">
                                                             <option value="بلاط ">بلاط</option>
                                                             <option value="رخام">رخام</option>
@@ -1292,7 +1310,7 @@
                                                                value="حالة الارضيات الخارجية" readonly>
                                                     </div>
                                                     <div class="col-md-6 col-6 mb-3">
-                                                    
+
                                                         <select name="infos[40][value][]" multiple class="form-control selectpicker">
                                                             <option value="لا يوجد ملاحظات ">لا يوجد ملاحظات</option>
                                                             <option value="تكسير بسيط في الارضيات">تكسير بسيط في
@@ -1326,7 +1344,7 @@
                                                             <option value="انظمة صوتية ">انظمة صوتية </option>
                                                             <option value="انذار واطفاء حرائق ">انذار واطفاء حرائق </option>
                                                             <option value="شبكة مراقبة تلفزيونية ">شبكة مراقبة تلفزيونية </option>
-                                                        
+
                                                         </select>
                                                     </div>
                                                 </div>
@@ -1371,7 +1389,7 @@
                                                                readonly>
                                                     </div>
                                                     <div class="col-md-6 col-6 mb-3">
-                                                      
+
                                                         <select name="infos[43][value][]" multiple class="form-control selectpicker">
                                                             <option value="خرساني">خرساني</option>
                                                             <option value="مباني معدنية">مباني معدنية</option>
@@ -1384,7 +1402,7 @@
                                                 <div class="alert" style="color:#a94442">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                           
+
 
                                             <div class="col-md-12">
                                                 <div class="row">
@@ -1393,7 +1411,7 @@
                                                                placeholder="نوع الاسقف" value="نوع الاسقف" readonly>
                                                     </div>
                                                     <div class="col-md-6 col-6 mb-3">
-                                                    
+
                                                         <select name="infos[44][value][]" multiple class="form-control selectpicker">
                                                             <option value="خرسانة مسلحة">خرساني</option>
                                                             <option value="كمرات حديد">كمرات حديد</option>
@@ -1413,7 +1431,7 @@
                                                                placeholder="نوع العازل" value="نوع العازل" readonly>
                                                     </div>
                                                     <div class="col-md-6 col-6 mb-3">
-                                                    
+
                                                         <select name="infos[45][value][]" multiple class="form-control selectpicker">
                                                             <option value="عازل صوت">عازل صوت</option>
                                                             <option value="عازل حراري">عازل حراري</option>
@@ -1436,7 +1454,7 @@
                                                        <input type="text" name="infos[65][value]" class="form-control"
                                                                placeholder=" ملاحظات الاعمال الانشائية" value="   "
                                                                required>
-                                                        
+
                                                     </div>
                                                 </div>
                                                 @error('product_price_list')
@@ -1482,7 +1500,7 @@
                                                                value="نوع ارضيات المباني" readonly>
                                                     </div>
                                                     <div class="col-md-6 col-6 mb-3">
-                                                    
+
                                                         <select name="infos[46][value][]" multiple class="form-control selectpicker">
                                                             <option value="بلاط ">بلاط</option>
                                                             <option value="رخام">رخام</option>
@@ -1506,7 +1524,7 @@
                                                                readonly>
                                                     </div>
                                                     <div class="col-md-6 col-6 mb-3">
-                                                    
+
                                                         <select name="infos[47][value][]" multiple class="form-control selectpicker">
                                                             <option value="بلاط ">بلاط</option>
                                                             <option value="رخام">رخام</option>
@@ -1532,7 +1550,7 @@
                                                     </div>
                                                     <div class="col-md-6 col-6 mb-3">
                                              <div class="col-md-6 col-6 mb-3">
-                                                    
+
                                                         <select name="infos[48][value][]" multiple class="form-control selectpicker">
                                                             <option value="كراج كهربي ">كراج كهربي</option>
                                                             <option value="نظام مراقبة امني">نظام مراقبة امني</option>
@@ -1576,7 +1594,7 @@
                                                             <option value="عضم (بلوك)">عضم (بلوك)</option>
                                                         </select>
                                                     </div>
-                                                   
+
                                                 </div>
                                                 @error('product_price_list')
                                                 <div class="alert" style="color:#a94442">{{ $message }}</div>
@@ -1603,7 +1621,7 @@
                                                             <option value="لا ينطبق">لا ينطبق</option>
                                                         </select>
                                                     </div>
-                                                    
+
                                                 </div>
                                                 @error('product_price_list')
                                                 <div class="alert" style="color:#a94442">{{ $message }}</div>
@@ -1631,7 +1649,7 @@
                                                             <option value="لا ينطبق">لا ينطبق</option>
                                                         </select>
                                                     </div>
-                                                   
+
                                                 </div>
                                                 @error('product_price_list')
                                                 <div class="alert" style="color:#a94442">{{ $message }}</div>
@@ -1651,9 +1669,9 @@
                                                            <option value="جيد">جيد</option>
                                                            <option value="لا ينطبق">لا ينطبق</option>
                                                            <option value="فاخر">فاخر</option>
-                                                           
+
                                                         </select>
-                                                       
+
                                                     </div>
                                                 </div>
                                                 @error('product_price_list')
@@ -1807,7 +1825,7 @@
                                 </div>
                                 @endif
                                 @if($estate->category_id == 2)
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -1820,7 +1838,7 @@
                                                    placeholder="غرف نوم" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                                  <div class="col-md-12">
                                     <div class="row">
@@ -1834,9 +1852,9 @@
                                                    placeholder=" صالة" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                  <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -1849,7 +1867,7 @@
                                                    placeholder=" مجلس" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                                  <div class="col-md-12">
                                     <div class="row">
@@ -1863,9 +1881,9 @@
                                                    placeholder=" غرفة طعام" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -1878,7 +1896,7 @@
                                                    placeholder=" غرفة غسيل" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                                 <div class="col-md-12">
                                     <div class="row">
@@ -1892,9 +1910,9 @@
                                                    placeholder=" مطبخ" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -1907,9 +1925,9 @@
                                                    placeholder=" غرفة خادمة" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -1922,9 +1940,9 @@
                                                    placeholder="  مستودع" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -1937,9 +1955,9 @@
                                                    placeholder="  دورات مياة" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -1952,9 +1970,9 @@
                                                    placeholder="شرفة" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -1969,9 +1987,9 @@
                                             </select>
                                         </div>
                                     </div>
-                                  
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -1987,9 +2005,9 @@
                                             </select>
                                         </div>
                                     </div>
-                                  
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -2002,9 +2020,9 @@
                                                    placeholder="غرفة سائق" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -2019,7 +2037,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                  
+
                                 </div>
                                 <div class="col-md-12">
                                     <div class="row">
@@ -2033,9 +2051,9 @@
                                                    placeholder="غرف اخرى" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -2048,9 +2066,9 @@
                                                    placeholder=" عدد ادوار المبنى " value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -2063,7 +2081,7 @@
                                                    placeholder=" عدد ادوار البدروم   " value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                                  <div class="col-md-12">
                                     <div class="row">
@@ -2079,7 +2097,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                  
+
                                 </div>
                                 <div class="col-md-12">
                                     <div class="row">
@@ -2095,7 +2113,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                  
+
                                 </div>
                                  <div class="col-md-12">
                                     <div class="row">
@@ -2109,7 +2127,7 @@
                                                    placeholder="مواقف سيارة خاصة" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                                  <div class="col-md-12">
                                     <div class="row">
@@ -2125,7 +2143,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                  
+
                                 </div>
                                 @endif
                                 @if($estate->category_id == 1)
@@ -2141,7 +2159,7 @@
                                                    placeholder="غرف نوم" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                                  <div class="col-md-12">
                                     <div class="row">
@@ -2155,9 +2173,9 @@
                                                    placeholder=" صالة" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                  <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -2170,7 +2188,7 @@
                                                    placeholder=" مجلس" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                                  <div class="col-md-12">
                                     <div class="row">
@@ -2184,7 +2202,7 @@
                                                    placeholder=" غرفة طعام" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                                 <div class="col-md-12">
                                     <div class="row">
@@ -2198,9 +2216,9 @@
                                                    placeholder=" مطبخ" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -2213,9 +2231,9 @@
                                                    placeholder=" غرفة خادمة" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -2228,9 +2246,9 @@
                                                    placeholder="  مستودع" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -2243,9 +2261,9 @@
                                                    placeholder="  دورات مياة" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -2258,9 +2276,9 @@
                                                    placeholder="شرفة" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -2275,9 +2293,9 @@
                                             </select>
                                         </div>
                                     </div>
-                                  
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -2292,9 +2310,9 @@
                                             </select>
                                         </div>
                                     </div>
-                                  
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -2307,7 +2325,7 @@
                                                    placeholder="غرفة سائق" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                                 <div class="col-md-12">
                                     <div class="row">
@@ -2321,9 +2339,9 @@
                                                    placeholder="غرف اخرى" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -2336,9 +2354,9 @@
                                                    placeholder=" رقم الطابق" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -2351,7 +2369,7 @@
                                                    placeholder="اجمالي عدد ادوار المبنى الرئيسي" value="" required>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                                  <div class="col-md-12">
                                     <div class="row">
@@ -2367,10 +2385,10 @@
                                             </select>
                                         </div>
                                     </div>
-                                  
+
                                 </div>
                                 @endif
-                                
+
                                  <div class="col-md-12">
                                     <hr>
                                 </div>
@@ -2401,7 +2419,7 @@
                                     @enderror
                                 </div>
 
-                               
+
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
@@ -2472,14 +2490,14 @@
                                                        <input type="text" name="infos[66][value]" class="form-control"
                                                                placeholder=" ملاحظات  مطابقة المستندات" value="   "
                                                                required>
-                                                        
+
                                                     </div>
                                                 </div>
                                                 @error('product_price_list')
                                                 <div class="alert" style="color:#a94442">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            
+
                                             <!-- <div class="col-md-12">-->
                                             <!--    <div class="row">-->
                                             <!--        <div class="col-md-6 col-6 mb-3">-->
@@ -2491,7 +2509,7 @@
                                             <!--            <select name="infos[70][value]" class="form-control" required>-->
                                             <!--                <option value="نعم">نعم</option>-->
                                             <!--                <option value="لا">لا</option>-->
-                                                           
+
 
                                             <!--            </select>-->
                                             <!--        </div>-->
@@ -2511,14 +2529,14 @@
                                             <!--           <input type="text" name="infos[71][value]" class="form-control"-->
                                             <!--                   placeholder=" ملاحظات  وتوصيات " value="   "-->
                                             <!--                   required>-->
-                                                        
+
                                             <!--        </div>-->
                                             <!--    </div>-->
                                             <!--    @error('product_price_list')-->
                                             <!--    <div class="alert" style="color:#a94442">{{ $message }}</div>-->
                                             <!--    @enderror-->
                                             <!--</div>-->
-                                            
+
                                             <!--<div class="col-md-12">-->
                                             <!--    <div class="row">-->
                                             <!--        <div class="col-md-6 col-6 mb-3">-->
@@ -2530,7 +2548,7 @@
                                             <!--           <input type="text" name="infos[72][value]" class="form-control"-->
                                             <!--                   placeholder="  الافتراضات الخاصة  " value="   "-->
                                             <!--                   required>-->
-                                                        
+
                                             <!--        </div>-->
                                             <!--    </div>-->
                                             <!--    @error('product_price_list')-->
@@ -2549,14 +2567,14 @@
                                                        <input type="text" name="infos[73][value]" class="form-control"
                                                                placeholder="   الملاحظات العامة عن المعاين  " value="   "
                                                                required>
-                                                        
+
                                                     </div>
                                                 </div>
                                                 @error('product_price_list')
                                                 <div class="alert" style="color:#a94442">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            
+
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <div class="col-md-6 col-6 mb-3">
@@ -2568,14 +2586,14 @@
                                                        <input type="date" name="infos[74][value]" class="form-control"
                                                                placeholder="  تاريخ المعاينة   " value="   "
                                                                required>
-                                                        
+
                                                     </div>
                                                 </div>
                                                 @error('product_price_list')
                                                 <div class="alert" style="color:#a94442">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            
+
                                             <div class="col-md-12 col-12 mb-3">
                                 <label for="files">ارفاق المستندات</label>
                                 <p class="mt-5 text-center">
@@ -2587,9 +2605,9 @@
 
                                 </p>
                                 <p id="files-area">
-	<span id="filesList">
-		<span id="files-names"></span>
-	</span>
+                                    <span id="filesList">
+                                        <span id="files-names"></span>
+                                    </span>
                                 </p>
                                 @error('files')
                                 <span class="text-danger">{{ $message }}</span>
@@ -2599,7 +2617,7 @@
 
                             </div>
                             <hr>
-                            <button class="btn btn-primary" type="submit">حفظ</button>
+                            <button class="btn btn-primary" type="submit">إرسال الطلب للمقييم</button>
                         </form>
                     </div>
                 </div>
@@ -2696,16 +2714,25 @@
             list_delete.remove();
 
         }
-        
-        
+
+
         const dt = new DataTransfer(); // Permet de manipuler les fichiers de l'input file
 
         $("#attachment").on('change', function(e){
             for(var i = 0; i < this.files.length; i++){
+                const reader = new FileReader();
+                const img = document.createElement('img');
+                reader.onload = function(event) {
+
+                    img.src = event.target.result;
+                    // previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(this.files.item(i));
                 let fileBloc = $('<span/>', {class: 'file-block'}),
                     fileName = $('<span/>', {class: 'name', text: this.files.item(i).name});
                 fileBloc.append('<span class="file-delete"><span>+</span></span>')
-                    .append(fileName);
+                    .append(fileName)
+                    .append(img);
                 $("#filesList > #files-names").append(fileBloc);
             };
             // Ajout des fichiers dans l'objet DataTransfer

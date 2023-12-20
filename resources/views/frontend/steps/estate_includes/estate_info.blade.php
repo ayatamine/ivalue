@@ -107,6 +107,18 @@ $note = \App\Models\OrderProcessingNote::whereEstateId($estate->id)->where('step
 @php
 $note = \App\Models\OrderProcessingNote::whereEstateId($estate->id)->whereIn('step_number',[4,5,7])->first()
 @endphp
+@elseif(auth()->user()->membership_level == 'reviewer' || auth()->user()->hasRole('reviewer'))
+@php
+$note = \App\Models\OrderProcessingNote::whereEstateId($estate->id)->whereIn('step_number',[13,14])->first()
+@endphp
+@elseif(auth()->user()->membership_level == 'rater' || auth()->user()->hasRole('rater'))
+@php
+$note = \App\Models\OrderProcessingNote::whereEstateId($estate->id)->whereIn('step_number',[12])->first()
+@endphp
+@elseif(auth()->user()->membership_level == 'previewer' || auth()->user()->hasRole('previewer'))
+@php
+$note = \App\Models\OrderProcessingNote::whereEstateId($estate->id)->whereIn('step_number',[12])->first()
+@endphp
 @endif
 @if($note)
 <div class="card mt-1">
@@ -316,6 +328,37 @@ $note = \App\Models\OrderProcessingNote::whereEstateId($estate->id)->whereIn('st
                     <i class="fa fa-file"></i>
                 </a>
                 @endforeach
+                <p id="files-area">
+                    <span id="filesList">
+                        <span id="files-names">
+                    @if($estate->file_urls)
+                    @foreach($estate->file_urls as $file_url)
+
+                        {{-- <a href="{{ $file_url }}">
+                            <i class="fa fa-file"></i>
+                        </a> --}}
+                        <span class="file-block">
+                            {{-- <span class="file-delete"><span>+</span></span> --}}
+                            {{-- <span class="name">location_mark.svg</span> --}}
+                            {{-- if file exists --}}
+
+                            @if( file_exists($file_url) && strpos( mime_content_type($file_url), "image/") === 0)
+                            <img src="{{ $file_url }}">
+                            @else
+                            <a target="_blink" href="{{ $file_url }}" style="display: block;height: 70px;
+                            width: 70px;
+                            margin: auto;
+                            margin-top: 0.5rem;">
+                                <i class="fa fa-file"></i>
+                            </a>
+                            @endif
+                        </span>
+
+                    @endforeach
+                   @endif
+                </span>
+                    </span>
+                </p>
             </div>
         </div>
     </div>
