@@ -86,6 +86,7 @@
                                 @enderror
                             </div>
                         </div> --}}
+                        @if($estate->recieved_by_client ==0)
                         <div class="form-row">
                             <div class="col-md-12 col-12 mb-3">
                                 <label for="note"> ملاحظة على الطلب </label>
@@ -93,17 +94,32 @@
                                     placeholder="اكتب ملاحظة على الطلب " value=""></textarea>
                             </div>
                         </div>
+                        @else
+                        <a href="{{ route('pdf_pro' , $estate->id) }}">تصفح التقرير</a>
+                        <br>
+                        @endif
                         <hr id="last_hr">
                         <div class="flex-column d-flex flex-md-row justify-content-between align-items-center "
                             style="    gap: 1%;">
-                            @if($estate->drafted_by)
-                            <a href="{{route('reopen_estate_order',$estate->id)}}"
-                                class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" ">إعادة فتح الطلب </a>
-                                @else
-                                <button class=" btn btn-primary w-50 mb-1 mb-md-0" type="submit"
+                           @if($estate->recieved_by_client ==1)
+                           <button class=" btn btn-primary  mb-1 mb-md-0"
+                           id="confirm_recieved">تأكيد استلام التقرير </button>
+                           @else
+                            @if($estate->process_start_date)
+                                <button class=" btn btn-primary w-50 mb-1 mb-md-0"
                                 id="submit_order">موافقة وإرسال إلى مدير المنشأة </button>
-                                <span class="btn btn-danger w-50 mb-1 mb-md-0" id="cancel_order">رفض الطلب</span>
+                                <span class="btn btn-danger w-50 mb-1 mb-md-0 return_order" data-return_to="reviewer" >إرجاع الطلب للمراجع</span>
+                            @else
+                                @if($estate->drafted_by)
+                                    <a href="{{route('reopen_estate_order',$estate->id)}}"
+                                    class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" ">إعادة فتح الطلب </a>
+                                @else
+                                    <button class=" btn btn-primary w-50 mb-1 mb-md-0" type="submit"
+                                    id="submit_order">موافقة وإرسال إلى مدير المنشأة </button>
+                                    <span class="btn btn-danger w-50 mb-1 mb-md-0" id="cancel_order">رفض الطلب</span>
                                 @endif
+                            @endif
+                           @endif
                         </div>
                     </form>
                 </div>
@@ -123,7 +139,7 @@
                 e.preventDefault();
                 $('#order_return').remove();
                 $(this).text('انقر للتأكيد ...')
-                $('#myform').append('<input type="text" class="d-none" name="cancel" id="draft_cancel" value="cancel" >')
+                if(!$('#draft_cancel').length) $('#myform').append('<input type="text" class="d-none" name="cancel" id="draft_cancel" value="cancel" >')
                 // if($('#draft_note').length){
                     $('#myform').submit();
                 // }else{
@@ -140,8 +156,35 @@
         $('#submit_order').click(function (e) {
                e.preventDefault();
                $('#draft_cancel').remove();
-            //    $('#draft_note').remove();
+               $('#note').parent().show();
                $('#myform').submit();
+        });
+        $('#confirm_recieved').click(function (e) {
+               e.preventDefault();
+               $('#draft_cancel').remove();
+               $('#note').parent().show();
+               $('#myform').append(`<input type="text" class="d-none" name="confirm_recieved" id="confirm_recieved" value="recieved" >`)
+               $('#myform').submit();
+        });
+        $('.return_order').click(function (e) {
+                let return_to = $(this).data('return_to');
+                e.preventDefault();
+                $('#draft_cancel').remove();
+                $(this).text('انقر للتأكيد ...')
+                $('#note').parent().hide();
+                if(!$('#order_return').length) $('#myform').append(`<input type="text" class="d-none" name="return" id="order_return" value="${return_to}" >`)
+                if($('#draft_note').length){
+                    $('#myform').submit();
+                    $('#note').parent().show();
+                }else{
+                    $(`<div class="col-md-12 col-12 mb-3">
+                                        <label for="draft_note"> ملاحظة على الطلب </label>
+                                        <textarea rows="5" type="text" name="draft_note"
+                                                  class="form-control" id="draft_note" placeholder="اكتب ملاحظة على الطلب "
+                                                  value=""></textarea>
+                                    </div>`).insertBefore('#last_hr')
+                }
+
         });
       })
 </script>

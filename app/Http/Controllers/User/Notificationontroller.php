@@ -42,7 +42,7 @@ class Notificationontroller extends Controller
 
             // if ($not->current_step == 6) //الموافقة او الرفض على السعر المعتمد من طرف مدير المنشأة
             // {
-                return view('frontend.steps.client_page_step6', compact('estate'));
+            return view('frontend.steps.client_page_step6', compact('estate'));
             // }
             // return view('frontend.steps.client_page', compact('estate'));
         }
@@ -50,14 +50,14 @@ class Notificationontroller extends Controller
         if (auth()->user()->membership_level == 'entre' || auth()->user()->hasRole('enter')) {
             $not = DashNotification::find($not_id);
             $estate = Estate::
-            // with(['inputs'=>function($query){
-            //      $query->whereIn('key',['عنوان التقرير','اسم المالك','نسبة المالك','نوع وثيقة التملك','مصدر الوثيقة','رقم الوثيقة','تاريخ اصدارها',
-            //     'نوع الملكية','رقم العقار','رقم قطعة الارض','رقم المخطوط','القيود على العقار',
-            //     'عدد الشوارع','واجهات الشوارع','عرض الشارع الرئيسي','عرض الشارع الرئيسي','رقم الرخصة','مصدر الرخصة','تاريخ الرخصة',
-            //     'تاريخ الرخصة','قيم القياس']);
-            // }])
-            // ->
-            where('id', $not->estate_id)->first();
+                // with(['inputs'=>function($query){
+                //      $query->whereIn('key',['عنوان التقرير','اسم المالك','نسبة المالك','نوع وثيقة التملك','مصدر الوثيقة','رقم الوثيقة','تاريخ اصدارها',
+                //     'نوع الملكية','رقم العقار','رقم قطعة الارض','رقم المخطوط','القيود على العقار',
+                //     'عدد الشوارع','واجهات الشوارع','عرض الشارع الرئيسي','عرض الشارع الرئيسي','رقم الرخصة','مصدر الرخصة','تاريخ الرخصة',
+                //     'تاريخ الرخصة','قيم القياس']);
+                // }])
+                // ->
+                where('id', $not->estate_id)->first();
 
             return view('frontend.steps.entre_second_page', compact('estate'));
         }
@@ -72,10 +72,18 @@ class Notificationontroller extends Controller
 
             $not = DashNotification::find($not_id);
             $estate = Estate::where('id', $not->estate_id)->first();
-            $previewers = User::where('membership_level', 'previewer')->orWhereHas("roles", function($q){ $q->where("name", "previewer"); })->active()->get();
-            $reviewers = User::where('membership_level', 'reviewer')->orWhereHas("roles", function($q){ $q->where("name", "reviewer"); })->active()->get();
-            $approvers = User::where('membership_level', 'approver')->orWhereHas("roles", function($q){ $q->where("name", "approver"); })->active()->get();
-            $raters = User::where('membership_level', 'rater')->orWhereHas("roles", function($q){ $q->where("name", "rater"); })->active()->get();
+            $previewers = User::where('membership_level', 'previewer')->orWhereHas("roles", function ($q) {
+                $q->where("name", "previewer");
+            })->active()->get();
+            $reviewers = User::where('membership_level', 'reviewer')->orWhereHas("roles", function ($q) {
+                $q->where("name", "reviewer");
+            })->active()->get();
+            $approvers = User::where('membership_level', 'approver')->orWhereHas("roles", function ($q) {
+                $q->where("name", "approver");
+            })->active()->get();
+            $raters = User::where('membership_level', 'rater')->orWhereHas("roles", function ($q) {
+                $q->where("name", "rater");
+            })->active()->get();
 
             return view('frontend.steps.coordinator_page', compact('estate', 'previewers', 'reviewers', 'approvers', 'raters'));
         }
@@ -104,7 +112,7 @@ class Notificationontroller extends Controller
         if (auth()->user()->membership_level == 'approver' || auth()->user()->hasRole('approver')) {
             $not = DashNotification::find($not_id);
             $estate = Estate::where('id', $not->estate_id)->first();
-            return view('frontend.steps.manager_page', compact('estate'));
+            return view('frontend.steps.approver_page', compact('estate'));
         }
     }
 
@@ -351,6 +359,15 @@ class Notificationontroller extends Controller
                     $estate->draft_note = $request->draft_note;
                     $estate->save();
 
+                    OrderProcessingNote::create([
+                        'path_type' => 'public',
+                        'step_number' => 5,
+                        'estate_id' => $estate_id,
+                        'user_id' => auth()->id(),
+                        'reason' => 'reject',
+                        'note' => $request->draft_note ?? '',
+                    ]);
+
                     $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
                     if ($inputs->count() > 0) {
                         foreach ($inputs as $inp) {
@@ -374,17 +391,26 @@ class Notificationontroller extends Controller
                     $estate->save();
 
                     OrderProcessingNote::create([
-                        'path_type'=>'public',
-                        'step_number'=>5,
-                        'estate_id'=>$estate_id,
-                        'user_id'=>auth()->id(),
-                        'reason'=>'reject',
-                        'note'=>$request->draft_note ?? '',
+                        'path_type' => 'public',
+                        'step_number' => $request->return == 'reviewer' ? 14 : 5,
+                        'estate_id' => $estate_id,
+                        'user_id' => auth()->id(),
+                        'reason' => 'return',
+                        'note' => $request->draft_note ?? '',
                     ]);
 
-                    $users = User::where('membership_level', 'rater_manager')->orWhereHas("roles", function($q){ $q->where("name", "rater_manager"); })
-                    ->pluck('id');
-                    $this->send_notification($users, '' . $estate->id . '', '#8B0000', 'fa fa-user', 'تم الارجاع الى مدير المنشأة ');
+                    $return_to = $request->return == 'reviewer' ? 'المراجع' : 'مدير التقييم';
+                    if ($request->return == 'rater_manager') {
+                        $users = User::where('membership_level', 'rater_manager')->orWhereHas("roles", function ($q) {
+                            $q->where("name", "rater_manager");
+                        })
+                            ->pluck('id');
+                    } else {
+                        $users = User::where('id', $estate->reviewer_id)
+                            ->pluck('id');
+                    }
+
+                    $this->send_notification($users, '' . $estate->id . '', '#8B0000', 'fa fa-user', 'تم ارجاع الطلب من قبل مدير المنشاة  ' . $return_to);
 
                     $input = new EstateInput();
                     $input->key = 'موافقة مدير المنشأة';
@@ -396,7 +422,7 @@ class Notificationontroller extends Controller
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
 
-                    return redirect()->route('home')->with('done', 'تم الارجاع الى مدير المنشأة');
+                    return redirect()->route('home')->with('done', 'تم الارجاع الى ' . $return_to);
                 }
                 //ارسال الى الادخال
                 if ($request->approve) {
@@ -410,10 +436,28 @@ class Notificationontroller extends Controller
                     $estate->draft_note = $request->draft_note;
                     $estate->save();
 
+                    $input = new EstateInput();
+                    $input->key = 'موافقة مدير المنشأة';
+                    $input->value = 'موافقة';
+                    $input->estate_id = $estate_id;
+                    $input->user_id = auth()->user()->id;
+                    $input->save();
 
-                    $users = User::where('membership_level', 'entre')->orWhereHas("roles", function($q){ $q->where("name", "entre"); })
-                    ->pluck('id');
-                    $this->send_notification($users, '' . $estate->id . '', '#2E8B57', 'fa fa-user', 'تم اعتماد الطلب من قبل مدير المنشأة ');
+                    $users = User::where('membership_level', 'entre')->orWhereHas("roles", function ($q) {
+                        $q->where("name", "enter");
+                    })
+                        ->pluck('id');
+                    $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', '  تم اعتماد الطلب من طرف مدير المشأة لاكمال البيانات التفصيلية');
+
+                    DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+                    DB::commit();
+
+                    return redirect()->route('home')->with('done', 'تم اعتماد الطلب وارساله الى الادخال لإكمال البيانات التفصيلية');
+                }
+                //ارسال الى الاعتماد المرحلة 14
+                if ($request->send_to_approver) {
+
+
 
                     $input = new EstateInput();
                     $input->key = 'موافقة مدير المنشأة';
@@ -422,14 +466,102 @@ class Notificationontroller extends Controller
                     $input->user_id = auth()->user()->id;
                     $input->save();
 
-                    $users = User::where('membership_level', 'entre')->orWhereHas("roles", function($q){ $q->where("name", "entre"); })
-                    ->pluck('id');
-                    $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', '  تم اعتماد الطلب لاكمال البيانات التفصيلية');
+                    $users = User::where('id', $estate->approver_id)
+                        ->pluck('id');
+                    $this->send_notification($users, '' . $estate->id . '', '#2E8B57', 'fa fa-user', 'تم ارسال طلب للاعتماد من قبل مدير المنشأة ');
+
 
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
 
-                    return redirect()->route('home')->with('done', 'تم اعتماد الطلب وارساله الى الادخال لإكمال البيانات التفصيلية');
+                    return redirect()->route('home')->with('done', 'تم ارسال الطلب للاعتماد');
+                }
+                //17 send report and finish order
+                if ($estate->qema) {
+                    if ($request->send_to_client) {
+
+                        //update estate status to 1:means report is sended to client
+                        $estate->recieved_by_client = 1;
+                        $estate->save();
+
+                        $users = User::where('id', $estate->user_id)
+                            ->pluck('id');
+
+                        $this->send_notification($users, '' . $estate->id . '', '#2E8B57', 'fa fa-user', 'تم انتهاءالتقرير ،يرجى تأكيد الاستلام ');
+
+
+                        DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+                        DB::commit();
+
+                        return redirect()->route('home')->with('done', 'تم ارسال الطلب للعميل لتأكيد الاستلام');
+                    }
+                    if ($request->return) {
+
+                        $estate->drafted_by = null;
+                        $estate->draft_note = $request->draft_note;
+                        $estate->save();
+
+                        OrderProcessingNote::create([
+                            'path_type' => 'public',
+                            'step_number' => 17,
+                            'estate_id' => $estate_id,
+                            'user_id' => auth()->id(),
+                            'reason' => 'return',
+                            'note' => $request->draft_note ?? '',
+                        ]);
+
+                        $users = User::where('membership_level', 'qima_approver')->orWhereHas("roles", function ($q) {
+                                $q->where("name", "value_approver");
+                        })
+                        ->pluck('id');
+
+                        $this->send_notification($users, '' . $estate->id . '', '#8B0000', 'fa fa-user', 'تم ارجاع الطلب من  طرف مديرالمنشأة  ' . $return_to);
+
+                        $input = new EstateInput();
+                        $input->key = 'موافقة مدير المنشأة';
+                        $input->value = 'رفض';
+                        $input->estate_id = $estate_id;
+                        $input->user_id = auth()->user()->id;
+                        $input->save();
+
+                        DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+                        DB::commit();
+
+                        return redirect()->route('home')->with('done', 'تم الارجاع الى معتمد قيمة');
+                    }
+                    if ($request->cancel) {
+
+                        $estate->drafted_by = auth()->id();
+                        $estate->draft_note = $request->draft_note;
+                        $estate->save();
+
+                        OrderProcessingNote::create([
+                            'path_type' => 'public',
+                            'step_number' => 17,
+                            'estate_id' => $estate_id,
+                            'user_id' => auth()->id(),
+                            'reason' => 'reject',
+                            'note' => $request->draft_note ?? '',
+                        ]);
+
+                        //TODO:: add show/hide for notitication
+                        // DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+                        DB::commit();
+                        return redirect()->route('home')->with('done', 'تم الالغاء والحفظ كمسودة');
+                    }
+                    if ($request->end_report) {
+
+                    $estate->drafted_by = null;
+                    $estate->draft_note = null;
+                    $estate->recieved_by_client = 2;
+                    $estate->archive = 1;
+                    $estate->save();
+
+                    DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+                    DB::commit();
+
+                    return redirect()->route('home')->with('done', 'تم تأكيد الاستلام وإنهاءالطلب');
+                }
                 }
                 // $this->validate($request, [
                 //     'payment' => 'required',
@@ -475,21 +607,21 @@ class Notificationontroller extends Controller
             if (auth()->user()->membership_level == 'client') {
 
                 $estate = Estate::where('id', $estate_id)->first();
-                $not= DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->first();
+                $not = DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->first();
 
 
-                if ($request->cancel && $not?->current_step ==6) {
+                if ($request->cancel && $not?->current_step == 6) {
                     //register as drafted
                     $estate->drafted_by = auth()->id();
                     $estate->draft_note = $request->note;
                     $estate->save();
                     OrderProcessingNote::create([
-                        'path_type'=>'public',
-                        'step_number'=>6,
-                        'estate_id'=>$estate_id,
-                        'user_id'=>auth()->id(),
-                        'reason'=>'reject',
-                        'note'=>$request->draft_note ?? '',
+                        'path_type' => 'public',
+                        'step_number' => 6,
+                        'estate_id' => $estate_id,
+                        'user_id' => auth()->id(),
+                        'reason' => 'reject',
+                        'note' => $request->draft_note ?? '',
                     ]);
                     $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
                     if ($inputs->count() > 0) {
@@ -498,8 +630,10 @@ class Notificationontroller extends Controller
                         }
                     }
                     $users = User::where('membership_level', 'manager')
-                    ->orWhereHas("roles", function($q){ $q->where("name", "manager"); })
-                    ->pluck('id');
+                        ->orWhereHas("roles", function ($q) {
+                            $q->where("name", "manager");
+                        })
+                        ->pluck('id');
                     $this->send_notification($users, '' . $estate->id . '', '#8B0000', 'fa fa-user', 'تم الرفض من العميل والارجاع الى مدير المنشأة');
 
                     $input = new EstateInput();
@@ -513,25 +647,43 @@ class Notificationontroller extends Controller
 
                     return redirect()->route('client_home')->with('done', 'تم الارجاع الى مدير المنشأة');
                 }
-                //if accept
-                    $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
-                    if ($inputs->count() > 0) {
-                        foreach ($inputs as $inp) {
-                            $inp->delete();
-                        }
-                    }
+                if ($request->return) {
                     OrderProcessingNote::create([
-                        'path_type'=>'public',
-                        'step_number'=>6,
-                        'estate_id'=>$estate_id,
-                        'user_id'=>auth()->id(),
-                        'reason'=>'accept',
-                        'note'=>$request->note ?? '',
+                        'path_type' => 'public',
+                        'step_number' => 13,
+                        'estate_id' => $estate_id,
+                        'user_id' => auth()->id(),
+                        'reason' => 'return',
+                        'note' => $request->reject_note ?? '',
                     ]);
+
+                    $users = User::where('id', $estate->reviewer_id)
+                        ->pluck('id');
+                    $this->send_notification($users, '' . $estate->id . '', '#8B0000', 'fa fa-user', 'تم إعادة الطلب من قبل العميل ');
+
+                    $input = new EstateInput();
+                    $input->key = 'إعادة الطلب من قبل العميل';
+                    $input->value = 'رفض';
+                    $input->estate_id = $estate_id;
+                    $input->user_id = auth()->user()->id;
+                    $input->save();
+
+                    DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+                    DB::commit();
+                    return redirect()->route('home')->with('done', 'تم إعادة الطلب إلى المراجع');
+                }
+                if ($estate->recieved_by_client ==1) {
+
+                    $estate->recieved_by_client =2;
+                    $estate->save();
+
                     $users = User::where('membership_level', 'manager')
-                    ->orWhereHas("roles", function($q){ $q->where("name", "manager"); })
-                    ->pluck('id');
-                    $this->send_notification($users, '' . $estate->id . '', '#2E8B57', 'fa fa-user', 'موافقة العميل واكمال عملية ادخال البيانات');
+                        ->orWhereHas("roles", function ($q) {
+                            $q->where("name", "manager");
+                        })
+                        ->pluck('id');
+
+                    $this->send_notification($users, '' . $estate->id . '', '#2E8B57', 'fa fa-user', 'قام العميل بتأكيد استلام التقرير');
 
                     $input = new EstateInput();
                     $input->key = 'موافقة العميل';
@@ -542,13 +694,46 @@ class Notificationontroller extends Controller
 
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
-                    return redirect()->route('client_home')->with('done', 'تم الموافقة والارسال الى مدير المنشأة');
+                    return redirect()->route('client_home')->with('done', 'تم تأكيد استلام التقرير');
+                }
+                //if accept
+                // $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
+                // if ($inputs->count() > 0) {
+                //     foreach ($inputs as $inp) {
+                //         $inp->delete();
+                //     }
+                // }
+                OrderProcessingNote::create([
+                    'path_type' => 'public',
+                    'step_number' => $estate->process_start_date ? 13 : 6,
+                    'estate_id' => $estate_id,
+                    'user_id' => auth()->id(),
+                    'reason' => 'accept',
+                    'note' => $request->note ?? '',
+                ]);
+                $users = User::where('membership_level', 'manager')
+                    ->orWhereHas("roles", function ($q) {
+                        $q->where("name", "manager");
+                    })
+                    ->pluck('id');
 
+                $this->send_notification($users, '' . $estate->id . '', '#2E8B57', 'fa fa-user', $estate->process_start_date ? 'موافقة العميل بعد المراجعة' : 'موافقة العميل واكمال عملية ادخال البيانات');
+
+                $input = new EstateInput();
+                $input->key = 'موافقة العميل';
+                $input->value = 'موافقة';
+                $input->estate_id = $estate_id;
+                $input->user_id = auth()->user()->id;
+                $input->save();
+
+                DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+                DB::commit();
+                return redirect()->route('client_home')->with('done', 'تم الموافقة والارسال الى مدير المنشأة');
             }
 
             if (auth()->user()->membership_level == 'entre' || auth()->user()->hasRole('enter')) {
                 $estate = Estate::where('id', $estate_id)->first();
-                if($request->return){
+                if ($request->return) {
                     $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
                     if ($inputs->count() > 0) {
                         foreach ($inputs as $inp) {
@@ -556,19 +741,21 @@ class Notificationontroller extends Controller
                         }
                     }
                     OrderProcessingNote::create([
-                        'path_type'=>'public',
-                        'step_number'=>8,
-                        'estate_id'=>$estate_id,
-                        'user_id'=>auth()->id(),
-                        'reason'=>'reject',
-                        'note'=>$request->reject_note ?? '',
+                        'path_type' => 'public',
+                        'step_number' => 8,
+                        'estate_id' => $estate_id,
+                        'user_id' => auth()->id(),
+                        'reason' => 'reject',
+                        'note' => $request->reject_note ?? '',
                     ]);
                     //delete manager acceptation
-                    EstateInput::whereEstateId($estate_id)->where('key','like',"%موافقة مدير المنشأة%")->first()->delete();
+                    EstateInput::whereEstateId($estate_id)->where('key', 'like', "%موافقة مدير المنشأة%")->first()->delete();
 
                     $users = User::where('membership_level', 'manager')
-                    ->orWhereHas("roles", function($q){ $q->where("name", "manager"); })
-                    ->pluck('id');
+                        ->orWhereHas("roles", function ($q) {
+                            $q->where("name", "manager");
+                        })
+                        ->pluck('id');
                     $this->send_notification($users, '' . $estate->id . '', '#8B0000', 'fa fa-user', 'تم رفض الطلب من قبل الادخال ');
 
                     $input = new EstateInput();
@@ -634,6 +821,10 @@ class Notificationontroller extends Controller
                 $estate = Estate::where('id', $estate_id)->first();
                 $price_list = [];
                 $price_list = $request->infos;
+
+                $estate->previewer = 2;
+                $estate->save();
+
                 foreach ($price_list as $key => $price) {
                     if ($price['value'] && $price['key']) {
                         $input = new EstateInput();
@@ -663,20 +854,22 @@ class Notificationontroller extends Controller
 
             if (auth()->user()->membership_level == 'rater' || auth()->user()->hasRole('rater')) {
 
-                if($request->return){
+                if ($request->return) {
 
                     OrderProcessingNote::create([
-                        'path_type'=>'public',
-                        'step_number'=>11,
-                        'estate_id'=>$estate_id,
-                        'user_id'=>auth()->id(),
-                        'reason'=>'reject',
-                        'note'=>$request->reject_note ?? '',
+                        'path_type' => 'public',
+                        'step_number' => 11,
+                        'estate_id' => $estate_id,
+                        'user_id' => auth()->id(),
+                        'reason' => 'reject',
+                        'note' => $request->reject_note ?? '',
                     ]);
 
                     $users = User::where('membership_level', $request->return)
-                    ->orWhereHas("roles", function($q) use($request){ $q->where("name", $request->return); })
-                    ->pluck('id');
+                        ->orWhereHas("roles", function ($q) use ($request) {
+                            $q->where("name", $request->return);
+                        })
+                        ->pluck('id');
                     $this->send_notification($users, '' . $estate->id . '', '#8B0000', 'fa fa-user', 'تم إعادة الطلب من قبل المقيم ');
 
                     $input = new EstateInput();
@@ -688,8 +881,8 @@ class Notificationontroller extends Controller
 
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
-                    $type=$request->type =="coordinator" ? ' المنسق' : 'المعاين';
-                    return redirect()->route('home')->with('done', 'تم إعادة الطلب إلى '.$type);
+                    $type = $request->type == "coordinator" ? ' المنسق' : 'المعاين';
+                    return redirect()->route('home')->with('done', 'تم إعادة الطلب إلى ' . $type);
                 }
 
                 if (!$request->assessment) {
@@ -751,8 +944,10 @@ class Notificationontroller extends Controller
                 $estate = Estate::where('id', $estate_id)->first();
                 if ($request->accept == 'manager') {
                     $users = User::where('membership_level', 'manager')
-                    ->orWhereHas("roles", function($q) { $q->where("name", 'manager'); })
-                    ->pluck('id');
+                        ->orWhereHas("roles", function ($q) {
+                            $q->where("name", 'manager');
+                        })
+                        ->pluck('id');
                     //add an id to collection
                     $users = $users->prepend($estate->user_id);
                     //            $users = User::where('id', $estate->user_id)->pluck('id');
@@ -761,40 +956,44 @@ class Notificationontroller extends Controller
                     DB::commit();
                     return redirect()->route('home')->with('done', ' تم ارسال الطلب الى مدير المنشأة ومسودة للعميل');
                 } elseif ($request->accept == 'rater') { //reject
-                    $estate->rater_reason =$request->reject_note ?? '';
+                    $estate->rater_reason = $request->reject_note ?? '';
                     $estate->save();
                     //create a note
                     OrderProcessingNote::create([
-                        'path_type'=>'public',
-                        'step_number'=>12,
-                        'estate_id'=>$estate_id,
-                        'user_id'=>auth()->id(),
-                        'reason'=>'reject',
-                        'note'=>$request->reject_note ?? '',
+                        'path_type' => 'public',
+                        'step_number' => 12,
+                        'estate_id' => $estate_id,
+                        'user_id' => auth()->id(),
+                        'reason' => 'reject',
+                        'note' => $request->reject_note ?? '',
                     ]);
                     $users = User::where('membership_level', 'rater')
-                    ->orWhereHas("roles", function($q) { $q->where("name", 'rater'); })
-                    ->pluck('id');
+                        ->orWhereHas("roles", function ($q) {
+                            $q->where("name", 'rater');
+                        })
+                        ->pluck('id');
                     //            $users = User::where('id', $estate->user_id)->pluck('id');
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     $this->send_notification($users, '' . $estate->id . '', '#40E0D0', 'fa fa-user', 'عملية رفض على ما تم تقييمة');
                     DB::commit();
                     return redirect()->route('home')->with('done', 'تم الارسال الى المقيم مرة اخرى');
                 } elseif ($request->accept == 'previewer') { //reject
-                    $estate->previewer_reason =$request->reject_note ?? '';
+                    $estate->previewer_reason = $request->reject_note ?? '';
                     $estate->save();
                     //create a note
                     OrderProcessingNote::create([
-                        'path_type'=>'public',
-                        'step_number'=>12,
-                        'estate_id'=>$estate_id,
-                        'user_id'=>auth()->id(),
-                        'reason'=>'reject',
-                        'note'=>$request->reject_note ?? '',
+                        'path_type' => 'public',
+                        'step_number' => 12,
+                        'estate_id' => $estate_id,
+                        'user_id' => auth()->id(),
+                        'reason' => 'reject',
+                        'note' => $request->reject_note ?? '',
                     ]);
                     $users = User::where('membership_level', 'previewer')
-                    ->orWhereHas("roles", function($q) { $q->where("name", 'previewer'); })
-                    ->pluck('id');
+                        ->orWhereHas("roles", function ($q) {
+                            $q->where("name", 'previewer');
+                        })
+                        ->pluck('id');
                     //            $users = User::where('id', $estate->user_id)->pluck('id');
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     $this->send_notification($users, '' . $estate->id . '', '#40E0D0', 'fa fa-user', 'عملية رفض   وتم الارسال الى المعاين ');
@@ -804,20 +1003,22 @@ class Notificationontroller extends Controller
             }
 
             if (auth()->user()->membership_level == 'coordinator' || auth()->user()->hasRole('coordinator')) {
-                if($request->return){
+                if ($request->return) {
 
                     OrderProcessingNote::create([
-                        'path_type'=>'public',
-                        'step_number'=>9,
-                        'estate_id'=>$estate_id,
-                        'user_id'=>auth()->id(),
-                        'reason'=>'reject',
-                        'note'=>$request->reject_note ?? '',
+                        'path_type' => 'public',
+                        'step_number' => 9,
+                        'estate_id' => $estate_id,
+                        'user_id' => auth()->id(),
+                        'reason' => 'reject',
+                        'note' => $request->reject_note ?? '',
                     ]);
 
                     $users = User::where('membership_level', 'entre')
-                    ->orWhereHas("roles", function($q){ $q->where("name", "enter"); })
-                    ->pluck('id');
+                        ->orWhereHas("roles", function ($q) {
+                            $q->where("name", "enter");
+                        })
+                        ->pluck('id');
                     $this->send_notification($users, '' . $estate->id . '', '#8B0000', 'fa fa-user', 'تم إعادة الطلب من قبل المنسق ');
 
                     $input = new EstateInput();
@@ -835,8 +1036,8 @@ class Notificationontroller extends Controller
                     'reviewer_id' => 'required|numeric',
                     'approver_id' => 'required|numeric',
                     'perviewer_id' => 'required|numeric',
-                    'process_start_date'     =>'required|date',
-                    'process_end_date'     =>'required|date',
+                    'process_start_date'     => 'required|date',
+                    'process_end_date'     => 'required|date',
                 ]);
                 $estate = Estate::where('id', $estate_id)->first();
                 $users = User::where('id', $request->perviewer_id)->pluck('id');
@@ -857,42 +1058,41 @@ class Notificationontroller extends Controller
                 DB::commit();
                 return redirect()->route('home')->with('done', 'تم الارسال الى المعاين لاكمال باقي المراحل');
             }
-            if (auth()->user()->membership_level == 'approver') {
+            if (auth()->user()->membership_level == 'approver' || auth()->user()->hasRole('approver')) {
                 $estate = Estate::where('id', $estate_id)->first();
-                if ($request->accept == 1) {
-                    $estate->archive = 1;
-                    // $estate->qema = $request->qema_code;
+
+                if ($request->return) {
+
+                    $estate->drafted_by = null;
+                    $estate->draft_note = $request->draft_note;
                     $estate->save();
-                    // $input = new EstateInput();
-                    // $input->key = 'رقم التسجيل في قيمة';
-                    // $input->value = $request->qema_code ?: '1';
-                    // $input->estate_id = $estate_id;
-                    // $input->user_id = auth()->user()->id;
-                    // $input->save();
 
-                    try {
-                        DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
-                        $users = User::where('membership_level', 'qima_approver')->pluck('id');
-                        //            $users = User::where('id', $estate->user_id)->pluck('id');
-                        $this->send_notification($users, '' . $estate->id . '', '#000', 'fa fa-user', 'تم الارسال الى معتمد قيمة');
-                    } catch (\Exception $e) {
+                    OrderProcessingNote::create([
+                        'path_type' => 'public',
+                        'step_number' => $request->return == 'manager' ? 15 : 5,
+                        'estate_id' => $estate_id,
+                        'user_id' => auth()->id(),
+                        'reason' => 'return',
+                        'note' => $request->draft_note ?? '',
+                    ]);
+
+                    $return_to = $request->return == 'manager' ? 'مدير المنشأة' : 'المنسق';
+                    if ($request->return == 'manager') {
+                        $users = User::where('membership_level', 'manager')->orWhereHas("roles", function ($q) {
+                            $q->where("name", "manager");
+                        })
+                            ->pluck('id');
+                    } else {
+                        User::where('membership_level', 'coordinator')->orWhereHas("roles", function ($q) {
+                            $q->where("name", "coordinator");
+                        })
+                            ->pluck('id');
                     }
-                    DB::commit();
 
-                    return redirect()->route('home')->with('done', 'تمت الموافقة والارسال الى مراجع قيمة ');
-                }
-                if ($request->accept == 2) {
-                    // $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
-                    // if ($inputs->count() > 0) {
-                    //     foreach ($inputs as $inp) {
-                    //         $inp->delete();
-                    //     }
-                    // }
-                    $users = User::where('membership_level', 'rater_manager')->pluck('id');
-                    $this->send_notification($users, '' . $estate->id . '', '#8B0000', 'fa fa-user', 'تم الارجاع الى مدخل البيانات');
+                    $this->send_notification($users, '' . $estate->id . '', '#8B0000', 'fa fa-user', 'تم ارجاع الطلب من قبل مدير المعتمد  ' . $return_to);
 
                     $input = new EstateInput();
-                    $input->key = 'موافقة الاعتماد ';
+                    $input->key = 'موافقة المعتمد';
                     $input->value = 'رفض';
                     $input->estate_id = $estate_id;
                     $input->user_id = auth()->user()->id;
@@ -901,14 +1101,175 @@ class Notificationontroller extends Controller
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
 
-                    return redirect()->route('home')->with('done', 'تم الارجاع الى مدخل البيانات');
+                    return redirect()->route('home')->with('done', 'تم الارجاع الى ' . $return_to);
                 }
+                //ارسال الى الادخال
+                if ($request->approve) {
+                    // $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
+                    // if ($inputs->count() > 0) {
+                    //     foreach ($inputs as $inp) {
+                    //         $inp->delete();
+                    //     }
+                    // }
+                    $estate->drafted_by = null;
+                    $estate->draft_note = $request->draft_note;
+                    $estate->save();
+
+                    $input = new EstateInput();
+                    $input->key = 'موافقة مدير المنشأة';
+                    $input->value = 'موافقة';
+                    $input->estate_id = $estate_id;
+                    $input->user_id = auth()->user()->id;
+                    $input->save();
+
+                    $users = User::where('membership_level', 'entre')->orWhereHas("roles", function ($q) {
+                        $q->where("name", "enter");
+                    })
+                        ->pluck('id');
+                    $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', '  تم اعتماد الطلب من طرف مدير المشأة لاكمال البيانات التفصيلية');
+
+                    DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+                    DB::commit();
+
+                    return redirect()->route('home')->with('done', 'تم اعتماد الطلب وارساله الى الادخال لإكمال البيانات التفصيلية');
+                }
+                //ارسال الى الاعتماد المرحلة 14
+                if ($request->send_to_value_approver) {
+
+                    $estate->approver = 2;
+                    $estate->save();
+
+                    $input = new EstateInput();
+                    $input->key = 'موافقة المعتمد';
+                    $input->value = 'موافقة';
+                    $input->estate_id = $estate_id;
+                    $input->user_id = auth()->user()->id;
+                    $input->save();
+
+                    $users = User::where('membership_level', 'qima_approver')->orWhereHas("roles", function ($q) {
+                        $q->where("name", "value_approver");
+                    })->pluck('id');
+                    $this->send_notification($users, '' . $estate->id . '', '#2E8B57', 'fa fa-user', 'تم ارسال الطلب من طرف المعتمد ');
+
+
+                    // DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+                    DB::commit();
+
+                    return redirect()->route('home')->with('done', 'تم ارسال الطلب لاعتماد قيمة');
+                }
+                // if ($request->accept == 1) {
+                //     $estate->archive = 1;
+                //     // $estate->qema = $request->qema_code;
+                //     $estate->save();
+                //     // $input = new EstateInput();
+                //     // $input->key = 'رقم التسجيل في قيمة';
+                //     // $input->value = $request->qema_code ?: '1';
+                //     // $input->estate_id = $estate_id;
+                //     // $input->user_id = auth()->user()->id;
+                //     // $input->save();
+
+                //     try {
+                //         DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+                //         $users = User::where('membership_level', 'qima_approver')->pluck('id');
+                //         //            $users = User::where('id', $estate->user_id)->pluck('id');
+                //         $this->send_notification($users, '' . $estate->id . '', '#000', 'fa fa-user', 'تم الارسال الى معتمد قيمة');
+                //     } catch (\Exception $e) {
+                //     }
+                //     DB::commit();
+
+                //     return redirect()->route('home')->with('done', 'تمت الموافقة والارسال الى مراجع قيمة ');
+                // }
+                // if ($request->accept == 2) {
+                //     // $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
+                //     // if ($inputs->count() > 0) {
+                //     //     foreach ($inputs as $inp) {
+                //     //         $inp->delete();
+                //     //     }
+                //     // }
+                //     $users = User::where('membership_level', 'rater_manager')->pluck('id');
+                //     $this->send_notification($users, '' . $estate->id . '', '#8B0000', 'fa fa-user', 'تم الارجاع الى مدخل البيانات');
+
+                //     $input = new EstateInput();
+                //     $input->key = 'موافقة الاعتماد ';
+                //     $input->value = 'رفض';
+                //     $input->estate_id = $estate_id;
+                //     $input->user_id = auth()->user()->id;
+                //     $input->save();
+
+                //     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+                //     DB::commit();
+
+                //     return redirect()->route('home')->with('done', 'تم الارجاع الى مدخل البيانات');
+                // }
             }
-            if (auth()->user()->membership_level == 'qima_approver') {
+            if (auth()->user()->membership_level == 'qima_approver' || auth()->user()->hasRole('value_approver')) {
                 $estate = Estate::where('id', $estate_id)->first();
+
+                //if return
+                if ($request->return) {
+
+                    $estate->drafted_by = null;
+                    $estate->draft_note = $request->draft_note;
+                    $estate->save();
+
+                    OrderProcessingNote::create([
+                        'path_type' => 'public',
+                        'step_number' => 16,
+                        'estate_id' => $estate_id,
+                        'user_id' => auth()->id(),
+                        'reason' => 'return',
+                        'note' => $request->draft_note ?? '',
+                    ]);
+
+                    $return_to = $request->return == 'approver' ? 'المعتمد' : 'المنسق';
+                    if ($request->return == 'approver') {
+                        $users = User::where('membership_level', 'approver')->orWhereHas("roles", function ($q) {
+                            $q->where("name", "approver");
+                        })
+                            ->pluck('id');
+                    } else {
+                        User::where('membership_level', 'coordinator')->orWhereHas("roles", function ($q) {
+                            $q->where("name", "coordinator");
+                        })
+                            ->pluck('id');
+                    }
+
+                    $this->send_notification($users, '' . $estate->id . '', '#8B0000', 'fa fa-user', 'تم ارجاع الطلب من قبل مدير المعتمد  ' . $return_to);
+
+                    $input = new EstateInput();
+                    $input->key = 'موافقة المعتمد';
+                    $input->value = 'رفض';
+                    $input->estate_id = $estate_id;
+                    $input->user_id = auth()->user()->id;
+                    $input->save();
+
+                    DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+                    DB::commit();
+
+                    return redirect()->route('home')->with('done', 'تم الارجاع الى ' . $return_to);
+                }
+                if ($request->cancel) {
+
+                    $estate = Estate::where('id', $estate_id)->first();
+                    $estate->drafted_by = auth()->id();
+                    $estate->draft_note = $request->draft_note;
+                    $estate->save();
+
+                    // $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
+                    // if ($inputs->count() > 0) {
+                    //     foreach ($inputs as $inp) {
+                    //         $inp->delete();
+                    //     }
+                    // }
+                    //TODO:: add show/hide for notitication
+                    // DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
+                    DB::commit();
+                    return redirect()->route('home')->with('done', 'تم الالغاء والحفظ كمسودة');
+                }
 
                 $estate->qema = $request->qema_code;
                 $estate->save();
+
                 $input = new EstateInput();
                 $input->key = 'رقم التسجيل في قيمة';
                 $input->value = $request->qema_code ?: '1';
@@ -916,13 +1277,24 @@ class Notificationontroller extends Controller
                 $input->user_id = auth()->user()->id;
                 $input->save();
 
+                if ($request->file('files')) {
+                    $this->saveimages($request->file('files'), 'pictures/estates', $estate->id, Estate::class, 'file');
+                }
+
+                $users = User::where('membership_level', 'manager')->orWhereHas("roles", function ($q) {
+                    $q->where("name", "manager");
+                })
+                    ->pluck('id');
+
+                $this->send_notification($users, '' . $estate->id . '', '#2E8B57', 'fa fa-user', 'تم ارسال الطلب من طرف معتمد قيمة ');
+
                 try {
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                 } catch (\Exception $e) {
                 }
                 DB::commit();
 
-                return redirect()->route('home')->with('done', 'تمت الموافقة والارسال الى الارشيف ');
+                return redirect()->route('home')->with('done', 'تم ارسال الطلب الى مدير المنشأة ');
             }
         } catch (\Exception $e) {
             DB::rollBack();

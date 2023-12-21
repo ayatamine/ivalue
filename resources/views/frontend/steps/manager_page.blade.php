@@ -65,6 +65,7 @@
             </div>
             <div class="card-content">
                 <div class="card-body">
+
                     <form method="post" action="{{ route('level_inputs' , $estate->id) }}" id="myform"
                         enctype="multipart/form-data">
                         @csrf
@@ -148,32 +149,64 @@
                         <!--    </div>-->
                         <!--</div>-->
                         {{-- @endif --}}
+                        <div class="form-row">
+                            <div class="col-sm-12 col-12">
+                                <label for="stats">
+                                    حالة الاستلام من طرف العميل
+                                </label>
+                                <div class="form-group">
+                                    @if($estate->recieved_by_client == 0)
+                                        <span class="text-danger d-block mt-1 font-bold">لم يتم إرسال التقرير للعميل بعد</span>
+                                    @elseif($estate->recieved_by_client == 1)
+                                        <span class="text-primary d-block mt-1 font-bold">تم إرسال التقرير للعميل  بانتظار التأكيد</span>
+                                    @else
+                                        <span class="text-success d-block mt-1 font-bold">تم تأكيد التسليم من طرف العميل</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
                         <hr id="last_hr">
+                        @if($estate->recieved_by_client !==2)
                         <div class="flex-column d-flex flex-md-row justify-content-between align-items-center "
                             style="    gap: 1%;">
                             @if(auth()->user()->hasRole('manager'))
+                             @if($estate->qema)
+                                    @if($estate->recieved_by_client !==0) {{--if not recieved yet--}}
+                                    <button class="btn btn-primary w-50 mb-1 mb-md-0"  id="send_to_client">إرسال الطلب والتقرير للعميل</button>
+                                    @elseif($estate->recieved_by_client !==1)
+                                    <button class="btn btn-success w-50 mb-1 mb-md-0"  id="end_report">إنهاء التقرير</button>
+                                    @endif
+                                    <span class="btn btn-warning w-50 mb-1 mb-md-0 return_order" data-return_to="value_approver" >إعادة الطلب لمعتمد قيمة</span>
+                             @else
+                                @if($estate->process_start_date)
+                                    <button class="btn btn-primary w-50 mb-1 mb-md-0"  id="send_to_approver">إرسال الطلب إلى الاعتماد</button>
+                                    <span class="btn btn-warning w-50 mb-1 mb-md-0 return_order" data-return_to="reviewer" >إعادة الطلب للمراجع</span>
+                                @else
+                                    @if(\App\Models\EstateInput::where('key','like',"%موافقة العميل%")->whereValue('موافقة')->whereEstateId($estate->id)->latest()->first())
+                                    <button class="btn btn-success w-50 mb-1 mb-md-0" type="submit" id="approve_request">اعتماد الطلب </button>
+                                    <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="submit_order">
+                                        إعادة الإرسال للعميل
+                                    </button>
+                                    @else
+                                    <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="submit_order">
+                                        موافقة وإرسال إلى العميل
+                                    </button>
+                                    @endif
 
-                            @if(\App\Models\EstateInput::where('key','like',"%موافقة العميل%")->whereValue('موافقة')->whereEstateId($estate->id)->latest()->first())
-                            <button class="btn btn-success w-50 mb-1 mb-md-0" type="submit" id="approve_request">اعتماد الطلب </button>
-                            <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="submit_order">
-                                إعادة الإرسال للعميل
-                            </button>
+                                    <span class="btn btn-warning w-50 mb-1 mb-md-0 return_order" data-return_to="rater_manager">رفض وإرجاع لمدير
+                                        التقييم</span>
+                                @endif
+                             @endif
                             @else
-                            <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="submit_order">
-                                موافقة وإرسال إلى العميل
-                            </button>
-                            @endif
-
-                            <span class="btn btn-warning w-50 mb-1 mb-md-0" id="return_order">رفض وإرجاع لمدير
-                                التقييم</span>
-                            @else
-                            <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="submit_order">اعتماد
+                            {{-- the order is proccessed --}}
+                            {{-- <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="submit_order">اعتماد
                                 التقرير و وارسالة الى اعتماد قيمة </button>
-                            <span class="btn btn-warning w-50 mb-1 mb-md-0" id="return_order">رفض والرجوع الى مدير
-                                التقييم</span>
+                            <span class="btn btn-warning w-50 mb-1 mb-md-0 return_order" data-return_to="rater_manager">رفض والرجوع الى مدير
+                                التقييم</span> --}}
                             @endif
                             <span class="btn btn-danger w-50 mb-1 mb-md-0" id="cancel_order">الغاء وحفظ كمسودة</span>
                         </div>
+                        @endif
                     </form>
                 </div>
             </div>
@@ -192,7 +225,7 @@
                 e.preventDefault();
                 $('#order_return').remove();
                 $(this).text('انقر للتأكيد ...')
-                $('#myform').append('<input type="text" class="d-none" name="cancel" id="draft_cancel" value="cancel" >')
+                if(!$('#draft_cancel').length) $('#myform').append('<input type="text" class="d-none" name="cancel" id="draft_cancel" value="cancel" >')
                 if($('#draft_note').length){
                     $('#myform').submit();
                 }else{
@@ -205,11 +238,12 @@
                 }
 
         });
-        $('#return_order').click(function (e) {
+        $('.return_order').click(function (e) {
+                let return_to = $(this).data('return_to');
                 e.preventDefault();
                 $('#draft_cancel').remove();
                 $(this).text('انقر للتأكيد ...')
-                $('#myform').append('<input type="text" class="d-none" name="return" id="order_return" value="return" >')
+                if(!$('#order_return').length) $('#myform').append(`<input type="text" class="d-none" name="return" id="order_return" value="${return_to}" >`)
                 if($('#draft_note').length){
                     $('#myform').submit();
                 }else{
@@ -226,8 +260,36 @@
         $('#approve_request').click(function (e) {
                 e.preventDefault();
                 $('#draft_cancel').remove();
-                $(this).text('انقر للتأكيد ...')
                 $('#myform').append('<input type="text" class="d-none" name="approve" id="order_approve" value="approve" >')
+                $('#myform').submit();
+
+        });
+        $('#send_to_approver').click(function (e) {
+                e.preventDefault();
+                $('#draft_cancel').remove();
+                $('#order_approve').remove();
+                $('#order_return').remove();
+                $('#myform').append('<input type="text" class="d-none" name="send_to_approver" id="send_to_approver" value="approve" >')
+                $('#myform').submit();
+
+        });
+        $('#send_to_client').click(function (e) {
+                e.preventDefault();
+                $('#draft_cancel').remove();
+                $('#order_approve').remove();
+                $('#order_return').remove();
+                $('#myform').append('<input type="text" class="d-none" name="send_to_client" id="send_to_client" value="send_to_client" >')
+                $('#myform').submit();
+
+        });
+        $('#end_report').click(function (e) {
+                e.preventDefault();
+                $('#draft_cancel').remove();
+                $('#order_approve').remove();
+                $('#order_return').remove();
+                $('#send_to_client').remove();
+                $('#approve_request').remove();
+                $('#myform').append('<input type="text" class="d-none" name="end_report" id="end_report" value="end_report" >')
                 $('#myform').submit();
 
         });
@@ -235,6 +297,8 @@
                e.preventDefault();
                $('#draft_cancel').remove();
                $('#order_return').remove();
+               $('#order_approve').remove();
+               $('#send_to_approver').remove();
                $('#draft_note').remove();
                $('#myform').submit();
         });

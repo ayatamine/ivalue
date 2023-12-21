@@ -101,7 +101,7 @@
 @endphp
 @if(auth()->user()->membership_level == 'manager' || auth()->user()->hasRole('manager'))
 @php
-$note = \App\Models\OrderProcessingNote::whereEstateId($estate->id)->where('step_number',6)->first()
+$note = \App\Models\OrderProcessingNote::whereEstateId($estate->id)->whereIn('step_number',[6,13,8,15])->first()
 @endphp
 @elseif(auth()->user()->membership_level == 'rater_manager' || auth()->user()->hasRole('rater_manager'))
 @php
@@ -118,6 +118,14 @@ $note = \App\Models\OrderProcessingNote::whereEstateId($estate->id)->whereIn('st
 @elseif(auth()->user()->membership_level == 'previewer' || auth()->user()->hasRole('previewer'))
 @php
 $note = \App\Models\OrderProcessingNote::whereEstateId($estate->id)->whereIn('step_number',[12])->first()
+@endphp
+@elseif(auth()->user()->membership_level == 'approver' || auth()->user()->hasRole('approver'))
+@php
+$note = \App\Models\OrderProcessingNote::whereEstateId($estate->id)->whereIn('step_number',[16])->first()
+@endphp
+@elseif(auth()->user()->membership_level == 'coordinator' || auth()->user()->hasRole('coordinator'))
+@php
+$note = \App\Models\OrderProcessingNote::whereEstateId($estate->id)->latest()->first()
 @endphp
 @endif
 @if($note)
@@ -331,31 +339,29 @@ $note = \App\Models\OrderProcessingNote::whereEstateId($estate->id)->whereIn('st
                 <p id="files-area">
                     <span id="filesList">
                         <span id="files-names">
-                    @if($estate->file_urls)
-                    @foreach($estate->file_urls as $file_url)
+                            @if($estate->file_urls)
+                            @foreach($estate->file_urls as $file_url)
 
-                        {{-- <a href="{{ $file_url }}">
-                            <i class="fa fa-file"></i>
-                        </a> --}}
-                        <span class="file-block">
-                            {{-- <span class="file-delete"><span>+</span></span> --}}
-                            {{-- <span class="name">location_mark.svg</span> --}}
-                            {{-- if file exists --}}
+                                {{-- <a href="{{ $file_url }}">
+                                    <i class="fa fa-file"></i>
+                                </a> --}}
+                                <span class="file-block">
+                                    {{-- <span class="file-delete"><span>+</span></span> --}}
+                                    {{-- <span class="name">location_mark.svg</span> --}}
+                                    @if(strpos( mime_content_type($file_url), "image/") === 0)
+                                    <img src="{{ $file_url }}">
+                                    @else
+                                    <a target="_blink" href="{{ $file_url }}" style="display: block;height: 70px;
+                                    width: 70px;
+                                    margin: auto;
+                                    margin-top: 0.5rem;">
+                                        <i class="fa fa-file"></i>
+                                    </a>
+                                    @endif
+                                </span>
 
-                            @if( file_exists($file_url) && strpos( mime_content_type($file_url), "image/") === 0)
-                            <img src="{{ $file_url }}">
-                            @else
-                            <a target="_blink" href="{{ $file_url }}" style="display: block;height: 70px;
-                            width: 70px;
-                            margin: auto;
-                            margin-top: 0.5rem;">
-                                <i class="fa fa-file"></i>
-                            </a>
-                            @endif
-                        </span>
-
-                    @endforeach
-                   @endif
+                            @endforeach
+                           @endif
                 </span>
                     </span>
                 </p>

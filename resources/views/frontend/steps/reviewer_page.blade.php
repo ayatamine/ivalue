@@ -111,9 +111,9 @@
                                     <div class="form-group">
                                         <select name="accept" id="accept"
                                                 class="select2 form-control">
-                                            <option value="manager">موافقة وارسال الى مدير المنشأة  </option>
-                                            <option value="rater"> الارجاع الى المقيم</option>
-                                            <option value="previewer"> الارجاع الى المعاين </option>
+                                            <option value="manager">موافقة وارسال الى مدير المنشأة ومسودة للعميل </option>
+                                            <option value="rater"> إعادة الطلب الى المقيم</option>
+                                            <option value="previewer"> إعادة الطلب الى المعاين </option>
                                         </select>
                                     </div>
                                     @error('accept')

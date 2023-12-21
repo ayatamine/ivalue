@@ -58,6 +58,38 @@
     <section id="data-thumb-view" class="data-thumb-view-header">
         @include('frontend.steps.estate_includes.estate_info')
         <!-- dataTable ends -->
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">اعتماد الطلب رقم #{{$estate->id}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="{{ route('level_inputs' , $estate->id) }}" id="myform2"
+                            enctype="multipart/form-data">
+                            @csrf
+                            {{ method_field('PATCH') }}
+
+                                <div class="form-row">
+                                <div class="col-md-12">
+                                    <div class="col-md-12 col-12 mb-3">
+                                        <label></label>
+                                        <textarea class="form-control" name="reason"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            لم يتم برمجتها بعد
+                            <button class="btn btn-primary" id="submit_order">ارسال</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="card">
             <div class="card-header">
@@ -89,61 +121,77 @@
                             </div>
                         </div>
 
-
-                        <a href="{{ route('pdf_pro' , $estate->id) }}">تصفح التقرير</a>
-                        <br>
-
-
-                        <div class="form-row rel_part">
+                        {{-- @if(auth()->user()->hasRole('manager'))
+                        <div class="form-row">
                             <div class="col-sm-12 col-12">
                                 <label for="accept">
-                                    اعتماد قيمة
+                                    حالة الموافقة
                                 </label>
                                 <div class="form-group">
-                                    <div class="col-sm-12 col-12">
-
-                                        <div class="form-group">
-                                            <input placeholder="رقم التسجيل في قيمة  " name="qema_code" id="qema_code"
-                                                class="form-control" type="number" required>
-
-                                        </div>
-
-
-                                    </div>
+                                    <select name="accept" id="accept" class="select2 form-control">
+                                        <option value="1">موافقة وارسال الى العميل </option>
+                                        <option value="2">رفض والرجوع الى مدير التقييم</option>
+                                    </select>
                                 </div>
-
+                                @error('accept')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
-                        <div class="col-md-12 col-12 mb-3">
-                            <label for="files">نسخة من مستند الشهادة               </label>
-                            <p class="mt-5 text-center">
-                                <label for="attachment">
-                                    <a class="btn btn-primary text-light" role="button" aria-disabled="false">+ Add</a>
-
+                        @else --}}
+                        {{-- @if(!auth()->user()->hasRole('manager'))
+                        <a href="{{ route('pdf_pro' , $estate->id) }}">تصفح التقرير</a>
+                        <br>
+                        <div class="form-row">
+                            <div class="col-sm-12 col-12">
+                                <label for="accept">
+                                    حالة الموافقة
                                 </label>
-                                <input type="file" name="files" id="attachment"
-                                    style="visibility: hidden; position: absolute;"  />
+                                <div class="form-group">
+                                    <select name="accept" id="accept" class="select2 form-control">
+                                        <option value="1">اعتماد التقرير و وارسالة الى اعتماد قيمة </option>
+                                        <option value="2">رفض والرجوع الى مدير التقييم</option>
+                                    </select>
+                                </div>
+                                @error('accept')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div> --}}
 
-                            </p>
-                            <p id="files-area">
-                                <span id="filesList">
-                                    <span id="files-names"></span>
-                                </span>
-                            </p>
-                            @error('files')
-                            <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
+                        <!--<div class="form-row rel_part">-->
+                        <!--    <div class="col-sm-12 col-12">-->
+                        <!--        <label for="accept">-->
+                        <!--           اعتماد قيمة-->
+                        <!--        </label>-->
+                        <!--        <div class="form-group">-->
+                        <!--             <div class="col-sm-12 col-12">-->
+
+                        <!--       <div class="form-group">-->
+                        <!--            <input placeholder="رقم التسجيل في قيمة  " name="qema_code" id="qema_code"-->
+                        <!--                    class="form-control" type="number" required>-->
+
+                        <!--        </div>-->
+
+
+                        <!--    </div>-->
+                        <!--        </div>-->
+
+                        <!--    </div>-->
+                        <!--</div>-->
+                        {{-- @endif --}}
                         <hr id="last_hr">
                         <div class="flex-column d-flex flex-md-row justify-content-between align-items-center "
                             style="    gap: 1%;">
                             {{-- prevent default  --}}
-                            <button class="btn btn-primary w-50 mb-1 mb-md-0" id="send_to_manager" >إرسال الطلب إلى مدير المنشأة</button>
+                            <button class="btn btn-primary w-50 mb-1 mb-md-0" id="approve_order" data-toggle="modal"
+                                data-target="#exampleModal">إعتماد الطلب</button>
+                            {{-- <button class="btn btn-primary w-50 mb-1 mb-md-0" id="approve_order">إرسال الطلب إلى
+                                الاعتماد</button> --}}
                             <button class="btn btn-warning w-50 mb-1 mb-md-0 return_order"
-                                data-return_to="approver">إعادة الطلب إلى الاعتماد</button>
+                                data-return_to="manager">إعادة الطلب إلى مدير المنشأة</button>
                             <span class="btn btn-danger w-50 mb-1 mb-md-0 return_order"
-                                data-return_to="coordinator">رفض الطلب وإرجاعه للمنسق</span>
-                            <span class="btn btn-info w-50 mb-1 mb-md-0 " id="cancel_order">حفظ كمسودة</span>
+                                data-return_to="coordinator">رفض الطلب وإرجاعه إلى المنسق</span>
                         </div>
                     </form>
                 </div>
@@ -157,26 +205,9 @@
 @section('frontend-footer')
 <!-- BEGIN: Vendor JS-->
 <script src="{{ asset('frontend') }}/app-assets/vendors/js/vendors.min.js"></script>
-<!-- BEGIN Vendor JS-->
 <script>
     $(document).ready(function () {
-        $('#cancel_order').click(function (e) {
-                e.preventDefault();
-                $('#order_return').remove();
-                $(this).text('انقر للتأكيد ...')
-                if(!$('#draft_cancel').length) $('#myform').append('<input type="text" class="d-none" name="cancel" id="draft_cancel" value="cancel" >')
-                if($('#draft_note').length){
-                    $('#myform').submit();
-                }else{
-                    $(`<div class="col-md-12 col-12 mb-3">
-                                        <label for="draft_note"> ملاحظة على المسودة </label>
-                                        <textarea rows="5" type="text" name="draft_note"
-                                                  class="form-control" id="draft_note" placeholder="اكتب ملاحظة على المسودة "
-                                                  value=""></textarea>
-                                    </div>`).insertBefore('#last_hr')
-                }
 
-        });
         $('#approve_order').click(function (e) {
             e.preventDefault()
         })
@@ -225,6 +256,7 @@
         // });
       })
 </script>
+<!-- BEGIN Vendor JS-->
 <!-- BEGIN: Page Vendor JS-->
 <script src="{{ asset('frontend') }}/app-assets/vendors/js/extensions/dropzone.min.js"></script>
 <script src="{{ asset('frontend') }}/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
@@ -234,6 +266,7 @@
 <script src="{{ asset('frontend') }}/app-assets/vendors/js/tables/datatable/dataTables.select.min.js"></script>
 <script src="{{ asset('frontend') }}/app-assets/vendors/js/tables/datatable/datatables.checkboxes.min.js"></script>
 <!-- END: Page Vendor JS-->
+
 <!-- BEGIN: Theme JS-->
 <script src="{{ asset('frontend') }}/app-assets/js/core/app-menu.js"></script>
 <script src="{{ asset('frontend') }}/app-assets/js/core/app.js"></script>
