@@ -1,5 +1,5 @@
 <!-- BEGIN: Header-->
-<nav class="header-navbar navbar-expand-lg navbar navbar-with-menu floating-nav @if(Auth::user()->dark_mode == 1) navbar-dark @else navbar-light @endif navbar-shadow">
+<nav class="header-navbar navbar-expand-lg navbar navbar-with-menu floating-nav @if(auth()->check() && Auth::user()->dark_mode == 1) navbar-dark @else navbar-light @endif navbar-shadow">
     <div class="navbar-wrapper">
         <div class="navbar-container content">
             <div class="navbar-collapse" id="navbar-mobile">

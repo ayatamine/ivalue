@@ -80,7 +80,7 @@
     </style>
     @include('frontend.layout.head')
 </head>
-<body class="vertical-layout vertical-menu-modern @if(Auth::user()->dark_mode == 1) dark-layout @endif 2-columns  navbar-floating footer-static  "
+<body class="vertical-layout vertical-menu-modern @if(auth()->check() && Auth::user()->dark_mode == 1) dark-layout @endif 2-columns  navbar-floating footer-static  "
       data-open="click" data-menu="vertical-menu-modern" data-col="2-columns" data-layout="dark-layout">
 <input type="hidden" value="{{URL::to('/')}}" id="base_url">
 <!--Preloader-->

@@ -68,8 +68,10 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'is_not_client' => \App\Http\Middleware\IsNotClientMiddleware::class,
+        'tenant' => \App\Http\Middleware\IdentifyTenant::class,
     ];
     protected $middlewarePriority = [
         \App\Http\Middleware\TeamsPermission::class,
+        \App\Http\Middleware\IdentifyTenant::class,
     ];
 }

@@ -35,6 +35,11 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
+
         });
+    }
+    protected function centralDomains(): array
+    {
+        return config('tenancy.central_domains');
     }
 }

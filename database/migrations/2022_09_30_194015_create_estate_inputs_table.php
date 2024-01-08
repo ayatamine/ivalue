@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Estate;
 
 class CreateEstateInputsTable extends Migration
 {
@@ -19,9 +20,9 @@ class CreateEstateInputsTable extends Migration
             $table->string('key')->nullable();
             $table->string('value')->nullable();
 
-            $table->bigInteger('estate_id')->unsigned()->index()->nullable();
-            $table->foreign('estate_id')->references('id')->on('estates')->onDelete('cascade');
-
+            // $table->bigInteger('estate_id')->unsigned()->index()->nullable();
+            // $table->foreign('estate_id')->references('id')->on('estates')->onDelete('cascade');
+            $table->foreignIdFor(Estate::class)->nullable();
             $table->bigInteger('user_id')->unsigned()->index()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 

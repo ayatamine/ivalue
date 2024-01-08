@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('estates', function (Blueprint $table) {
-            $table->dropColumn('perviewer_date');
-            $table->dropColumn('reviewer_date');
-            $table->dropColumn('rater_date');
-            $table->dropColumn('approver_date');
+            // $table->dropColumn('perviewer_date');
+            // $table->dropColumn('reviewer_date');
+            // $table->dropColumn('rater_date');
+            // $table->dropColumn('approver_date');
             $table->date('process_start_date')->nullable()->after('rater_reason')->comment('تاريخ بداية الطلب');
             $table->date('process_end_date')->nullable()->after('process_start_date')->comment('تاريخ انتهاء الطلب');
         });
@@ -27,10 +27,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('estates', function (Blueprint $table) {
-            $table->date('perviewer_date')->nullable();
-            $table->date('reviewer_date')->nullable();
-            $table->date('rater_date')->nullable();
-            $table->date('approver_date')->nullable();
+            // $table->date('perviewer_date')->nullable();
+            // $table->date('reviewer_date')->nullable();
+            // $table->date('rater_date')->nullable();
+            // $table->date('approver_date')->nullable();
             $table->dropColumn('process_start_date');
             $table->dropColumn('process_end_date');
         });

@@ -58,6 +58,10 @@ Route::group([ 'middleware' => ['auth',IsNotClientMiddleware::class]], function 
 
     Route::resource('countries', CountryController::class)->except(['show']);
     Route::delete('delete_countries', [CountryController::class,'delete_countries'])->name('delete_countries');
+
+    Route::resource('establishments',App\Http\Controllers\Admin\EstablishmentController::class);
+    Route::get('/cities/by-country/{country}', [CityController::class,'countryCities'])->name('cities.get');
+
     /*********** end countries route ***********/
     /***********  cities route ***********/
     Route::resource('cities', CityController::class)->except(['show']);
@@ -150,4 +154,9 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-require __DIR__.'/auth.php';
+
+ require __DIR__.'/auth.php';
+Route::group(['domain' => '{subdomain}.' . config('app.url'), 'middleware' => ['tenant']], function () {
+
+
+});

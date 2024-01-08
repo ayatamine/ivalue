@@ -151,4 +151,9 @@ class CityController extends Controller
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
     }
+    public function countryCities($country)
+    {
+        $cities = City::where('country_id', $country)->get();
+        return response()->json($cities);
+    }
 }

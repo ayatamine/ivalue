@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\Estate;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class CreateReportsTable extends Migration
 {
@@ -23,9 +24,9 @@ class CreateReportsTable extends Migration
             $table->string('kind');
             $table->string('date');
             $table->string('slug');
-
-            $table->bigInteger('estate_id')->unsigned()->index();
-            $table->foreign('estate_id')->references('id')->on('estates')->onDelete('cascade');
+            $table->foreignIdFor(Estate::class)->nullable();
+            // $table->unsignedInteger('estate_id');
+            // $table->foreign('estate_id')->nullable()->references('id')->on('estates')->cascadeOnDelete();
             $table->bigInteger('user_id')->unsigned()->index();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
