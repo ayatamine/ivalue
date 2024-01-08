@@ -44,46 +44,46 @@ class EstablishmentController extends Controller
     public function store(Request $request)
     {
         try {
-            // $validated = $request->validate([
-            //     // 'admin_id'=>'required|string|exists:user,id|unique:establishments,admin_id',
-            //     'name'=>'required|string',
-            //     'email'=>'required|string|email|lowercase|max:255|unique:'.User::class,
-            //     // 'password'=>'string|min:6',
-            //     'establishment_name'=>'required|string',
-            //     'domain'=>'required|string|unique:establishments,domain',
-            //     'database'=>'required|string|unique:establishments,database',
-            //     'database_username'=>'sometimes|nullable|string',
-            //     'database_password'=>'sometimes|nullable|string',
-            // ]);
-            // DB::beginTransaction();
+            $validated = $request->validate([
+                // 'admin_id'=>'required|string|exists:user,id|unique:establishments,admin_id',
+                'name'=>'required|string',
+                'email'=>'required|string|email|lowercase|max:255|unique:'.User::class,
+                // 'password'=>'string|min:6',
+                'establishment_name'=>'required|string',
+                'domain'=>'required|string|unique:establishments,domain',
+                'database'=>'required|string|unique:establishments,database',
+                'database_username'=>'sometimes|nullable|string',
+                'database_password'=>'sometimes|nullable|string',
+            ]);
+            DB::beginTransaction();
 
-            // $validated['password'] = $request->password ? Hash::make($request['password']) : Hash::make('123456789');
-            // $validated['membership_level'] = 'admin';
+            $validated['password'] = $request->password ? Hash::make($request['password']) : Hash::make('123456789');
+            $validated['membership_level'] = 'admin';
 
-            // $user = User::create([
-            //     'name'=>$validated['name'],
-            //     'email'=>$validated['email'],
-            //     'password'=>$validated['password'],
-            //     'membership_level'=>$validated['membership_level'],
-            // ]);
+            $user = User::create([
+                'name'=>$validated['name'],
+                'email'=>$validated['email'],
+                'password'=>$validated['password'],
+                'membership_level'=>$validated['membership_level'],
+            ]);
 
-            // $establishment = new Establishment();
-            // $establishment->admin_id = $user->id;
-            // $establishment->name = $validated['establishment_name'];
-            // $establishment->email = $validated['email'];
-            // $establishment->domain = $validated['domain'];
-            // $establishment->database = $validated['database'];
-            // $establishment->database_username = $validated['database_username'] ?? 'root';
-            // $establishment->database_password = $validated['database_password'] ?? '';
-            // $establishment->save();
-            // DB::Commit();
+            $establishment = new Establishment();
+            $establishment->admin_id = $user->id;
+            $establishment->name = $validated['establishment_name'];
+            $establishment->email = $validated['email'];
+            $establishment->domain = $validated['domain'];
+            $establishment->database = $validated['database'];
+            $establishment->database_username = $validated['database_username'] ?? 'root';
+            $establishment->database_password = $validated['database_password'] ?? '';
+            $establishment->save();
+            DB::Commit();
 
             // // //create a new database and migrate it
             // if(app()->isLocal()){
             //     DB::connection(config()->get('database.default'))->statement("CREATE DATABASE {$establishment->database}");
             // }
             // // DB::connection('shared')->statement("CREATE DATABASE {$establishment->database}");
-$establishment = Establishment::first();
+
             config(['database.connections.tenant.database' =>  $establishment->database]);
             config(['database.connections.tenant.username' =>  $establishment->database_username]);
             config(['database.connections.tenant.password' =>  $establishment->database_password]);
@@ -99,7 +99,7 @@ $establishment = Establishment::first();
             // config()->set('database.connections.' . $tenant->identifier, $config);
             // config()->set('database.default', $tenant->identifier);
 
-            // Artisan::call("migrate");
+            Artisan::call("migrate");
             Artisan::call("db:seed");
 
             // Artisan::call('migrate', ['--force' => true, '--database' => $establishment->database]);
