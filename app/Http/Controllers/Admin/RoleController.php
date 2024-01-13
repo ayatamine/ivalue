@@ -34,7 +34,7 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store($subdomain,Request $request)
     {
         $this->validate($request,
         [
@@ -45,7 +45,7 @@ class RoleController extends Controller
             if(! empty($request->permissions)) {
                 $role->givePermissionTo($request->permissions);
             }
-            return redirect()->route('roles.index')->with('done', 'تم الانشاء بنجاح ....');
+            return redirect()->route('roles.index',$subdomain)->with('done', 'تم الانشاء بنجاح ....');
         }  catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -54,7 +54,7 @@ class RoleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($subdomain,string $id)
     {
         //
     }
@@ -62,7 +62,7 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($subdomain,string $id)
     {
 
         if (isset($id)) {
@@ -78,8 +78,9 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Role $role)
+    public function update($subdomain,Request $request, $role)
     {
+        $role = Role::findById($role);
         $this->validate($request,
         [
             'name'=>'string|required|max:190|unique:'.config('permission.table_names.roles', 'roles').',name,'.$role->id,
@@ -99,7 +100,7 @@ class RoleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($subdomain,string $id)
     {
         try {
             $role = Role::find($id);

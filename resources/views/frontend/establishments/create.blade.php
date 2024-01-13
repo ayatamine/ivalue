@@ -44,11 +44,11 @@
                                 @csrf
                                 <div class="form-row">
                                     <div class="col-md-6 col-12 mb-3">
-                                        <label for="name">اسم الأدمن </label>
+                                        <label for="admin_name">اسم الأدمن </label>
 
-                                        <input type="text" name="name" class="form-control" id="name" placeholder="Admin name " value="{{ old('name') }}">
+                                        <input type="text" admin_name="admin_name" class="form-control" id="admin_name" placeholder="Admin admin_name " value="{{ old('admin_name') }}">
 
-                                        @error('name')
+                                        @error('admin_name')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -74,9 +74,9 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="col-md-6 col-12 mb-3">
-                                        <label for="establishment_name">اسم المنشأة </label>
-                                        <input type="text" name="establishment_name" class="form-control" id="establishment_name" placeholder="Establishment name " value="{{ old('establishment_name') }}">
-                                        @error('establishment_name')
+                                        <label for="name_en">اسم المنشأة (بالانجليزي فقط سيستخدم في الدخول)</label>
+                                        <input type="text" name="name_en" class="form-control" id="name_en" placeholder="Establishment name_en " value="{{ old('name_en') }}">
+                                        @error('name_en')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -91,7 +91,7 @@
                                 <div class="form-row">
                                     <div class="col-md-4 col-12 mb-3">
                                         <label for="database">قاعدة البيانات (من الاستضافة) </label>
-                                        <input type="text" name="database" class="form-control" id="database" placeholder="Establishment name " value="{{ old('database') }}">
+                                        <input type="text" name="database" class="form-control" id="database" placeholder="database name " value="{{ old('database') }}">
                                         @error('database')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror

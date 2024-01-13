@@ -46,7 +46,7 @@ class CityController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CityRequest $request)
+    public function store($subdomain,CityRequest $request)
     {
         try {
             if($request->active){
@@ -55,7 +55,7 @@ class CityController extends Controller
                 $request->request->add(['active' => 0]);
             }
             City::create($request->all());
-            return redirect()->route('cities.index')->with('done', 'تم الاضافة بالنجاح ....');
+            return redirect()->route('cities.index',$subdomain)->with('done', 'تم الاضافة بالنجاح ....');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -78,7 +78,7 @@ class CityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($subdomain,$id)
     {
         $city = City::find($id);
         if(isset($city)){
@@ -96,7 +96,7 @@ class CityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(CityRequest $request, $id)
+    public function update($subdomain,CityRequest $request, $id)
     {
         try{
             $city = City::find($id);
@@ -106,7 +106,7 @@ class CityController extends Controller
                 $request->request->add(['active' => 0]);
             }
             $city->update($request->all());
-            return redirect()->route('cities.index')->with('done' , 'تم التعديل بنجاح ....');
+            return redirect()->route('cities.index',$subdomain)->with('done' , 'تم التعديل بنجاح ....');
         }catch (\Exception $e){
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -118,7 +118,7 @@ class CityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($subdomain,$id)
     {
         try{
             $city = City::find($id);

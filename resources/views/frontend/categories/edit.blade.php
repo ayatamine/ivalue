@@ -40,7 +40,7 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form method="post" action="{{ route('categories.update' , $category->id) }}" id="myform">
+                            <form method="post" action="{{ route('categories.update' , ['category'=>$category->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}" id="myform">
                                 @csrf
                                  {{ method_field('PATCH') }}
                                 <div class="form-row">

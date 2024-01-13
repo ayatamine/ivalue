@@ -88,4 +88,5 @@ return [
     /********* MY Informations ***********/
     'my_informations' =>'MY Informations',
     'profile' =>'Profile',
+    'establishment_name' =>'Establishment Name',
 ];

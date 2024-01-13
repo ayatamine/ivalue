@@ -56,7 +56,7 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form method="post" action="{{ route('users.update' , $user->id) }}" id="myform" enctype="multipart/form-data">
+                            <form method="post" action="{{ route('users.update' , ['user'=>$user->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}" id="myform" enctype="multipart/form-data">
                                 @csrf
                                 {{ method_field('PATCH') }}
                                 <div class="form-row">

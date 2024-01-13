@@ -44,7 +44,7 @@ class CountryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CountryRequest $request)
+    public function store($subdomain,CountryRequest $request)
     {
         try {
             $country = new Country();
@@ -56,7 +56,7 @@ class CountryController extends Controller
                 $country->active = 0;
             }
             $country->save();
-            return redirect()->route('countries.index')->with('done', 'تم الاضافة بنجاح ....');
+            return redirect()->route('countries.index',$subdomain)->with('done', 'تم الاضافة بنجاح ....');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -79,7 +79,7 @@ class CountryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($subdomain,$id)
     {
         $country = Country::find($id);
         if (isset($country)) {
@@ -96,7 +96,7 @@ class CountryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(CountryRequest $request, $id)
+    public function update($subdomain,CountryRequest $request, $id)
     {
         try {
             $country = Country::find($id);
@@ -108,7 +108,7 @@ class CountryController extends Controller
                 $country->active = 0;
             }
             $country->save();
-            return redirect()->route('countries.index')->with('done', 'Added Successfully ....');
+            return redirect()->route('countries.index',$subdomain)->with('done', 'Added Successfully ....');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -120,7 +120,7 @@ class CountryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($subdomain,$id)
     {
         try {
             $country = Country::find($id);
@@ -133,7 +133,7 @@ class CountryController extends Controller
         }
     }
 
-    public function delete_countries()
+    public function delete_countries($subdomain)
     {
         try {
             $countries = Country::all();

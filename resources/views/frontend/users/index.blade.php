@@ -78,9 +78,9 @@
                             <td>{{ $user->membership_no ?? '' }}</td>
                             @endif
                             <td class="product-action">
-                                <span class="action-edit"><a href="{{ route('users.edit' , $user->slug) }}"><i class="feather icon-edit"></i></a></span>
-                                <a title="" onclick="return false;" object_id="{{ $user->id }}"
-                                   delete_url="/estate/public/users/" class="edit-btn-table remove-alert" href="#">
+                                <span class="action-edit"><a href="{{ route('users.edit' ,['user'=> $user->slug,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i class="feather icon-edit"></i></a></span>
+                                <a title="" onclick="return false;" object_id=""
+                                   delete_url="{{route('users.destroy',['user'=>$user->id,'subdomain'=>Route::current()->parameter('subdomain')])}}" class="edit-btn-table remove-alert" href="#">
                                     <i class="feather icon-trash"></i></a>
                             </td>
                         </tr>

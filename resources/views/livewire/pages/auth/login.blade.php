@@ -20,7 +20,7 @@ new #[Layout('layouts.guest')] class extends Component
      */
     public function login(): void
     {
-        $this->validate();
+        // $this->validate();
 
         $this->form->authenticate();
 
@@ -54,10 +54,16 @@ new #[Layout('layouts.guest')] class extends Component
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     <form wire:submit="login">
-        <!-- Email Address -->
+        <!-- establishment name -->
         <div>
+            <x-input-label for="email" :value="__('trans.establishment_name')" />
+            <x-text-input wire:model="form.establishment_name" id="establishment_name" class="block mt-1 w-full" type="text" name="establishment_name" required autofocus autocomplete="establishment_name" />
+            <x-input-error :messages="$errors->get('establishment_name')" class="mt-2" />
+        </div>
+        <!-- Email Address -->
+        <div class="">
             <x-input-label for="email" :value="__('trans.your_email')" />
-            <x-text-input wire:model="form.email" id="email" class="block mt-1 w-full" type="email" name="email" required autofocus autocomplete="username" />
+            <x-text-input wire:model="form.email" id="email" class="block mt-1 w-full" type="email" name="email" required  autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 

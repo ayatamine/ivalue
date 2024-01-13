@@ -47,7 +47,7 @@
                         خيارات
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="{{ route('roles.create') }}"><i class="fa fa-plus"></i>اضافة جديد</a>
+                        <a class="dropdown-item" href="{{ route('roles.create',Route::current()->parameter('subdomain')) }}"><i class="fa fa-plus"></i>اضافة جديد</a>
                     </div>
                 </div>
             </div>
@@ -69,9 +69,9 @@
                             <td class="product-name">{{ $role->name }}</td>
 
                             <td class="product-action">
-                                <span class="action-edit"><a href="{{ route('roles.edit' , $role->id) }}"><i class="feather icon-edit"></i></a></span>
-                                <a title="" onclick="return false;" object_id="{{ $role->id }}"
-                                   delete_url="{{ route('roles.destroy' , $role->id) }}" class="edit-btn-table delete-row" href="#">
+                                <span class="action-edit"><a href="{{ route('roles.edit' , ['role'=>$role->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i class="feather icon-edit"></i></a></span>
+                                <a title="" onclick="return false;" object_id=""
+                                   delete_url="{{ route('roles.destroy' ,['role'=> $role->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}" class="edit-btn-table delete-row" href="#">
                                     <i class="feather icon-trash"></i></a>
                             </td>
                         </tr>

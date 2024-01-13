@@ -65,12 +65,12 @@ class ClientEstateController extends Controller
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
     }
-    
+
     public function estate_paid_post($estate_id,Request $request)
     {
         try {
              $estate = Estate::where('id', $estate_id)->first();
-           
+
                 $this->validate($request, [
                     'payment' => 'required',
                 ]);
@@ -168,7 +168,7 @@ class ClientEstateController extends Controller
         }else{
             return redirect()->back()->with('error' , 'يرجى اختيار المرحلة التالية');
         }
-        
+
 
         return redirect()->route('client.estates.index')->with('done', 'تم الاضافة بنجاح والارسال الى مدير التقييم ....');
 

@@ -27,6 +27,7 @@ use App\Http\Controllers\User\Incomes\Substitution\LandController;
 use App\Http\Controllers\User\Incomes\Substitution\BuildController;
 use App\Http\Controllers\User\Incomes\Substitution\ParkingController;
 use App\Http\Controllers\User\Incomes\Substitution\PetrolStationController;
+use App\Models\Establishment;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,110 +40,7 @@ use App\Http\Controllers\User\Incomes\Substitution\PetrolStationController;
 |
 */
 
-View::creator('frontend.layout.master', function ($view) {
-    $view->with('option' , \App\Models\Option::find(1));
-});
-Route::group([ 'middleware' => ['auth',IsNotClientMiddleware::class]], function () {
-    Route::get('/', [HomeController::class,'index'])->name('home');
-    Route::resource('front_estates', EstateController::class)->only('index','show');
-    Route::resource('investments', InvestmentController::class)->only(['index','create','store','show']);
-    Route::get('investment_delete/{id}', [InvestmentController::class,'delete'])->name('investment_delete');
-    Route::get('show_calendar/{slug}', [EstateController::class,'show_calendar'])->name('show_calendar');
-    Route::get('show_report/{slug}', [EstateController::class,'show_report'])->name('show_report');
-    Route::get('show_reports/{slug}', [EstateController::class,'show_reports'])->name('show_reports');
-    Route::resource('front_reports', ReportController::class)->only('index');
-    Route::resource('front_pages', PageController::class)->only('index','show');
-    Route::get('profile', [ProfileController::class,'edit'])->name('edit_pro');
-    Route::patch('profile_update', [ProfileController::class ,'update'])->name('update_pro');
 
-
-    Route::resource('countries', CountryController::class)->except(['show']);
-    Route::delete('delete_countries', [CountryController::class,'delete_countries'])->name('delete_countries');
-
-    Route::resource('establishments',App\Http\Controllers\Admin\EstablishmentController::class);
-    Route::get('/cities/by-country/{country}', [CityController::class,'countryCities'])->name('cities.get');
-
-    /*********** end countries route ***********/
-    /***********  cities route ***********/
-    Route::resource('cities', CityController::class)->except(['show']);
-    Route::delete('delete_cities', [CityController::class,'delete_cities'])->name('delete_cities');
-
-    /***********  categories route ***********/
-    Route::resource('categories', CategoryController::class)->except(['show']);
-    Route::delete('delete_categories', [CategoryController::class,'delete_categories'])->name('delete_categories');
-
-
- /***********  techniques route ***********/
-    Route::resource('techniques', TechniqueController::class)->except(['show']);
-    Route::delete('delete_techniques', [TechniqueController::class,'delete_techniques'])->name('delete_techniques');
-
- /***********  technique types route ***********/
-    Route::resource('technique-types', TechniqueTypeController::class)->except(['show']);
-    Route::delete('delete_technique_types', [TechniqueTypeController::class,'delete_technique_types'])->name('delete_technique_types');
-
-    /***********  kinds route ***********/
-    Route::resource('kinds', KindController::class)->except(['show']);
-    Route::delete('delete_kinds', [KindController::class,'delete_kinds'])->name('delete_kinds');
-    /*********** end cities route ***********/
-    /***********  estates route ***********/
-    Route::resource('estates', EstateController::class)->except(['show']);
-    Route::get('archive', [EstateController::class,'archive'])->name('archive');
-    Route::get('drafts', [EstateController::class,'drafts'])->name('drafts');
-    Route::get('estate_paid/{estate_id}',  [EstateController::class,'estate_paid'])->name('estate_paid');
-    Route::post('estate_paid/{estate_id}', [EstateController::class,'estate_paid_post'])->name('estate_paid_post');
-
-    Route::get('admins', [UserController::class,'admins'])->name('admins');
-    Route::resource('users', UserController::class)->except(['show']);
-    Route::resource('roles', RoleController::class)->except(['show']);
-    Route::resource('permissions', PermissionController::class)->except(['show']);
-
-//    level report
-    Route::get('notification-level/{not_id}', [Notificationontroller::class,'not_open'])->name('not_open')->withoutMiddleware([IsNotClientMiddleware::class]);
-    Route::patch('level-refuse/{estate_id}/{type}', [Notificationontroller::class,'level_refuse'])->name('level_refuse');
-    Route::patch('level_inputs/{estate_id}', [Notificationontroller::class,'level_inputs'])->name('level_inputs');
-    Route::get('complete_entry/{estate_id}',[Notificationontroller::class,'completeEntry'])->name('complete_entry');
-    Route::get('estate_order_reopen/{estate_id}',[Notificationontroller::class,'reopenEstateOrder'])->name('reopen_estate_order')->withoutMiddleware([IsNotClientMiddleware::class]);
-    Route::patch('client_level_inputs/{estate_id}', [Notificationontroller::class,'level_inputs'])->name('client_level_inputs')->withoutMiddleware([IsNotClientMiddleware::class]);
-
-//    settings
-    Route::get('settings', [SettingController::class,'index'])->name('settings');
-    Route::patch('update_settings', [SettingController::class,'update_settings'])->name('update_settings');
-
-    Route::get('edit_archive/{estate_id}', [Notificationontroller::class,'edit_archive'])->name('edit_archive');
-    Route::post('edit_archive_post/{estate_id}',[Notificationontroller::class,'edit_archive_post'])->name('edit_archive_post');
-});
-
-Route::get('pdf', [PdfController::class,'generatePDF'])->name('pdf');
-Route::get('show_pdf/{id}', [PdfController::class,'show_pdf'])->name('show_pdf');
-Route::get('pdf/{id}', [PdfController::class,'generatePDF_pro'])->name('pdf_pro');
-Route::get('report_page', [PdfController::class,'report_page'])->name('report_page');
-Route::post('report_form', [PdfController::class,'report_form'])->name('report_form');
-
-
-
-Route::group([ 'middleware' => 'auth'], function () {
-    //incoms
-    Route::resource('substitution/land', LandController::class)->only(['index','create','store','show']);
-    Route::get('land_delete/{id}',[LandController::class,'delete'])->name('land_delete');
-
-    Route::resource('substitution/build', BuildController::class)->only(['index','create','store','show']);
-    Route::get('build_delete/{id}', [BuildController::class,'delete'])->name('build_delete');
-
-    Route::resource('substitution/parking', ParkingController::class)->only(['index','create','store','show']);
-    Route::get('parking_delete/{id}', [ParkingController::class,'delete'])->name('parking_delete');
-
-    Route::resource('substitution/petrol_station', PetrolStationController::class)->only(['index','create','store','show']);
-    Route::get('petrol_station_delete/{id}', [PetrolStationController::class,'delete'])->name('petrol_station_delete');
-
-    Route::resource('substitution/farm', FarmController::class)->only(['index','create','store','show']);
-    Route::get('farm_delete/{id}', [FarmController::class,'delete'])->name('farm_delete');
-});
-
-Route::get('/client/dashboard', [HomeController::class,'clientDashboard'])->name('client_home');
-Route::resource('client/estates', ClientEstateController::class,[
-    'as' => 'client'
-])->except(['show']);
-Route::get('client/archive', [ClientEstateController::class,'archive'])->name('client.archive');
 // Auth::routes();
 
 Route::post('/dark_mode', [App\Http\Controllers\User\HomeController::class,'darkmode']);
@@ -157,6 +55,114 @@ Route::view('profile', 'profile')
 
  require __DIR__.'/auth.php';
 Route::group(['domain' => '{subdomain}.' . config('app.url'), 'middleware' => ['tenant']], function () {
+Route::get('amie',function(){
+});
+    // dd(Establishment::all());
+    //   \DB::statement("INSERT INTO `establishments` (`id`, `name`, `name_en`, `bio`, `email`, `phone1`, `phone2`, `whatstapp_number`, `website_link`, `address`, `currency`, `commercial_register_number`, `commercial_register_photo`, `commercial_register_end_at`, `tax_number`, `tax_certificate_image`, `license_number`, `license_image`, `evaluation_branch`, `evaluation_end_date`, `created_at`, `updated_at`, `data`, `domain`, `database`, `database_username`, `database_password`, `admin_id`) VALUES (NULL, 'منشأة جديدة', 'amine', NULL, 'new_admin@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-01-08 08:47:44', '2024-01-08 08:47:44', NULL, 'amine', 'ysmmklvs2n', 'root', '', '25');");
+    View::creator('frontend.layout.master', function ($view) {
+        $view->with('option' , \App\Models\Option::find(1));
+    });
+    Route::group([ 'middleware' => ['auth',IsNotClientMiddleware::class]], function () {
+        Route::get('/', [HomeController::class,'index'])->name('home');
+        Route::resource('front_estates', EstateController::class)->only('index','show');
+        Route::resource('investments', InvestmentController::class)->only(['index','create','store','show']);
+        Route::get('investment_delete/{id}', [InvestmentController::class,'delete'])->name('investment_delete');
+        Route::get('show_calendar/{slug}', [EstateController::class,'show_calendar'])->name('show_calendar');
+        Route::get('show_report/{slug}', [EstateController::class,'show_report'])->name('show_report');
+        Route::get('show_reports/{slug}', [EstateController::class,'show_reports'])->name('show_reports');
+        Route::resource('front_reports', ReportController::class)->only('index');
+        Route::resource('front_pages', PageController::class)->only('index','show');
+        Route::get('profile', [ProfileController::class,'edit'])->name('edit_pro');
+        Route::patch('profile_update', [ProfileController::class ,'update'])->name('update_pro');
+
+
+        Route::resource('countries', CountryController::class)->except(['show']);
+        Route::delete('delete_countries', [CountryController::class,'delete_countries'])->name('delete_countries');
+
+        Route::resource('establishments',App\Http\Controllers\Admin\EstablishmentController::class);
+        Route::get('/cities/by-country/{country}', [CityController::class,'countryCities'])->name('cities.get');
+
+        /*********** end countries route ***********/
+        /***********  cities route ***********/
+        Route::resource('cities', CityController::class)->except(['show']);
+        Route::delete('delete_cities', [CityController::class,'delete_cities'])->name('delete_cities');
+
+        /***********  categories route ***********/
+        Route::resource('categories', CategoryController::class)->except(['show']);
+        Route::delete('delete_categories', [CategoryController::class,'delete_categories'])->name('delete_categories');
+
+
+     /***********  techniques route ***********/
+        Route::resource('techniques', TechniqueController::class)->except(['show']);
+        Route::delete('delete_techniques', [TechniqueController::class,'delete_techniques'])->name('delete_techniques');
+
+     /***********  technique types route ***********/
+        Route::resource('technique-types', TechniqueTypeController::class)->except(['show']);
+        Route::delete('delete_technique_types', [TechniqueTypeController::class,'delete_technique_types'])->name('delete_technique_types');
+
+        /***********  kinds route ***********/
+        Route::resource('kinds', KindController::class)->except(['show']);
+        Route::delete('delete_kinds', [KindController::class,'delete_kinds'])->name('delete_kinds');
+        /*********** end cities route ***********/
+        /***********  estates route ***********/
+        Route::resource('estates', EstateController::class)->except(['show']);
+        Route::get('archive', [EstateController::class,'archive'])->name('archive');
+        Route::get('drafts', [EstateController::class,'drafts'])->name('drafts');
+        Route::get('estate_paid/{estate_id}',  [EstateController::class,'estate_paid'])->name('estate_paid');
+        Route::post('estate_paid/{estate_id}', [EstateController::class,'estate_paid_post'])->name('estate_paid_post');
+
+        Route::get('admins', [UserController::class,'admins'])->name('admins');
+        Route::resource('users', UserController::class)->except(['show']);
+        Route::resource('roles', RoleController::class)->except(['show']);
+        Route::resource('permissions', PermissionController::class)->except(['show']);
+
+    //    level report
+        Route::get('notification-level/{not_id}', [Notificationontroller::class,'not_open'])->name('not_open')->withoutMiddleware([IsNotClientMiddleware::class]);
+        Route::patch('level-refuse/{estate_id}/{type}', [Notificationontroller::class,'level_refuse'])->name('level_refuse');
+        Route::patch('level_inputs/{estate_id}', [Notificationontroller::class,'level_inputs'])->name('level_inputs');
+        Route::get('complete_entry/{estate_id}',[Notificationontroller::class,'completeEntry'])->name('complete_entry');
+        Route::get('estate_order_reopen/{estate_id}',[Notificationontroller::class,'reopenEstateOrder'])->name('reopen_estate_order')->withoutMiddleware([IsNotClientMiddleware::class]);
+        Route::patch('client_level_inputs/{estate_id}', [Notificationontroller::class,'level_inputs'])->name('client_level_inputs')->withoutMiddleware([IsNotClientMiddleware::class]);
+
+    //    settings
+        Route::get('settings', [SettingController::class,'index'])->name('settings');
+        Route::patch('update_settings', [SettingController::class,'update_settings'])->name('update_settings');
+
+        Route::get('edit_archive/{estate_id}', [Notificationontroller::class,'edit_archive'])->name('edit_archive');
+        Route::post('edit_archive_post/{estate_id}',[Notificationontroller::class,'edit_archive_post'])->name('edit_archive_post');
+    });
+
+    Route::get('pdf', [PdfController::class,'generatePDF'])->name('pdf');
+    Route::get('show_pdf/{id}', [PdfController::class,'show_pdf'])->name('show_pdf');
+    Route::get('pdf/{id}', [PdfController::class,'generatePDF_pro'])->name('pdf_pro');
+    Route::get('report_page', [PdfController::class,'report_page'])->name('report_page');
+    Route::post('report_form', [PdfController::class,'report_form'])->name('report_form');
+
+
+
+    Route::group([ 'middleware' => 'auth'], function () {
+        //incoms
+        Route::resource('substitution/land', LandController::class)->only(['index','create','store','show']);
+        Route::get('land_delete/{id}',[LandController::class,'delete'])->name('land_delete');
+
+        Route::resource('substitution/build', BuildController::class)->only(['index','create','store','show']);
+        Route::get('build_delete/{id}', [BuildController::class,'delete'])->name('build_delete');
+
+        Route::resource('substitution/parking', ParkingController::class)->only(['index','create','store','show']);
+        Route::get('parking_delete/{id}', [ParkingController::class,'delete'])->name('parking_delete');
+
+        Route::resource('substitution/petrol_station', PetrolStationController::class)->only(['index','create','store','show']);
+        Route::get('petrol_station_delete/{id}', [PetrolStationController::class,'delete'])->name('petrol_station_delete');
+
+        Route::resource('substitution/farm', FarmController::class)->only(['index','create','store','show']);
+        Route::get('farm_delete/{id}', [FarmController::class,'delete'])->name('farm_delete');
+    });
+
+    Route::get('/client/dashboard', [HomeController::class,'clientDashboard'])->name('client_home');
+    Route::resource('client/estates', ClientEstateController::class,[
+        'as' => 'client'
+    ])->except(['show']);
+    Route::get('client/archive', [ClientEstateController::class,'archive'])->name('client.archive');
 
 
 });

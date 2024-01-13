@@ -56,7 +56,7 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form method="post" action="{{ route('permissions.update' , $permission->id) }}" id="myform" >
+                            <form method="post" action="{{ route('permissions.update' ,['permission'=>$permission->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}" id="myform" >
                                 @csrf
                                 {{ method_field('PATCH') }}
                                 <div class="form-row">
@@ -73,7 +73,7 @@
 
                                 <div class="text-center mt-1 d-flex justify-center " style="gap: 1%">
                                     <button class="btn btn-primary w-50" type="submit">حفظ</button>
-                                    <a href="{{route('permissions.index')}}" class="btn btn-danger w-50" type="submit">رجوع</a>
+                                    <a href="{{route('permissions.index',Route::current()->parameter('subdomain'))}}" class="btn btn-danger w-50" type="submit">رجوع</a>
                                 </div>
                             </form>
                         </div>

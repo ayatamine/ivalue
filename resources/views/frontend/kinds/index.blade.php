@@ -50,8 +50,8 @@
                             خيارات
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="{{ route('kinds.create') }}"><i class="fa fa-plus"></i>اضافة جديد</a>
-                            <a class="dropdown-item delete-all" onclick="return false;" delete_url="/delete_kinds/">
+                            <a class="dropdown-item" href="{{ route('kinds.create',Route::current()->parameter('subdomain')) }}"><i class="fa fa-plus"></i>اضافة جديد</a>
+                            <a class="dropdown-item delete-all" onclick="return false;" delete_url="{{route('delete_kinds',Route::current()->parameter('subdomain'))}}">
                                 حذف الكل</a>
                         </div>
                     </div>
@@ -69,15 +69,15 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($kinds as $country)
+                    @foreach($kinds as $kind)
                         <tr class="delete-all-cats">
                             <td>{{ $loop->index + 1 }}</td>
-                            <td class="product-name">{{ $country->name }}</td>
-                            <td>{{ $country->getActive() }}</td>
+                            <td class="product-name">{{ $kind->name }}</td>
+                            <td>{{ $kind->getActive() }}</td>
                             <td class="product-action">
-                                <span class="action-edit"><a href="{{ route('kinds.edit' , $country->id) }}"><i class="feather icon-edit"></i></a></span>
-                                <a title="" onclick="return false;" object_id="{{ $country->id }}"
-                                   delete_url="/estate/public/kinds/" class="edit-btn-table remove-alert" href="#">
+                                <span class="action-edit"><a href="{{ route('kinds.edit' , ['kind'=>$kind->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i class="feather icon-edit"></i></a></span>
+                                <a title="" onclick="return false;" object_id=""
+                                   delete_url="{{ route('kinds.destroy' , ['kind'=>$kind->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}" class="edit-btn-table remove-alert" href="#">
                                     <i class="feather icon-trash"></i></a>
                             </td>
                         </tr>

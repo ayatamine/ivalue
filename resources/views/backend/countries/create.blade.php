@@ -8,7 +8,7 @@
                 <div class="card-body">
                     <h4 class="card-title">دولة جديدة</h4>
                     <p class="card-title-desc"></p>
-                    <form method="post" action="{{ route('countries.store') }}" class="needs-validation" novalidate
+                    <form method="post" action="{{ route('countries.store',Route::current()->parameter('subdomain')]) }}" class="needs-validation" novalidate
                           enctype="multipart/form-data">
                         @csrf
                         <div class="row">

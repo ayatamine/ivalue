@@ -60,7 +60,7 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form method="post" action="{{ route('users.store') }}" id="myform" enctype="multipart/form-data">
+                            <form method="post" action="{{ route('users.store',Route::current()->parameter('subdomain')) }}" id="myform" enctype="multipart/form-data">
                                 @csrf
                                 <input type="hidden" value="not_client" name="membership_type">
                                 {{-- <div class="form-row">

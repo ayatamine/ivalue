@@ -46,14 +46,14 @@ class KindController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($subdomain,Request $request)
     {
         try {
             $city = new Kind();
             $city->name = $request->name;
             $city->active = $request->active ? 1 : 0;
             $city->save();
-            return redirect()->route('kinds.index')->with('done', 'تم الاضافة بالنجاح ....');
+            return redirect()->route('kinds.index',$subdomain)->with('done', 'تم الاضافة بالنجاح ....');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -76,11 +76,11 @@ class KindController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($subdomain,$id)
     {
-        $category = Kind::find($id);
-        if(isset($category)){
-            return view('frontend.kinds.edit' , compact('category'));
+        $kind = Kind::find($id);
+        if(isset($kind)){
+            return view('frontend.kinds.edit' , compact('kind'));
         }else{
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -93,14 +93,14 @@ class KindController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($subdomain,Request $request, $id)
     {
         try{
             $city = Kind::find($id);
             $city->name = $request->name;
             $city->active = $request->active ? 1 : 0;
             $city->save();
-            return redirect()->route('kinds.index')->with('done' , 'تم التعديل بنجاح ....');
+            return redirect()->route('kinds.index',$subdomain)->with('done' , 'تم التعديل بنجاح ....');
         }catch (\Exception $e){
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -112,11 +112,11 @@ class KindController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($subdomain,$id)
     {
         try{
-            $city = Kind::find($id);
-            $city->delete();
+            $kind = Kind::find($id);
+            $kind->delete();
             return response()->json([
                 'success' => 'Record deleted successfully!'
             ]);
@@ -125,7 +125,7 @@ class KindController extends Controller
         }
     }
 
-    public function delete_kinds()
+    public function delete_kinds($subdomain)
     {
         try{
             $kinds = Kind::all();

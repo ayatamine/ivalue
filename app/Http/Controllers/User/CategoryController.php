@@ -46,14 +46,14 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($subdomain,Request $request)
     {
         try {
             $city = new Category();
             $city->name = $request->name;
             $city->active = $request->active ? 1 : 0;
             $city->save();
-            return redirect()->route('categories.index')->with('done', 'تم الاضافة بالنجاح ....');
+            return redirect()->route('categories.index',$subdomain)->with('done', 'تم الاضافة بالنجاح ....');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -76,9 +76,10 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($subdomain,$category)
     {
-        $category = Category::find($id);
+
+        $category = Category::find($category);
         if(isset($category)){
             return view('frontend.categories.edit' , compact('category'));
         }else{
@@ -93,16 +94,16 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($subdomain,Request $request, $id)
     {
         try{
-            $city = Category::find($id);
-            $city->name = $request->name;
-            $city->active = $request->active ? 1 : 0;
-            $city->save();
-            return redirect()->route('categories.index')->with('done' , 'تم التعديل بنجاح ....');
+            $category = Category::find($id);
+            $category->name = $request->name;
+            $category->active = $request->active ? 1 : 0;
+            $category->save();
+            return redirect()->route('categories.index',$subdomain)->with('done' , 'تم التعديل بنجاح ....');
         }catch (\Exception $e){
-            return redirect()->back()->with('error', 'حدث خطأ !!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -112,7 +113,7 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($subdomain,$id)
     {
         try{
             $city = Category::find($id);

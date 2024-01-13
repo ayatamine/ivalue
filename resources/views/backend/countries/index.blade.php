@@ -13,9 +13,9 @@
                 <div class="card-body">
                     <h4 class="card-title">الدول</h4>
                     <div style="display: flex;justify-content: space-between;">
-                        <a href="{{ route('countries.create') }}" class="btn btn-success mb-2"><i class="mdi mdi-plus mr-2"></i> اضافة جديد</a>
+                        <a href="{{ route('countries.create',Route::current()->parameter('subdomain')) }}" class="btn btn-success mb-2"><i class="mdi mdi-plus mr-2"></i> اضافة جديد</a>
                         <a class="btn btn-danger mb-2  delete-all text-white" onclick="return false;"
-                           delete_url="/delete_countries/"><i class="mdi mdi-trash-can-outline mr-2"></i>حذف الكل</a>
+                           delete_url="{{route('delete_coiuntries',Route::current()->parameter('subdomain'))}}"><i class="mdi mdi-trash-can-outline mr-2"></i>حذف الكل</a>
                     </div>
                     <hr>
                     <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap"
@@ -39,8 +39,8 @@
                                 <td>
                                     <a href="{{ route('countries.edit' , $country->id) }}"
                                        class="mr-3 text-primary"><i class="mdi mdi-pencil font-size-18"></i></a>
-                                    <a title="" onclick="return false;" object_id="{{ $country->id }}"
-                                       delete_url="/countries/" class="text-danger remove-alert" href="#"><i
+                                    <a title="" onclick="return false;" object_id=""
+                                       delete_url="{{route('countries.destroy')}}" class="text-danger remove-alert" href="#"><i
                                                 class="mdi mdi-trash-can font-size-18"></i></a>
                                 </td>
                             </tr>

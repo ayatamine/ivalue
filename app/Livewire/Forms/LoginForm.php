@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms;
 
+use App\Models\Establishment;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
@@ -18,6 +19,9 @@ class LoginForm extends Form
     #[Rule('required|string')]
     public string $password = '';
 
+    #[Rule('required|string')]
+    public string $establishment_name = '';
+
     #[Rule('boolean')]
     public bool $remember = false;
 
@@ -29,13 +33,32 @@ class LoginForm extends Form
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
-
-        if (! Auth::attempt($this->only(['email', 'password']), $this->remember)) {
-            RateLimiter::hit($this->throttleKey());
-
+        if(!$establishment = Establishment::whereNameEn($this->establishment_name)->first())
+        {
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'establishment_name' => trans('auth.wrong_establishment'),
             ]);
+        }
+        else{
+            config(['database.connections.tenant.database' =>  $establishment->database]);
+            config(['database.connections.tenant.username' =>  $establishment->database_username]);
+            config(['database.connections.tenant.password' =>  $establishment->database_password]);
+
+            \DB::purge('tenant');
+            \DB::connection('tenant')->reconnect();
+
+            \DB::setDefaultConnection('tenant');
+            \App::singleton('tenant', function() use($establishment){
+                return $establishment;
+            });
+            if (! Auth::attempt($this->only(['email', 'password']), $this->remember)) {
+                RateLimiter::hit($this->throttleKey());
+
+                throw ValidationException::withMessages([
+                    'email' => trans('auth.failed'),
+                ]);
+            }
+
         }
 
         RateLimiter::clear($this->throttleKey());

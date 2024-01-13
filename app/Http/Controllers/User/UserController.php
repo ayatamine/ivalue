@@ -27,7 +27,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function admins()
+    public function admins($subdomain)
     {
         try {
             $users = User::where('membership_level','!=','client')->orWhereNull('membership_level')->orderBy('id', 'desc')->get();
@@ -40,13 +40,13 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $users = User::where('membership_level','client')->orderBy('id', 'desc')->get();
+            $users = User::whereNull('membership_level')->orWhere('membership_level','client')->orderBy('id', 'desc')->get();
             return view('frontend.users.index',compact('users'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
     }
-    public function blocked()
+    public function blocked($subdomain)
     {
         try {
             $users = User::orderBy('id', 'desc')->where('active' , 0)->get();
@@ -55,7 +55,7 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
     }
-    public function block_user($slug)
+    public function block_user($subdomain,$slug)
     {
         try {
             $user = User::where('slug' , $slug)->first();
@@ -93,7 +93,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UserRequest $request)
+    public function store($subdomain,UserRequest $request)
     {
         try {
             $user = new User();
@@ -147,9 +147,9 @@ class UserController extends Controller
             $request->request->add(['password' => Hash::make($request->password)]);
             $user->save();
             if($user->membership_type == 'client'){
-                return redirect()->route('users.index')->with('done', 'تم الاضافة بنجاح ....');
+                return redirect()->route('users.index',$subdomain)->with('done', 'تم الاضافة بنجاح ....');
             }else{
-                return redirect()->route('admins')->with('done', 'تم الاضافة بنجاح ....');
+                return redirect()->route('admins',$subdomain)->with('done', 'تم الاضافة بنجاح ....');
             }
 
         } catch (\Exception $e) {
@@ -163,7 +163,7 @@ class UserController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($slug)
+    public function show($subdomain,$slug)
     {
         $user = User::where('slug' , $slug)->first();
         if (isset($user)) {
@@ -179,7 +179,7 @@ class UserController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($slug)
+    public function edit($subdomain,$slug)
     {
         $user = User::where('slug',$slug)->first();
         setPermissionsTeamId(1);
@@ -199,7 +199,7 @@ class UserController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UserRequest $request, $id)
+    public function update($subdomain,UserRequest $request, $id)
     {
         try {
             $user = User::find($id);
@@ -250,10 +250,10 @@ class UserController extends Controller
             $user->active = $request->active ? 1 : 0;
             $request->request->add(['password' => Hash::make($request->password)]);
             $user->save();
-             if($user->membership_type == 'client'){
-                return redirect()->route('users.index')->with('done', 'تم التعديل بنجاح');
+             if($user->membership_type || $user->membership_type == 'client'){
+                return redirect()->route('users.index',$subdomain)->with('done', 'تم التعديل بنجاح');
             }else{
-                return redirect()->route('admins')->with('done', 'تم التعديل بنجاح ....');
+                return redirect()->route('admins',$subdomain)->with('done', 'تم التعديل بنجاح ....');
             }
 
         } catch (\Exception $e) {
@@ -268,7 +268,7 @@ class UserController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($subdomain,$id)
     {
         try {
             $user = User::find($id);
@@ -282,7 +282,7 @@ class UserController extends Controller
 
     }
 
-    public function delete_users()
+    public function delete_users($subdomain)
     {
         try {
             $users = User::all();

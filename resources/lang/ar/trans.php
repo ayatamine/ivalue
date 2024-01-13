@@ -94,4 +94,5 @@ return [
     /********* MY Informations ***********/
     'my_informations' =>'معلوماتي',
     'profile' =>'الصفحة الشخصية',
+    'establishment_name' =>'اسم المنشأة',
  ];

@@ -52,7 +52,7 @@
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
                             <a class="dropdown-item" href=""><i class="fa fa-plus"></i>اضافة جديد</a>
-                            <a class="dropdown-item delete-all" onclick="return false;" delete_url="/delete_countries/">
+                            <a class="dropdown-item delete-all" onclick="return false;" delete_url="{{route('delete_countries',Route::current()->parameter('subdomain'))}}">
                                 حذف الكل</a>
                         </div>
                     </div>
@@ -79,9 +79,9 @@
                             <td>{{ $country->getActive() }}</td>
                             <td>{{ $country->code }}</td>
                             <td class="product-action">
-                                <span class="action-edit"><a href="{{ route('countries.edit' , $country->id) }}"><i class="feather icon-edit"></i></a></span>
-                                <a title="" onclick="return false;" object_id="{{ $country->id }}"
-                                   delete_url="/estate/public/countries/" class="edit-btn-table remove-alert" href="#">
+                                <span class="action-edit"><a href="{{ route('countries.edit' , ['country'=>$country->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i class="feather icon-edit"></i></a></span>
+                                <a title="" onclick="return false;" object_id=""
+                                   delete_url="{{route('countries.destroy',['country'=>$country->id,'subdomain'=>Route::current()->parameter('subdomain')])}}" class="edit-btn-table remove-alert" href="#">
                                     <i class="feather icon-trash"></i></a>
                             </td>
                         </tr>

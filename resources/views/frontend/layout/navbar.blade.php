@@ -31,9 +31,9 @@
             <li class="nav-item has-sub"><a href="#"><i class="fa fa-building-o"></i><span class="menu-title" data-i18n="Card">الطلبات الأولية</span></a>
                 <ul class="menu-content">
 
-                    <li class="{{ Request::is('client/estates')? 'active': '' }}"><a href="{{ route('client.estates.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الطلبات</span></a>
+                    <li class="{{ Request::is('client/estates')? 'active': '' }}"><a href="{{ route('client.estates.index',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الطلبات</span></a>
                     </li>
-                    <li class="{{ Request::is('client/estates/create')? 'active': '' }}"><a href="{{ route('client.estates.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">اضافة طلب جديد</span></a>
+                    <li class="{{ Request::is('client/estates/create')? 'active': '' }}"><a href="{{ route('client.estates.create',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">اضافة طلب جديد</span></a>
                     </li>
                 </ul>
             </li>
@@ -42,9 +42,9 @@
             @if(auth()->user()->hasRole('enter'))
             <li class="nav-item has-sub"><a href="#"><i class="fa fa-building-o"></i><span class="menu-title" data-i18n="Card">الطلبات الأولية</span></a>
                 <ul class="menu-content">
-                    <li class="{{ Request::is('estates')? 'active': '' }}"><a href="{{ route('estates.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الطلبات</span></a>
+                    <li class="{{ Request::is('estates')? 'active': '' }}"><a href="{{ route('estates.index',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الطلبات</span></a>
                     </li>
-                    <li class="{{ Request::is('estates/create')? 'active': '' }}"><a href="{{ route('estates.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">اضافة طلب جديد</span></a>
+                    <li class="{{ Request::is('estates/create')? 'active': '' }}"><a href="{{ route('estates.create',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">اضافة طلب جديد</span></a>
                     </li>
                 </ul>
             </li>
@@ -53,17 +53,17 @@
             <li class="nav-item has-sub"><a href="#"><i class="fa fa-building-o"></i><span class="menu-title" data-i18n="Card"> الطلبات المؤرشفة</span></a>
                 <ul class="menu-content">
                     @if(auth()->user()->membership_level == 'client' || auth()->user()->is_super_admin == true)
-                    <li class="{{ Request::is('client/archive')? 'active': '' }}"><a href="{{ route('client.archive') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic"> الارشيف</span></a>
+                    <li class="{{ Request::is('client/archive')? 'active': '' }}"><a href="{{ route('client.archive',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic"> الارشيف</span></a>
                     </li>
                     @else
-                    <li class="{{ Request::is('archive')? 'active': '' }}"><a href="{{ route('archive') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic"> الارشيف</span></a>
+                    <li class="{{ Request::is('archive')? 'active': '' }}"><a href="{{ route('archive',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic"> الارشيف</span></a>
                     </li>
                    @endif
                 </ul>
             </li>
             @endif
             @if(auth()->user()->membership_level !== 'client' && auth()->user()->is_super_admin != true)
-            <li class="{{ Request::is('drafts')? 'active': '' }} nav-item"><a href="{{route('drafts')}}"><i class="feather icon-home"></i><span class="menu-title" data-i18n="Dashboard">الطلبات في المسودة</span></a>
+            <li class="{{ Request::is('drafts')? 'active': '' }} nav-item"><a href="{{route('drafts',Route::current()->parameter('subdomain'))}}"><i class="feather icon-home"></i><span class="menu-title" data-i18n="Dashboard">الطلبات في المسودة</span></a>
             </li>
             @endif
             @if(auth()->user()->hasAnyRole('admin','enter') || auth()->user()->hasAnyPermission(['manage cities','manage countries']))
@@ -71,17 +71,17 @@
                 <ul class="menu-content">
                     <li class="nav-item has-sub {{ (Request::is('countries') ? 'sidebar-group-active' : '' || Request::is('countries/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-circle"></i><span class="menu-title" data-i18n="Card">الدول</span></a>
                         <ul class="menu-content">
-                            <li class="{{ Request::is('countries')? 'active': '' }}"><a href="{{ route('countries.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الدول</span></a>
+                            <li class="{{ Request::is('countries')? 'active': '' }}"><a href="{{ route('countries.index',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الدول</span></a>
                             </li>
-                            <li class="{{ Request::is('countries/create')? 'active': '' }}"><a href="{{ route('countries.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة دولة جديد</span></a>
+                            <li class="{{ Request::is('countries/create')? 'active': '' }}"><a href="{{ route('countries.create',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة دولة جديد</span></a>
                             </li>
                         </ul>
                     </li>
                     <li class="nav-item has-sub {{ (Request::is('cities') ? 'sidebar-group-active' : '' || Request::is('cities/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-circle"></i><span class="menu-title" data-i18n="Card">المدن</span></a>
                         <ul class="menu-content">
-                            <li class="{{ Request::is('cities')? 'active': '' }}"><a href="{{ route('cities.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع المدن</span></a>
+                            <li class="{{ Request::is('cities')? 'active': '' }}"><a href="{{ route('cities.index',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع المدن</span></a>
                             </li>
-                            <li class="{{ Request::is('cities/create')? 'active': '' }}"><a href="{{ route('cities.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة مدينة جديد</span></a>
+                            <li class="{{ Request::is('cities/create')? 'active': '' }}"><a href="{{ route('cities.create',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة مدينة جديد</span></a>
                             </li>
                         </ul>
                     </li>
@@ -91,17 +91,17 @@
             @if(auth()->user()->hasRole('admin'))
             <li class="nav-item has-sub {{ (Request::is('users') ? 'sidebar-group-active' : '' || Request::is('users/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-user-secret"></i><span class="menu-title" data-i18n="Card">إدراة الموظفين</span></a>
                 <ul class="menu-content">
-                    <li class="{{ Request::is('admins')? 'active': '' }}"><a href="{{ route('admins') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الموظفين</span></a>
+                    <li class="{{ Request::is('admins')? 'active': '' }}"><a href="{{ route('admins',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الموظفين</span></a>
                     </li>
-                    <li class="{{ Request::is('users/create')? 'active': '' }}"><a href="{{ route('users.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة موظف جديد</span></a>
+                    <li class="{{ Request::is('users/create')? 'active': '' }}"><a href="{{ route('users.create',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة موظف جديد</span></a>
                     </li>
                 </ul>
             </li>
             <li class="nav-item has-sub {{ (Request::is('users') ? 'sidebar-group-active' : '' || Request::is('users/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-user-secret"></i><span class="menu-title" data-i18n="Card">الصلاحيات والأدوار</span></a>
                 <ul class="menu-content">
-                    <li class="{{ Request::is('roles')? 'active': '' }}"><a href="{{ route('roles.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic"> الأدوار</span></a>
+                    <li class="{{ Request::is('roles')? 'active': '' }}"><a href="{{ route('roles.index',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic"> الأدوار</span></a>
                     </li>
-                    <li class="{{ Request::is('permissions')? 'active': '' }}"><a href="{{ route('permissions.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">الصلاحيات</span></a>
+                    <li class="{{ Request::is('permissions')? 'active': '' }}"><a href="{{ route('permissions.index',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">الصلاحيات</span></a>
                     </li>
                 </ul>
             </li>
@@ -109,9 +109,9 @@
                @if(auth()->user()->hasAnyRole('admin','enter') || auth()->user()->hasPermissionTo('manage users'))
             <li class="nav-item has-sub {{ (Request::is('users') ? 'sidebar-group-active' : '' || Request::is('users/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-users"></i><span class="menu-title" data-i18n="Card"> العملاء</span></a>
                 <ul class="menu-content">
-                    <li class="{{ Request::is('users')? 'active': '' }}"><a href="{{ route('users.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع العملاء</span></a>
+                    <li class="{{ Request::is('users')? 'active': '' }}"><a href="{{ route('users.index',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع العملاء</span></a>
                     </li>
-                    <li class="{{ Request::is('users/create')? 'active': '' }}"><a href="{{ route('users.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة عميل جديد</span></a>
+                    <li class="{{ Request::is('users/create')? 'active': '' }}"><a href="{{ route('users.create',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة عميل جديد</span></a>
                     </li>
                 </ul>
             </li>
@@ -121,17 +121,17 @@
                     <ul class="menu-content">
                         <li class="nav-item has-sub {{ (Request::is('categories') ? 'sidebar-group-active' : '' || Request::is('categories/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-circle"></i><span class="menu-title" data-i18n="Card">التصنيفات</span></a>
                             <ul class="menu-content">
-                                <li class="{{ Request::is('categories')? 'active': '' }}"><a href="{{ route('categories.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع التصنيفات</span></a>
+                                <li class="{{ Request::is('categories')? 'active': '' }}"><a href="{{ route('categories.index',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع التصنيفات</span></a>
                                 </li>
-                                <li class="{{ Request::is('categories/create')? 'active': '' }}"><a href="{{ route('categories.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة تصنيف جديد</span></a>
+                                <li class="{{ Request::is('categories/create')? 'active': '' }}"><a href="{{ route('categories.create',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة تصنيف جديد</span></a>
                                 </li>
                             </ul>
                         </li>
                         <li class="nav-item has-sub {{ (Request::is('kinds') ? 'sidebar-group-active' : '' || Request::is('kinds/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-circle"></i><span class="menu-title" data-i18n="Card">الانواع</span></a>
                             <ul class="menu-content">
-                                <li class="{{ Request::is('kinds')? 'active': '' }}"><a href="{{ route('kinds.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الانواع</span></a>
+                                <li class="{{ Request::is('kinds')? 'active': '' }}"><a href="{{ route('kinds.index',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع الانواع</span></a>
                                 </li>
-                                <li class="{{ Request::is('kinds/create')? 'active': '' }}"><a href="{{ route('kinds.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة نوع جديد</span></a>
+                                <li class="{{ Request::is('kinds/create')? 'active': '' }}"><a href="{{ route('kinds.create',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة نوع جديد</span></a>
                                 </li>
                             </ul>
                         </li>
@@ -175,7 +175,7 @@
                         </li>
                         <li class="nav-item has-sub {{ (Request::is('investments') ? 'sidebar-group-active' : '' || Request::is('investments/*')) ? 'sidebar-group-active' : '' }}"><a href="#"><span class="menu-title" data-i18n="Card">اسلوب الدخل</span></a>
                             <ul class="menu-content">
-                                <li class="{{ Request::is('investments')? 'active': '' }}"><a href="{{ route('investments.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">الاستثمار</span></a>
+                                <li class="{{ Request::is('investments')? 'active': '' }}"><a href="{{ route('investments.index',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">الاستثمار</span></a>
                                 </li>
                                 <li class=""><a href=""><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">طريقة القيمة المتبقية</span></a>
                                 </li>
@@ -191,13 +191,13 @@
                             <ul class="menu-content">
                                 <li style="margin-left: 1em" class="nav-item has-sub {{ ((Request::is('land') ? 'sidebar-group-active' : '' || Request::is('land/*')) ? 'sidebar-group-active' : '' || Request::is('parking')) ? 'sidebar-group-active' :( '' || Request::is('parking/*') ? 'sidebar-group-active' : '') }}"><a href="#"><i class="feather icon-circle"></i><span class="menu-title" data-i18n="Card">طريقة الاحلال</span></a>
                                     <ul class="menu-content">
-                                        <li style="padding-right: 1em" class="{{ Request::is('land')? 'active': '' }}"><a href="{{ route('land.index') }}"><i class="fa fa-minus"></i><span class="menu-item" data-i18n="Basic">ارض مخطط مطور</span></a>
+                                        <li style="padding-right: 1em" class="{{ Request::is('land')? 'active': '' }}"><a href="{{ route('land.index',Route::current()->parameter('subdomain')) }}"><i class="fa fa-minus"></i><span class="menu-item" data-i18n="Basic">ارض مخطط مطور</span></a>
                                         </li>
-                                        <li style="padding-right: 1em" class="{{ Request::is('parking')? 'active': '' }}"><a href="{{ route('parking.index') }}"><i class="fa fa-minus"></i><span class="menu-item" data-i18n="Basic">مواقف سيارات</span></a>
+                                        <li style="padding-right: 1em" class="{{ Request::is('parking')? 'active': '' }}"><a href="{{ route('parking.index',Route::current()->parameter('subdomain')) }}"><i class="fa fa-minus"></i><span class="menu-item" data-i18n="Basic">مواقف سيارات</span></a>
                                         </li>
-                                        <li style="padding-right: 1em" class="{{ Request::is('petrol_station')? 'active': '' }}"><a href="{{ route('petrol_station.index') }}"><i class="fa fa-minus"></i><span class="menu-item" data-i18n="Basic">محطات الوقود</span></a>
+                                        <li style="padding-right: 1em" class="{{ Request::is('petrol_station')? 'active': '' }}"><a href="{{ route('petrol_station.index',Route::current()->parameter('subdomain')) }}"><i class="fa fa-minus"></i><span class="menu-item" data-i18n="Basic">محطات الوقود</span></a>
                                         </li>
-                                        <li style="padding-right: 1em" class="{{ Request::is('build')? 'active': '' }}"><a href="{{ route('build.index') }}"><i class="fa fa-minus"></i><span class="menu-item" data-i18n="Basic">فيلا - عمارة</span></a>
+                                        <li style="padding-right: 1em" class="{{ Request::is('build')? 'active': '' }}"><a href="{{ route('build.index',Route::current()->parameter('subdomain')) }}"><i class="fa fa-minus"></i><span class="menu-item" data-i18n="Basic">فيلا - عمارة</span></a>
                                         </li>
                                     </ul>
                                 </li>
@@ -212,16 +212,16 @@
             @endif
 
               @if(auth()->user()->hasAnyRole('admin','enter') || auth()->user()->hasPermissionTo('export reports'))
-                <li class=""><a href="{{ route('report_page') }}"><i class="feather icon-file"></i><span class="menu-item" data-i18n="Basic">استخراج تقارير</span></a>
+                <li class=""><a href="{{ route('report_page',Route::current()->parameter('subdomain')) }}"><i class="feather icon-file"></i><span class="menu-item" data-i18n="Basic">استخراج تقارير</span></a>
                 </li>
             @endif
 
             @if(auth()->user()->is_super_admin == true)
             <li class="nav-item has-sub {{ (Request::is('establishments') ? 'sidebar-group-active' : '' || Request::is('establishments/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-building"></i><span class="menu-title" data-i18n="Card">المنشآت</span></a>
                 <ul class="menu-content">
-                    <li class="{{ Request::is('establishments')? 'active': '' }}"><a href="{{ route('establishments.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic"> جميع  المنشآت</span></a>
+                    <li class="{{ Request::is('establishments')? 'active': '' }}"><a href="{{ route('establishments.index',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic"> جميع  المنشآت</span></a>
                     </li>
-                    <li class="{{ Request::is('establishments/create')? 'active': '' }}"><a href="{{ route('establishments.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">إضافة منشأة</span></a>
+                    <li class="{{ Request::is('establishments/create')? 'active': '' }}"><a href="{{ route('establishments.create',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">إضافة منشأة</span></a>
                     </li>
                 </ul>
             </li>

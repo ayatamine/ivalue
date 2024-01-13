@@ -47,7 +47,7 @@
                         خيارات
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="{{ route('permissions.create') }}"><i class="fa fa-plus"></i>اضافة جديد</a>
+                        <a class="dropdown-item" href="{{ route('permissions.create',Route::current()->parameter('subdomain')) }}"><i class="fa fa-plus"></i>اضافة جديد</a>
                     </div>
                 </div>
             </div>
@@ -69,9 +69,9 @@
                             <td class="product-name">{{ $permission->name }}</td>
 
                             <td class="product-action">
-                                <span class="action-edit"><a href="{{ route('permissions.edit' , $permission->id) }}"><i class="feather icon-edit"></i></a></span>
-                                <a title="" onclick="return false;" object_id="{{ $permission->id }}"
-                                   delete_url="{{ route('permissions.destroy' , $permission->id) }}" class="edit-btn-table delete-row" href="#">
+                                <span class="action-edit"><a href="{{ route('permissions.edit',['permission'=>$permission->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i class="feather icon-edit"></i></a></span>
+                                <a title="" onclick="return false;" object_id=""
+                                   delete_url="{{ route('permissions.destroy' ,['permission'=>$permission->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}" class="edit-btn-table delete-row" href="#">
                                     <i class="feather icon-trash"></i></a>
                             </td>
                         </tr>

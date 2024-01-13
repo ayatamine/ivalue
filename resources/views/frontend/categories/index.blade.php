@@ -50,7 +50,7 @@
                             خيارات
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="{{ route('categories.create') }}"><i class="fa fa-plus"></i>اضافة جديد</a>
+                            <a class="dropdown-item" href="{{ route('categories.create',Route::current()->parameter('subdomain')) }}"><i class="fa fa-plus"></i>اضافة جديد</a>
                             <a class="dropdown-item delete-all" onclick="return false;" delete_url="/delete_categories/">
                                 حذف الكل</a>
                         </div>
@@ -75,7 +75,7 @@
                             <td class="product-name">{{ $country->name }}</td>
                             <td>{{ $country->getActive() }}</td>
                             <td class="product-action">
-                                <span class="action-edit"><a href="{{ route('categories.edit' , $country->id) }}"><i class="feather icon-edit"></i></a></span>
+                                <span class="action-edit"><a href="{{ route('categories.edit' , ['category'=>$country->id,'subdomain'=>'سيبسيب']) }}"><i class="feather icon-edit"></i></a></span>
                                 <a title="" onclick="return false;" object_id="{{ $country->id }}"
                                    delete_url="/estate/public/categories/" class="edit-btn-table remove-alert" href="#">
                                     <i class="feather icon-trash"></i></a>

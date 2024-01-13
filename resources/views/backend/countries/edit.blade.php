@@ -8,7 +8,7 @@
                 <div class="card-body">
                     <h4 class="card-title">تعديل الدولة " {{ $country->name }} "</h4>
                     <p class="card-title-desc"></p>
-                    <form method="post" action="{{ route('countries.update' , $country->id) }}" class="needs-validation" novalidate
+                    <form method="post" action="{{ route('countries.update' , ['country'=>$country->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}" class="needs-validation" novalidate
                           enctype="multipart/form-data">
                         @csrf
                         {{ method_field('PATCH') }}

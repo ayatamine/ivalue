@@ -33,7 +33,7 @@ class PermissionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store($subdomain,Request $request)
     {
         $this->validate($request,
         [
@@ -44,7 +44,7 @@ class PermissionController extends Controller
             if(! empty($request->permissions)) {
                 $Permission->givePermissionTo($request->permissions);
             }
-            return redirect()->route('permissions.index')->with('done', 'تم الانشاء بنجاح ....');
+            return redirect()->route('permissions.index',$subdomain)->with('done', 'تم الانشاء بنجاح ....');
         }  catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -61,9 +61,9 @@ class PermissionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Permission $permission)
+    public function edit($subdomain,$permission)
     {
-
+        $permission =Permission::findById($permission);
         if (isset($permission)) {
 
             return view('frontend.permissions.edit', compact('permission'));
@@ -75,8 +75,9 @@ class PermissionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Permission $Permission)
+    public function update($subdomain,Request $request, $Permission)
     {
+        $Permission = Permission::findById($Permission);
         $this->validate($request,
         [
             'name'=>'string|required|max:190|unique:'.config('permission.table_names.permissions', 'permissions').',name,'.$Permission->id,
@@ -95,7 +96,7 @@ class PermissionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($subdomain,string $id)
     {
         try {
             $Permission = Permission::find($id);

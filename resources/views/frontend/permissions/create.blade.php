@@ -60,7 +60,7 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form method="post" action="{{ route('permissions.store') }}" id="myform" enctype="multipart/form-data">
+                            <form method="post" action="{{ route('permissions.store',Route::current()->parameter('subdomain')) }}" id="myform" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-row">
                                     <div class="col-12 mb-3">
@@ -75,7 +75,7 @@
                                 <hr>
                                 <div class="text-center mt-1 d-flex justify-center " style="gap: 1%">
                                     <button class="btn btn-primary w-50" type="submit">إضافة</button>
-                                    <a href="{{route('permissions.index')}}" class="btn btn-danger w-50" type="submit">رجوع</a>
+                                    <a href="{{route('permissions.index',Route::current()->parameter('subdomain'))}}" class="btn btn-danger w-50" type="submit">رجوع</a>
                                 </div>>
                             </form>
                         </div>

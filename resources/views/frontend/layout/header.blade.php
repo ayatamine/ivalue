@@ -15,7 +15,7 @@
                                     class="ficon feather icon-maximize"></i></a></li>
                     @if(auth()->user()->membership_level == 'admin')
                     <li class="nav-item d-none d-lg-block">
-                        <a href="{{ route('settings') }}" class="nav-link nav-link-label"><i
+                        <a href="{{ route('settings',Route::current()->parameter('subdomain')) }}" class="nav-link nav-link-label"><i
                                     class="ficon feather icon-settings"></i></a>
                     </li>
                     @endif
@@ -28,7 +28,7 @@
                                     class="ficon feather icon-sun"></i></a>
                     </li>
                     {{--<li class="nav-item d-none d-lg-block">--}}
-                    {{--<a href="{{ route('edit_pro') }}" title="معلومات الدخول" class="nav-link nav-link-label" role="button" style="cursor: pointer"><i class="ficon fa fa-cog"></i></a>--}}
+                    {{--<a href="{{ route('edit_pro',Route::current()->parameter('subdomain')) }}" title="معلومات الدخول" class="nav-link nav-link-label" role="button" style="cursor: pointer"><i class="ficon fa fa-cog"></i></a>--}}
                     {{--</li>--}}
                     <?php
                     $nots = \App\Models\DashNotification::where('user_id', auth()->user()->id)->orderBy('id', 'desc')->get();
