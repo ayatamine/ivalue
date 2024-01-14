@@ -20,7 +20,7 @@ class Notificationontroller extends Controller
 {
     use DashNotificationTrait, UploadTrait;
 
-    public function not_open($not_id)
+    public function not_open($subdomain,$not_id)
     {
         // $last_rater = EstateInput::where('key', 'الأتعاب')->where('user_id', auth()->user()->id)->first();
 

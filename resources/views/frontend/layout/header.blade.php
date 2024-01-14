@@ -47,7 +47,7 @@
                             <li class="scrollable-container media-list ps">
                                 @if($nots->count() > 0)
                                 @foreach($nots as $key => $not)
-                                <a class="d-flex justify-content-between" href="{{ route('not_open' , $not->id) }}">
+                                <a class="d-flex justify-content-between" href="{{ route('not_open' , ['not_id'=>$not->id,'subdomain'=> Route::current()->parameter('subdomain')]) }}">
                                     <div class="media d-flex align-items-start">
                                         <div style="display: flex;align-items: center;height: 100%" class="media-left">
                                             <i style="color: {{ $not->color }}" class="{!! $not->icon !!} font-medium-5"></i>
@@ -87,10 +87,10 @@
                         </ul>
                     </li>
                     <li title="تسجيل خروج" class="nav-item d-none d-lg-block">
-                        <a class="nav-link nav-link-label" href="{{ route('logout') }}"
+                        <a class="nav-link nav-link-label" href="{{ route('logout',Route::current()->parameter('subdomain')) }}"
                            onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i
                                     class="ficon feather icon-log-out"></i></a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        <form id="logout-form" action="{{ route('logout', Route::current()->parameter('subdomain')) }}" method="POST" style="display: none;">
                             {{ csrf_field() }}
                         </form>
                     </li>

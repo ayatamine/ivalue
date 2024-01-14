@@ -20,8 +20,8 @@ class TechniqueController extends Controller
     public function index()
     {
         try {
-            $categories = Technique::orderBy('id', 'desc')->get();
-            return view('frontend.techniques.index',compact('categories'));
+            $techniques = Technique::orderBy('id', 'desc')->get();
+            return view('frontend.techniques.index',compact('techniques'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error Try Again !!');
         }
@@ -47,14 +47,14 @@ class TechniqueController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($subdomain,Request $request)
     {
         try {
-            $city = new Technique();
-            $city->name = $request->name;
-            $city->active = $request->active ? 1 : 0;
-            $city->save();
-            return redirect()->route('techniques.index')->with('done', 'تم الاضافة بالنجاح ....');
+            $technique = new Technique();
+            $technique->name = $request->name;
+            $technique->active = $request->active ? 1 : 0;
+            $technique->save();
+            return redirect()->route('techniques.index',$subdomain)->with('done', 'تم الاضافة بالنجاح ....');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -77,11 +77,11 @@ class TechniqueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($subdomain,$id)
     {
-        $category = Technique::find($id);
-        if(isset($category)){
-            return view('frontend.techniques.edit' , compact('category'));
+        $technique = Technique::find($id);
+        if(isset($technique)){
+            return view('frontend.techniques.edit' , compact('technique'));
         }else{
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -94,14 +94,14 @@ class TechniqueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($subdomain,Request $request, $id)
     {
         try{
             $city = Technique::find($id);
             $city->name = $request->name;
             $city->active = $request->active ? 1 : 0;
             $city->save();
-            return redirect()->route('techniques.index')->with('done' , 'تم التعديل بنجاح ....');
+            return redirect()->route('techniques.index',$subdomain)->with('done' , 'تم التعديل بنجاح ....');
         }catch (\Exception $e){
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -113,7 +113,7 @@ class TechniqueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($subdomain,$id)
     {
         try{
             $city = Technique::find($id);

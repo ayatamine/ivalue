@@ -36,17 +36,17 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">تعديل الطريقة " {{ $category->name }} "</h4>
+                        <h4 class="card-title">تعديل الطريقة " {{ $technique_type->name }} "</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form method="post" action="{{ route('technique-types.update' , $category->id) }}" id="myform">
+                            <form method="post" action="{{ route('technique-types.update' , ['technique_type'=>$technique_type->id, 'subdomain'=>Route::current()->parameter('subdomain')]) }}" id="myform">
                                 @csrf
                                  {{ method_field('PATCH') }}
                                 <div class="form-row">
                                     <div class="col-md-12 col-12 mb-3">
                                         <label for="name">الاسم </label>
-                                        <input type="text" name="name" class="form-control" id="name" placeholder="الاسم " value="{{ $category->name ?: '' }}" required>
+                                        <input type="text" name="name" class="form-control" id="name" placeholder="الاسم " value="{{ $technique_type->name ?: '' }}" required>
                                         @error('name')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -61,7 +61,7 @@
                                             <select name="technique_id" id="technique_id"
                                                     class="select2 form-control">
                                                 @foreach($techniques as $kind)
-                                                    <option {{ $kind->id == $category->technique_id ? 'selected' : '' }} value="{{ $kind->id }}">{{ $kind->name }} </option>
+                                                    <option {{ $kind->id == $technique_type->technique_id ? 'selected' : '' }} value="{{ $kind->id }}">{{ $kind->name }} </option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -73,7 +73,7 @@
                                 <div class="form-row">
                                     <div class="col-md-4">
                                         <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" @if($category->active == 1) checked="" @endif
+                                            <input type="checkbox" @if($technique_type->active == 1) checked="" @endif
                                                    name="active" value="1" class="custom-control-input" id="customCheck1" >
                                             <label class="custom-control-label" for="customCheck1">فعال</label>
                                         </div>

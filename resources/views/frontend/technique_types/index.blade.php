@@ -50,8 +50,8 @@
                             خيارات
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="{{ route('technique-types.create') }}"><i class="fa fa-plus"></i>اضافة جديد</a>
-                            <a class="dropdown-item delete-all" onclick="return false;" delete_url="/delete_technique_types/">
+                            <a class="dropdown-item" href="{{ route('technique-types.create', Route::current()->parameter('subdomain')) }}"><i class="fa fa-plus"></i>اضافة جديد</a>
+                            <a class="dropdown-item delete-all" onclick="return false;" delete_url="{{route('delete_technique_types', Route::current()->parameter('subdomain'))}}">
                                 حذف الكل</a>
                         </div>
                     </div>
@@ -70,16 +70,16 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($categories as $country)
+                    @foreach($technique_types as $technique_type)
                         <tr class="delete-all-cats">
                             <td>{{ $loop->index + 1 }}</td>
-                            <td class="product-name">{{ $country->name }}</td>
-                            <td class="product-name">{{ $country->technique->name ?? '' }}</td>
-                            <td>{{ $country->getActive() }}</td>
+                            <td class="product-name">{{ $technique_type->name }}</td>
+                            <td class="product-name">{{ $technique_type->technique->name ?? '' }}</td>
+                            <td>{{ $technique_type->getActive() }}</td>
                             <td class="product-action">
-                                <span class="action-edit"><a href="{{ route('technique-types.edit' , $country->id) }}"><i class="feather icon-edit"></i></a></span>
-                                <a title="" onclick="return false;" object_id="{{ $country->id }}"
-                                   delete_url="/estate/public/technique-types/" class="edit-btn-table remove-alert" href="#">
+                                <span class="action-edit"><a href="{{ route('technique-types.edit' ,['technique_type'=>$technique_type->id,'subdomain'=> Route::current()->parameter('subdomain')]) }}"><i class="feather icon-edit"></i></a></span>
+                                <a title="" onclick="return false;" object_id=""
+                                   delete_url="{{route('technique-types.destroy',['technique_type'=>$technique_type->id,'subdomain'=> Route::current()->parameter('subdomain')])}}" class="edit-btn-table remove-alert" href="#">
                                     <i class="feather icon-trash"></i></a>
                             </td>
                         </tr>

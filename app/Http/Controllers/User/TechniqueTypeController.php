@@ -21,8 +21,8 @@ class TechniqueTypeController extends Controller
     public function index()
     {
         try {
-            $categories = TechniqueType::orderBy('id', 'desc')->get();
-            return view('frontend.technique_types.index',compact('categories'));
+            $technique_types = TechniqueType::orderBy('id', 'desc')->get();
+            return view('frontend.technique_types.index',compact('technique_types'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error Try Again !!');
         }
@@ -49,17 +49,17 @@ class TechniqueTypeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($subdomain,Request $request)
     {
         try {
-            $city = new TechniqueType();
-            $city->name = $request->name;
-            $city->technique_id = $request->technique_id;
-            $city->active = $request->active ? 1 : 0;
-            $city->save();
-            return redirect()->route('technique-types.index')->with('done', 'تم الاضافة بالنجاح ....');
+            $tech_type = new TechniqueType();
+            $tech_type->name = $request->name;
+            $tech_type->technique_id = $request->technique_id;
+            $tech_type->active = $request->active ? 1 : 0;
+            $tech_type->save();
+            return redirect()->route('technique-types.index',$subdomain)->with('done', 'تم الاضافة بالنجاح ....');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'حدث خطأ !!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -80,12 +80,12 @@ class TechniqueTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($subdomain,$id)
     {
-        $category = TechniqueType::find($id);
-        if(isset($category)){
+        $technique_type = TechniqueType::find($id);
+        if(isset($technique_type)){
             $techniques = Technique::all();
-            return view('frontend.technique_types.edit' , compact('category','techniques'));
+            return view('frontend.technique_types.edit' , compact('technique_type','techniques'));
         }else{
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -98,7 +98,7 @@ class TechniqueTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($subdomain,Request $request, $id)
     {
         try{
             $city = TechniqueType::find($id);
@@ -106,7 +106,7 @@ class TechniqueTypeController extends Controller
             $city->technique_id = $request->technique_id;
             $city->active = $request->active ? 1 : 0;
             $city->save();
-            return redirect()->route('technique-types.index')->with('done' , 'تم التعديل بنجاح ....');
+            return redirect()->route('technique-types.index',$subdomain)->with('done' , 'تم التعديل بنجاح ....');
         }catch (\Exception $e){
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -118,11 +118,11 @@ class TechniqueTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($subdomain,$id)
     {
         try{
-            $city = TechniqueType::find($id);
-            $city->delete();
+            $tech_type = TechniqueType::find($id);
+            $tech_type->delete();
             return response()->json([
                 'success' => 'Record deleted successfully!'
             ]);

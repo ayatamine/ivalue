@@ -36,17 +36,17 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">تعديل اسلوب التقييم " {{ $category->name }} "</h4>
+                        <h4 class="card-title">تعديل اسلوب التقييم " {{ $technique->name }} "</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form method="post" action="{{ route('techniques.update' , $category->id) }}" id="myform">
+                            <form method="post" action="{{ route('techniques.update' ,  ['technique'=>$technique->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}" id="myform">
                                 @csrf
                                  {{ method_field('PATCH') }}
                                 <div class="form-row">
                                     <div class="col-md-12 col-12 mb-3">
                                         <label for="name">الاسم </label>
-                                        <input type="text" name="name" class="form-control" id="name" placeholder="الاسم " value="{{ $category->name ?: '' }}" required>
+                                        <input type="text" name="name" class="form-control" id="name" placeholder="الاسم " value="{{ $technique->name ?: '' }}" required>
                                         @error('name')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -55,7 +55,7 @@
                                 <div class="form-row">
                                     <div class="col-md-4">
                                         <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" @if($category->active == 1) checked="" @endif
+                                            <input type="checkbox" @if($technique->active == 1) checked="" @endif
                                                    name="active" value="1" class="custom-control-input" id="customCheck1" >
                                             <label class="custom-control-label" for="customCheck1">فعال</label>
                                         </div>

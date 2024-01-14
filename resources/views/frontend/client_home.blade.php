@@ -271,7 +271,7 @@
                                     <td>{{ $estate->category?->name  ?: 'لم يتم التحديد'}}</td>
                                     <td>{{ $estate->qema ?: 'لم يتم التحديد' }}</td>
                                     <td>
-                                        <a href="{{ route('client.estates.edit' , $estate->id) }}">
+                                        <a href="{{ route('client.estates.edit' , ['estate'=>$estate->id,'subdomain'=> Route::current()->parameter('subdomain')]) }}">
                                             <i class="fa fa-eye text-success"></i>
                                         </a>
                                     </td>

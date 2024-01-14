@@ -40,7 +40,7 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form method="post" action="{{ route('technique-types.store') }}" id="myform">
+                            <form method="post" action="{{ route('technique-types.store', Route::current()->parameter('subdomain')) }}" id="myform">
                                 @csrf
                                 <div class="form-row">
                                     <div class="col-md-12 col-12 mb-3">
