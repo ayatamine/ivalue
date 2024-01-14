@@ -42,7 +42,7 @@ class ClientEstateController extends Controller
     }
 
 
-    public function estate_paid($estate_id)
+    public function estate_paid($subdomain,$estate_id)
     {
         try {
             $estate = Estate::find($estate_id);
@@ -66,7 +66,7 @@ class ClientEstateController extends Controller
         }
     }
 
-    public function estate_paid_post($estate_id,Request $request)
+    public function estate_paid_post($subdomain,$estate_id,Request $request)
     {
         try {
              $estate = Estate::where('id', $estate_id)->first();
@@ -107,7 +107,7 @@ class ClientEstateController extends Controller
         }
     }
 
-    public function store(ClientEstateRequest $request)
+    public function store($subdomain,ClientEstateRequest $request)
     {
 
         $estate = new Estate();
@@ -170,11 +170,11 @@ class ClientEstateController extends Controller
         }
 
 
-        return redirect()->route('client.estates.index')->with('done', 'تم الاضافة بنجاح والارسال الى مدير التقييم ....');
+        return redirect()->route('client.estates.index',$subdomain)->with('done', 'تم الاضافة بنجاح والارسال الى مدير التقييم ....');
 
     }
 
-    public function show($slug)
+    public function show($subdomain,$slug)
     {
         $estate = Estate::where('slug', $slug)->first();
         if (isset($estate)) {
@@ -184,7 +184,7 @@ class ClientEstateController extends Controller
         }
     }
 
-    public function calendar($slug)
+    public function calendar($subdomain,$slug)
     {
         $estate = Estate::where('slug', $slug)->first();
         if (isset($estate)) {
@@ -194,7 +194,7 @@ class ClientEstateController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit($subdomain,$id)
     {
         $estate = Estate::whereUserId(auth()->id())->where('id', $id)->firstOrFail();
         if (isset($estate)) {
@@ -257,11 +257,11 @@ class ClientEstateController extends Controller
             $input->user_id = auth()->user()->id;
             $input->save();
         }
-        return redirect()->route('client.estates.index')->with('done', 'تم التعديل بنجاح ....');
+        return redirect()->route('client.estates.index',$subdomain)->with('done', 'تم التعديل بنجاح ....');
 
     }
 
-    public function destroy($id)
+    public function destroy($subdomain,$id)
     {
         try {
             $estate = Estate::find($id);
@@ -297,7 +297,7 @@ class ClientEstateController extends Controller
         }
     }
 
-    public function log($slug)
+    public function log($subdomain,$slug)
     {
         try {
             $estate = Estate::where('slug', $slug)->first();

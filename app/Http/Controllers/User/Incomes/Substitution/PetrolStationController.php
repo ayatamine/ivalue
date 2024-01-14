@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\User\Incomes\Substitution;
 
-use App\Http\Controllers\Controller;
-use App\Incomes\subsitiution\PetrolStation;
+use DB;
 use App\Models\Estate;
 use App\Models\EstateInput;
 use Illuminate\Http\Request;
-use DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Route;
+use App\Incomes\subsitiution\PetrolStation;
 
 class PetrolStationController extends Controller
 {
@@ -49,7 +50,7 @@ class PetrolStationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($subdomain,Request $request)
     {
         DB::beginTransaction();
 
@@ -306,7 +307,7 @@ class PetrolStationController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('petrol_station.show' , $request->estate_id)->with('done', 'تم الاضافة بالنجاح ....');
+            return redirect()->route('petrol_station.show' , ['id'=>$request->estate_id,'subdomain'=>Route::current()->parameter('subdomain')])->with('done', 'تم الاضافة بالنجاح ....');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()->with('error', 'Error Try Again !!');
@@ -319,14 +320,14 @@ class PetrolStationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($subdomain,$id)
     {
         $estate = Estate::find($id);
         if($estate){
             $option = PetrolStation::where('estate_id' , $id)->get();
             return view('frontend.incomes.substitution.petrol_station.show', compact('estate' , 'option'));
         }
-        return redirect()->route('home')->with('error','عقار غير مسجل');
+        return redirect()->route('home',$subdomain)->with('error','عقار غير مسجل');
     }
 
     /**
@@ -335,7 +336,7 @@ class PetrolStationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($subdomain,$id)
     {
         //
     }
@@ -347,7 +348,7 @@ class PetrolStationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($subdomain,Request $request, $id)
     {
         //
     }
@@ -358,7 +359,7 @@ class PetrolStationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($subdomain,$id)
     {
         try{
             DB::table('petrol_stations')->where('estate_id' , $id)->delete();
@@ -372,9 +373,9 @@ class PetrolStationController extends Controller
         }
     }
 
-    public function delete($id)
+    public function delete($subdomain,$id)
     {
         DB::table('petrol_stations')->where('estate_id' , $id)->delete();
-        return redirect()->route('petrol_station.create')->with('done','تم الحذف بنجاح');
+        return redirect()->route('petrol_station.create',$subdomain)->with('done','تم الحذف بنجاح');
     }
 }

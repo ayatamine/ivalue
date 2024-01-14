@@ -65,7 +65,7 @@
                 </div>
                 <div class="card-content">
                     <div class="card-body">
-                        <form method="post" action="{{ route('estate_paid_post' , $estate->id) }}" id="myform"
+                        <form method="post" action="{{ route('estate_paid_post' ,['id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}" id="myform"
                               enctype="multipart/form-data">
                             @csrf
                             <!--{{ method_field('PATCH') }}-->

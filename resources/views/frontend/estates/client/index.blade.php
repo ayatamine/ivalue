@@ -47,7 +47,7 @@
                         خيارات
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="{{ route('client.estates.create') }}"><i class="fa fa-plus"></i>اضافة جديد</a>
+                        <a class="dropdown-item" href="{{ route('client.estates.create',Route::current()->parameter('subdomain')) }}"><i class="fa fa-plus"></i>اضافة جديد</a>
                     </div>
                 </div>
             </div>
@@ -82,18 +82,18 @@
                             <td>{{ $estate->kind->name}}</td>
                             <td>{{ $estate->city->name }}</td>
                             <td class="product-action">
-                                <span class="action-edit"><a href="{{ route('client.estates.edit' , $estate->id) }}"><i class="feather icon-edit"></i></a></span>
+                                <span class="action-edit"><a href="{{ route('client.estates.edit' , ['estate'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i class="feather icon-edit"></i></a></span>
                                 @if(auth()->user()->membership_level == 'manager')
                                 <?php
                                      $payment = \App\Models\EstatePayment::where('estate_id',$estate->id)->where('done' , 0)->first();
                                 ?>
                                 @if($payment)
-                                <span class="text-warning"><a href="{{ route('estate_paid' , $estate->id) }}"><i title="اضافة عملية دفع" class="feather text-warning icon-dollar-sign"></i></a></span>
+                                <span class="text-warning"><a href="{{ route('estate_paid' , ['estate_id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i title="اضافة عملية دفع" class="feather text-warning icon-dollar-sign"></i></a></span>
                                 @endif
                                 @endif
-                                <span class="text-danger"><a href="{{ route('pdf_pro' , $estate->id) }}"><i class="feather icon-file text-danger"></i></a></span>
-                                <a title="" onclick="return false;" object_id="{{ $estate->id }}"
-                                   delete_url="/estate/public/estates/" class="edit-btn-table remove-alert" href="#">
+                                <span class="text-danger"><a href="{{ route('pdf_pro' , ['estate'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i class="feather icon-file text-danger"></i></a></span>
+                                <a title="" onclick="return false;" object_id=""
+                                   delete_url="{{route('estates.destroy',['estate'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')])}}" class="edit-btn-table remove-alert" href="#">
                                     <i class="feather icon-trash"></i></a>
                             </td>
                         </tr>

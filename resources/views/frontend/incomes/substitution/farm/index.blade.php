@@ -50,7 +50,7 @@
                             خيارات
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="{{ route('farm.create') }}"><i class="fa fa-plus"></i>اضافة جديد</a>
+                            <a class="dropdown-item" href="{{ route('farm.create', Route::current()->parameter('subdomain')) }}"><i class="fa fa-plus"></i>اضافة جديد</a>
                         </div>
                     </div>
                 </div>
@@ -71,10 +71,10 @@
                             <td>{{ $loop->index + 1 }}</td>
                             <td class="product-name">{{ $estate->name_arabic }}</td>
                             <td class="product-action">
-                                <span class="action-edit"><a href="{{ route('farm.show' , $estate->id) }}"><i class="feather icon-eye"></i></a></span>
+                                <span class="action-edit"><a href="{{ route('farm.show' ,  ['farm'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i class="feather icon-eye"></i></a></span>
 
-                                <a title="" onclick="return false;" object_id="{{ $estate->id }}"
-                                   delete_url="/estate/public/substitution/farm/" class="edit-btn-table remove-alert" href="#">
+                                <a title="" onclick="return false;" object_id=""
+                                   delete_url="{{route('farm.destroy', ['farm'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')])}}" class="edit-btn-table remove-alert" href="#">
                                     <i class="feather icon-trash"></i></a>
                             </td>
                         </tr>

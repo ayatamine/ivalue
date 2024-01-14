@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\User\Incomes;
 
-use App\Http\Controllers\Controller;
-use App\Incomes\Investment;
-use App\Models\Estate;
-use App\Models\EstateInput;
 use DB;
+use App\Models\Estate;
+use App\Incomes\Investment;
+use App\Models\EstateInput;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Route;
 
 class InvestmentController extends Controller
 {
@@ -49,13 +50,13 @@ class InvestmentController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($subdomain,Request $request)
     {
 
         DB::beginTransaction();
 
         try {
-            
+
              $estate = Estate::where('id', $request->estate_id)->first();
              $estate_id = $estate->id;
 
@@ -72,7 +73,7 @@ class InvestmentController extends Controller
                     }
                 }
 
-            
+
             for ($x = 0; $x <= 24; $x++) {
                 if ($x == 0) {
                     $key = 'main';
@@ -265,7 +266,7 @@ class InvestmentController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('investments.show' , $request->estate_id)->with('done', 'تم الاضافة بالنجاح ....');
+            return redirect()->route('investments.show' , ['id'=>$request->estate_id,'subdomain'=>Route::current()->parameter('subdomain')])->with('done', 'تم الاضافة بالنجاح ....');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()->with('error', 'Error Try Again !!');
@@ -280,7 +281,7 @@ class InvestmentController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($subdomain,$id)
     {
         $estate = Estate::find($id);
         if($estate){
@@ -296,7 +297,7 @@ class InvestmentController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($subdomain,$id)
     {
         //
     }
@@ -308,7 +309,7 @@ class InvestmentController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($subdomain,Request $request, $id)
     {
         //
     }
@@ -319,7 +320,7 @@ class InvestmentController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($subdomain,$id)
     {
         try{
             DB::table('investments')->where('estate_id' , $id)->delete();

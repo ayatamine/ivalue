@@ -12,7 +12,7 @@ use PDFF;
 
 class PdfController extends Controller
 {
-    public function generatePDF()
+    public function generatePDF($subdomain)
     {
          try{
         $data = [
@@ -42,21 +42,21 @@ class PdfController extends Controller
         $canvas->page_text($width/5, $height/2, '', null,
             55, array(0,0,0),2,2,-30);
 
-      
-       
+
+
             return $pdf->stream();
         }catch(\Exception $e){
            return redirect()->back()->with('error' , 'معلومات العقار غير مكتملة');
        }
-        
+
     }
 
-    public function report_page(){
+    public function report_page($subdomain){
         $types = Investment::where('type', 'main')->pluck('estate_id');
         $estates = Estate::whereIn('id',$types)->get();
         return view('frontend.incomes.reports', compact('estates'));
     }
-    public function report_form(Request $request){
+    public function report_form($subdomain,Request $request){
        try{
             $id = $request->id;
         $estate = Estate::find($id);
@@ -71,14 +71,14 @@ class PdfController extends Controller
 
         $pdf = PDF::loadView('pdf', $data);
         $name = $estate->name_arabic ?: 'العقار';
-         
+
         return $pdf->download(''.$name.'.pdf');
        }catch(\Exception $e){
            return redirect()->back()->with('error' , 'معلومات العقار غير مكتملة');
        }
     }
 
-    public function generatePDF_pro($id)
+    public function generatePDF_pro($subdomain,$id)
     {
          try{
         $estate = Estate::find($id);
@@ -92,7 +92,7 @@ class PdfController extends Controller
         ];
 
         $pdf = PDF::loadView('pdf', $data);
-        
+
         return $pdf->download('العقار.pdf');
 
 
@@ -118,10 +118,10 @@ class PdfController extends Controller
         }catch(\Exception $e){
            return redirect()->back()->with('error' , 'معلومات العقار غير مكتملة');
        }
-       
+
     }
 
-    public function show_pdf($id)
+    public function show_pdf($subdomain,$id)
     {
         $estate = Estate::find($id);
         $option = Investment::where('estate_id' , $id)->get();

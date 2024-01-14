@@ -42,7 +42,7 @@
         <!-- Data list view starts -->
         <div class="col-12">
         </div>
-        <form method="post" action="{{ route('land.store') }}" id="myform">
+        <form method="post" action="{{ route('land.store' ,Route::current()->parameter('subdomain')) }}" id="myform">
             @csrf
             <div class="form-row">
                 <div class="col-sm-12 col-12">
@@ -52,7 +52,7 @@
                     <hr/>
                 </div>
                  <?php
-               
+
         if (session()->has('estate_id') && session()->has('from'))
         {
             $estate_id = session()->get('estate_id');
@@ -64,7 +64,7 @@
                 <div class="col-sm-12 col-12">
                     <label for="estate_id">
                         العقار
-                    
+
                     </label>
                     @if($estate_id)
                     <div class="form-group">
@@ -408,7 +408,7 @@
                                                         <select name="infos[0][value]" class="form-control" required>
                                                             <option value="نعم">نعم</option>
                                                             <option value="لا">لا</option>
-                                                           
+
 
                                                         </select>
                                                     </div>
@@ -428,14 +428,14 @@
                                                        <input type="text" name="infos[1][value]" class="form-control"
                                                                placeholder=" ملاحظات  وتوصيات " value="   "
                                                                required>
-                                                        
+
                                                     </div>
                                                 </div>
                                                 @error('product_price_list')
                                                 <div class="alert" style="color:#a94442">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            
+
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <div class="col-md-6 col-6 mb-3">
@@ -447,7 +447,7 @@
                                                        <input type="text" name="infos[2][value]" class="form-control"
                                                                placeholder="  الافتراضات الخاصة  " value="   "
                                                                required>
-                                                        
+
                                                     </div>
                                                 </div>
                                                 @error('product_price_list')
@@ -466,14 +466,14 @@
                                                        <input type="text" name="infos[3][value]" class="form-control"
                                                                placeholder="  الشروط الخاصة  " value="   "
                                                                required>
-                                                        
+
                                                     </div>
                                                 </div>
                                                 @error('product_price_list')
                                                 <div class="alert" style="color:#a94442">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            
+
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <div class="col-md-6 col-6 mb-3">
@@ -485,7 +485,7 @@
                                                        <input type="date" name="infos[4][value]" class="form-control"
                                                                placeholder="     " value="   "
                                                                required>
-                                                        
+
                                                     </div>
                                                 </div>
                                                 @error('product_price_list')

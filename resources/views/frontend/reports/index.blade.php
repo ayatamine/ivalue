@@ -75,7 +75,7 @@
                             <td>{{ $report->price ?? '----' }}</td>
                             <td>{{ $report->price ?? '----' }}</td>
                             <td class="product-action">
-                                <span class="action-delete"><a href="{{ route('show_report' , $report->slug) }}"><i class="feather icon-eye"></i></a></span>
+                                <span class="action-delete"><a href="{{ route('show_report' , ['id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]$report->slug) }}"><i class="feather icon-eye"></i></a></span>
                             </td>
                         </tr>
                     @endforeach

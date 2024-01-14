@@ -79,7 +79,6 @@ Route::get('amie',function(){
         Route::resource('countries', CountryController::class)->except(['show']);
         Route::delete('delete_countries', [CountryController::class,'delete_countries'])->name('delete_countries');
 
-        Route::resource('establishments',App\Http\Controllers\Admin\EstablishmentController::class);
         Route::get('/cities/by-country/{country}', [CityController::class,'countryCities'])->name('cities.get');
 
         /*********** end countries route ***********/
@@ -142,19 +141,19 @@ Route::get('amie',function(){
 
     Route::group([ 'middleware' => 'auth'], function () {
         //incoms
-        Route::resource('substitution/land', LandController::class)->only(['index','create','store','show']);
+        Route::resource('substitution/land', LandController::class);
         Route::get('land_delete/{id}',[LandController::class,'delete'])->name('land_delete');
 
-        Route::resource('substitution/build', BuildController::class)->only(['index','create','store','show']);
+        Route::resource('substitution/build', BuildController::class);
         Route::get('build_delete/{id}', [BuildController::class,'delete'])->name('build_delete');
 
-        Route::resource('substitution/parking', ParkingController::class)->only(['index','create','store','show']);
+        Route::resource('substitution/parking', ParkingController::class);
         Route::get('parking_delete/{id}', [ParkingController::class,'delete'])->name('parking_delete');
 
-        Route::resource('substitution/petrol_station', PetrolStationController::class)->only(['index','create','store','show']);
+        Route::resource('substitution/petrol_station', PetrolStationController::class);
         Route::get('petrol_station_delete/{id}', [PetrolStationController::class,'delete'])->name('petrol_station_delete');
 
-        Route::resource('substitution/farm', FarmController::class)->only(['index','create','store','show']);
+        Route::resource('substitution/farm', FarmController::class);
         Route::get('farm_delete/{id}', [FarmController::class,'delete'])->name('farm_delete');
     });
 
@@ -166,3 +165,4 @@ Route::get('amie',function(){
 
 
 });
+Route::resource('establishments',App\Http\Controllers\Admin\EstablishmentController::class);

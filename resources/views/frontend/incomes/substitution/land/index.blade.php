@@ -50,7 +50,7 @@
                             خيارات
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="{{ route('land.create') }}"><i class="fa fa-plus"></i>اضافة جديد</a>
+                            <a class="dropdown-item" href="{{ route('land.create', Route::current()->parameter('subdomain')) }}"><i class="fa fa-plus"></i>اضافة جديد</a>
                         </div>
                     </div>
                 </div>
@@ -73,8 +73,8 @@
                             <td class="product-action">
                                 <span class="action-edit"><a href="{{ route('land.show' , $estate->id) }}"><i class="feather icon-eye"></i></a></span>
 
-                                <a title="" onclick="return false;" object_id="{{ $estate->id }}"
-                                   delete_url="/estate/public/substitution/land/" class="edit-btn-table remove-alert" href="#">
+                                <a title="" onclick="return false;" object_id=""
+                                   delete_url="{{route('land.destroy', ['land'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')])}}" class="edit-btn-table remove-alert" href="#">
                                     <i class="feather icon-trash"></i></a>
                             </td>
                         </tr>

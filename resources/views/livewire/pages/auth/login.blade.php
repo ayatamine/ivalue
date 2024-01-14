@@ -61,7 +61,7 @@ new #[Layout('layouts.guest')] class extends Component
             <x-input-error :messages="$errors->get('establishment_name')" class="mt-2" />
         </div>
         <!-- Email Address -->
-        <div class="">
+        <div class="mt-4">
             <x-input-label for="email" :value="__('trans.your_email')" />
             <x-text-input wire:model="form.email" id="email" class="block mt-1 w-full" type="email" name="email" required  autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />

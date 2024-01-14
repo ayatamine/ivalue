@@ -30,7 +30,7 @@ class EstateController extends Controller
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
     }
-    public function archive()
+    public function archive($subdomain)
     {
         try {
             $estates = Estate::where('archive' , 1)->get();
@@ -39,7 +39,7 @@ class EstateController extends Controller
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
     }
-    public function drafts()
+    public function drafts($subdomain)
     {
         try {
             $estates = Estate::where('drafted_by' , auth()->id())->get();
@@ -50,7 +50,7 @@ class EstateController extends Controller
     }
 
 
-    public function estate_paid($estate_id)
+    public function estate_paid($subdomain,$estate_id)
     {
         try {
             $estate = Estate::find($estate_id);
@@ -74,7 +74,7 @@ class EstateController extends Controller
         }
     }
 
-    public function estate_paid_post($estate_id,Request $request)
+    public function estate_paid_post($subdomain,$estate_id,Request $request)
     {
         try {
              $estate = Estate::where('id', $estate_id)->first();
@@ -115,7 +115,7 @@ class EstateController extends Controller
         }
     }
 
-    public function store(EstateRequest $request)
+    public function store($subdomain,EstateRequest $request)
     {
 
         $estate = new Estate();
@@ -186,11 +186,11 @@ class EstateController extends Controller
         }
 
 
-        return redirect()->route('estates.index')->with('done', 'تم الاضافة بنجاح والارسال الى مدير التقييم ....');
+        return redirect()->route('estates.index',$subdomain)->with('done', 'تم الاضافة بنجاح والارسال الى مدير التقييم ....');
 
     }
 
-    public function show($slug)
+    public function show($subdomain,$slug)
     {
         $estate = Estate::where('slug', $slug)->first();
         if (isset($estate)) {
@@ -200,7 +200,7 @@ class EstateController extends Controller
         }
     }
 
-    public function calendar($slug)
+    public function calendar($subdomain,$slug)
     {
         $estate = Estate::where('slug', $slug)->first();
         if (isset($estate)) {
@@ -210,7 +210,7 @@ class EstateController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit($subdomain,$id)
     {
         $estate = Estate::where('id', $id)->first();
         if (isset($estate)) {
@@ -225,7 +225,7 @@ class EstateController extends Controller
         }
     }
 
-    public function update(UpdateEstateRequest $request, $id)
+    public function update($subdomain,UpdateEstateRequest $request, $id)
     {
 
         $estate = Estate::find($id);
@@ -273,11 +273,11 @@ class EstateController extends Controller
             $input->user_id = auth()->user()->id;
             $input->save();
         }
-        return redirect()->route('estates.index')->with('done', 'تم التعديل بنجاح ....');
+        return redirect()->route('estates.index',$subdomain)->with('done', 'تم التعديل بنجاح ....');
 
     }
 
-    public function destroy($id)
+    public function destroy($subdomain,$id)
     {
         try {
             $estate = Estate::find($id);
@@ -291,7 +291,7 @@ class EstateController extends Controller
         }
     }
 
-    public function delete_estates()
+    public function delete_estates($subdomain)
     {
         try {
             $estates = Estate::all();
@@ -313,7 +313,7 @@ class EstateController extends Controller
         }
     }
 
-    public function log($slug)
+    public function log($subdomain,$slug)
     {
         try {
             $estate = Estate::where('slug', $slug)->first();

@@ -62,7 +62,7 @@
                 اسلوب الدخل بطريقه الاستثمار الخاصه بالعقار {{ $estate->name_arabic }}
             </h3>
             <div class="col-12">
-                <a style="width: 100%" onclick="return confirm('هل انت متأكد من ذلك ؟!');" href="{{ route('investment_delete' , $estate->id) }}" class="btn btn-danger text-white">
+                <a style="width: 100%" onclick="return confirm('هل انت متأكد من ذلك ؟!');" href="{{ route('investment_delete' , ['id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}" class="btn btn-danger text-white">
                     حذف المدخلات وضافه جديد
                 </a>
             </div>

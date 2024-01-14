@@ -116,7 +116,7 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form method="post" action="{{ route('edit_archive_post' , $estate->id) }}" id="myform">
+                            <form method="post" action="{{ route('edit_archive_post' ,['id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}" id="myform">
                                 @csrf
                                 <div class="form-row">
                                     @foreach($inputs as $key => $input)
@@ -125,7 +125,7 @@
                                                <input type="text" name="req[]"
                                                       class="form-control" id="{{ $input->key }}" placeholder=""
                                                       value="{{ $input->value }}">
-                                              
+
                                            </div>
                                     @endforeach
                                    </div>
@@ -157,7 +157,7 @@
     <!-- END: Page JS-->
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script>
         const phoneInputField_1 = document.querySelector("#mobile_1");

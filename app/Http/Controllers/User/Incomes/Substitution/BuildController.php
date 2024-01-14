@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\User\Incomes\Substitution;
 
-use App\Http\Controllers\Controller;
-use App\Incomes\subsitiution\Build;
+use DB;
 use App\Models\Estate;
 use App\Models\EstateInput;
 use Illuminate\Http\Request;
-use DB;
+use App\Incomes\subsitiution\Build;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Route;
 
 class BuildController extends Controller
 {
@@ -49,13 +50,13 @@ class BuildController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($subdomain,Request $request)
     {
         DB::beginTransaction();
 
         try {
             // return $request->estate_id;
-            
+
             $estate = Estate::where('id', $request->estate_id)->first();
             $estate_id = $estate->id;
 
@@ -404,7 +405,7 @@ class BuildController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('build.show' , $request->estate_id)->with('done', 'تم الاضافة بالنجاح ....');
+            return redirect()->route('build.show' , ['id'=>$request->estate_id,'subdomain'=>Route::current()->parameter('subdomain')])->with('done', 'تم الاضافة بالنجاح ....');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()->with('error', 'Error Try Again !!');
@@ -417,14 +418,14 @@ class BuildController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($subdomain,$id)
     {
         $estate = Estate::find($id);
         if($estate){
             $option = Build::where('estate_id' , $id)->get();
             return view('frontend.incomes.substitution.build.show', compact('estate' , 'option'));
         }
-        return redirect()->route('home')->with('error','عقار غير مسجل');
+        return redirect()->route('home',$subdomain)->with('error','عقار غير مسجل');
     }
 
     /**
@@ -433,7 +434,7 @@ class BuildController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($subdomain,$id)
     {
         //
     }
@@ -445,7 +446,7 @@ class BuildController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($subdomain,Request $request, $id)
     {
         //
     }
@@ -456,7 +457,7 @@ class BuildController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($subdomain,$id)
     {
         try{
             DB::table('builds')->where('estate_id' , $id)->delete();
@@ -470,9 +471,9 @@ class BuildController extends Controller
         }
     }
 
-    public function delete($id)
+    public function delete($subdomain,$id)
     {
         DB::table('builds')->where('estate_id' , $id)->delete();
-        return redirect()->route('build.create')->with('done','تم الحذف بنجاح');
+        return redirect()->route('build.create',$subdomain)->with('done','تم الحذف بنجاح');
     }
 }

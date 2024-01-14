@@ -47,7 +47,7 @@
                         خيارات
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="{{ route('estates.create') }}"><i class="fa fa-plus"></i>اضافة جديد</a>
+                        <a class="dropdown-item" href="{{ route('estates.create',Route::current()->parameter('subdomain')) }}"><i class="fa fa-plus"></i>اضافة جديد</a>
                     </div>
                 </div>
             </div>
@@ -68,22 +68,22 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($estates as $user)
+                    @foreach($estates as $estate)
                         <tr >
                             <td>{{ $loop->index + 1 }}</td>
                             {{--<td class="product-img">--}}
-                                {{--<img src="{{ $user->image_url }}">--}}
+                                {{--<img src="{{ $estate->image_url }}">--}}
                             {{--</td>--}}
-                            <td class="product-name">{{ $user->name_arabic }}</td>
-                            <td class="product-name">{{ $user->id }}</td>
-                            <td>{{ $user->level_name }}</td>
-                            <td>{{ $user->getActive() }}</td>
-                            <td>{{ $user->qema ?: 'لم يتم التحديد' }}</td>
+                            <td class="product-name">{{ $estate->name_arabic }}</td>
+                            <td class="product-name">{{ $estate->id }}</td>
+                            <td>{{ $estate->level_name }}</td>
+                            <td>{{ $estate->getActive() }}</td>
+                            <td>{{ $estate->qema ?: 'لم يتم التحديد' }}</td>
                             <td class="product-action">
-                                <span class="text-danger"><a href="{{ route('pdf_pro' , $user->id) }}"><i class="feather icon-file text-danger"></i></a></span>
-                                <span class="text-primary"><a href="{{ route('edit_archive' , $user->id) }}"><i class="feather icon-edit text-primary"></i></a></span>
-                                <a title="" onclick="return false;" object_id="{{ $user->id }}"
-                                   delete_url="/estate/public/estates/" class="edit-btn-table remove-alert" href="#">
+                                <span class="text-danger"><a href="{{ route('pdf_pro' , ['id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i class="feather icon-file text-danger"></i></a></span>
+                                <span class="text-primary"><a href="{{ route('edit_archive' , ['id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i class="feather icon-edit text-primary"></i></a></span>
+                                <a title="" onclick="return false;" object_id=""
+                                   delete_url="{{route('estates.destroy',['estate'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')])}}" class="edit-btn-table remove-alert" href="#">
                                     <i class="feather icon-trash"></i></a>
                             </td>
                         </tr>

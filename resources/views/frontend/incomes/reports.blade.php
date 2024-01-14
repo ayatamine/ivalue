@@ -81,7 +81,7 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form method="post" action="{{ route('report_form') }}">
+                            <form method="post" action="{{ route('report_form',Route::current()->parameter('subdomain')) }}">
                                 @csrf
                                 <div class="form-row">
                                     <div class="form-row">

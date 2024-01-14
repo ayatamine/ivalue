@@ -173,7 +173,7 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form method="post" action="{{ route('client.estates.update' , $estate->id) }}" id="myform"
+                            <form method="post" action="{{ route('client.estates.update' , ['estate'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}" id="myform"
                                   enctype="multipart/form-data">
                                 @csrf
                                 {{ method_field('PATCH') }}
@@ -379,7 +379,7 @@
                                             <span id="files-names">
                                         @if($estate->file_urls)
                                         @foreach($estate->file_urls as $file_url)
-                                            
+
                                             {{-- <a href="{{ $file_url }}">
                                                 <i class="fa fa-file"></i>
                                             </a> --}}
@@ -388,7 +388,7 @@
                                                 {{-- <span class="name">location_mark.svg</span> --}}
                                                 @if(strpos( mime_content_type($file_url), "image/") === 0)
                                                 <img src="{{ $file_url }}">
-                                                @else 
+                                                @else
                                                 <a target="_blink" href="{{ $file_url }}" style="display: block;height: 70px;
                                                 width: 70px;
                                                 margin: auto;
@@ -397,14 +397,14 @@
                                                 </a>
                                                 @endif
                                             </span>
-                                            
+
                                         @endforeach
                                        @endif
                                     </span>
                                         </span>
                                     </p>
-                                       
-                                  
+
+
                                     <div class="form-row">
                                         <div class="col-md-12">
                                             <div class="panel panel-default">

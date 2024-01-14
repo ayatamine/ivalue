@@ -47,7 +47,7 @@
                         خيارات
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="{{ route('estates.create') }}"><i class="fa fa-plus"></i>اضافة جديد</a>
+                        <a class="dropdown-item" href="{{ route('estates.create',Route::current()->parameter('subdomain')) }}"><i class="fa fa-plus"></i>اضافة جديد</a>
                     </div>
                 </div>
             </div>
@@ -80,19 +80,19 @@
                             <td>{{ $estate->draft_note }}</td>
                             <td>{{ $estate->qema ?: 'لم يتم التحديد' }}</td>
                             <td class="product-action">
-                                <span class="text-danger"><a href="{{ route('pdf_pro' , $estate->id) }}"><i class="feather icon-file text-danger"></i></a></span>
+                                <span class="text-danger"><a href="{{ route('pdf_pro' , ['id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i class="feather icon-file text-danger"></i></a></span>
                                 @switch(auth()->user()->membership_level)
                                 @case('rater_manager')
-                                <span class="text-primary"><a href="{{ route('complete_entry' , $estate->id) }}"><i
+                                <span class="text-primary"><a href="{{ route('complete_entry' , ['id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i
                                             class="feather icon-edit text-primary"></i></a></span>
                                 @break
 
                                 @default
-                                <span class="text-primary"><a href="{{ route('edit_archive' , $estate->id) }}"><i
+                                <span class="text-primary"><a href="{{ route('edit_archive' ,['id'=> $estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i
                                             class="feather icon-edit text-primary"></i></a></span>
                                 @endswitch
-                                <a title="" onclick="return false;" object_id="{{ $estate->id }}"
-                                   delete_url="/estate/public/estates/" class="edit-btn-table remove-alert" href="#">
+                                <a title="" onclick="return false;" object_id=""
+                                   delete_url="{{route('estates.destroy',['estate'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')])}}" class="edit-btn-table remove-alert" href="#">
                                     <i class="feather icon-trash"></i></a>
                             </td>
                         </tr>

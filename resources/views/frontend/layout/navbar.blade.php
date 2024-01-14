@@ -219,9 +219,9 @@
             @if(auth()->user()->is_super_admin == true)
             <li class="nav-item has-sub {{ (Request::is('establishments') ? 'sidebar-group-active' : '' || Request::is('establishments/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-building"></i><span class="menu-title" data-i18n="Card">المنشآت</span></a>
                 <ul class="menu-content">
-                    <li class="{{ Request::is('establishments')? 'active': '' }}"><a href="{{ route('establishments.index',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic"> جميع  المنشآت</span></a>
+                    <li class="{{ Request::is('establishments')? 'active': '' }}"><a href="{{ route('establishments.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic"> جميع  المنشآت</span></a>
                     </li>
-                    <li class="{{ Request::is('establishments/create')? 'active': '' }}"><a href="{{ route('establishments.create',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">إضافة منشأة</span></a>
+                    <li class="{{ Request::is('establishments/create')? 'active': '' }}"><a href="{{ route('establishments.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">إضافة منشأة</span></a>
                     </li>
                 </ul>
             </li>

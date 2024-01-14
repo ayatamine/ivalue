@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\User\Incomes\Substitution;
 
-use App\Http\Controllers\Controller;
-use App\Incomes\subsitiution\Land;
+use DB;
 use App\Models\Estate;
 use App\Models\EstateInput;
 use Illuminate\Http\Request;
-use DB;
+use App\Incomes\subsitiution\Land;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Route;
 
 class LandController extends Controller
 {
@@ -49,12 +50,12 @@ class LandController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($subdomain,Request $request)
     {
         DB::beginTransaction();
 
         try {
-            
+
             $estate = Estate::where('id', $request->estate_id)->first();
             $estate_id = $estate->id;
                 $price_list = [];
@@ -298,7 +299,7 @@ class LandController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('land.show' , $request->estate_id)->with('done', 'تم الاضافة بالنجاح ....');
+            return redirect()->route('land.show' , ['estate_id'=>$request->estate_id,'subdomain'=>Route::current()->parameter('subdomain')])->with('done', 'تم الاضافة بالنجاح ....');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()->with('error', 'Error Try Again !!');
@@ -311,7 +312,7 @@ class LandController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($subdomain,$id)
     {
         $estate = Estate::find($id);
         if($estate){
@@ -327,7 +328,7 @@ class LandController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($subdomain,$id)
     {
         //
     }
@@ -339,7 +340,7 @@ class LandController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($subdomain,Request $request, $id)
     {
         //
     }
@@ -350,7 +351,7 @@ class LandController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($subdomain,$id)
     {
         try{
             DB::table('lands')->where('estate_id' , $id)->delete();
@@ -364,9 +365,9 @@ class LandController extends Controller
         }
     }
 
-    public function delete($id)
+    public function delete($subdomain,$id)
     {
         DB::table('lands')->where('estate_id' , $id)->delete();
-        return redirect()->route('land.create')->with('done','تم الحذف بنجاح');
+        return redirect()->route('land.create',$subdomain)->with('done','تم الحذف بنجاح');
     }
 }
