@@ -70,7 +70,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form method="post" action="{{ route('level_inputs' , $estate->id) }}" id="myform2"
+                        <form method="post" action="{{ route('level_inputs' , ['estate_id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}" id="myform2"
                             enctype="multipart/form-data">
                             @csrf
                             {{ method_field('PATCH') }}

@@ -125,7 +125,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form method="post" action="{{ route('level_refuse' , ['estate_id'=>$estate->id,'type'=>'rater']) }}">
+                            <form method="post" action="{{ route('level_refuse' , ['estate_id'=>$estate->id,'type'=>'rater','subdomain'=>Route::current()->parameter('subdomain')]) }}">
                             @csrf
                             {{ method_field('PATCH') }}
                                 <div class="form-row">

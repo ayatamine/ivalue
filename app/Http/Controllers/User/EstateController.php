@@ -30,7 +30,7 @@ class EstateController extends Controller
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
     }
-    public function archive($subdomain)
+    public function archive()
     {
         try {
             $estates = Estate::where('archive' , 1)->get();
@@ -39,7 +39,7 @@ class EstateController extends Controller
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
     }
-    public function drafts($subdomain)
+    public function drafts()
     {
         try {
             $estates = Estate::where('drafted_by' , auth()->id())->get();
@@ -134,7 +134,7 @@ class EstateController extends Controller
         $estate->lat = $request->lat;
         $estate->lng = $request->lng;
         $estate->report_type = $request->report_type;
-
+        $estate->code ='';
         if ($request->active) {
             $estate->active = 1;
         } else {

@@ -126,6 +126,7 @@ class ClientEstateController extends Controller
         $estate->lat = $request->lat;
         $estate->lng = $request->lng;
         $estate->report_type = $request->report_type;
+        $estate->code ='';
         if ($request->active) {
             $estate->active = 1;
         } else {
@@ -209,7 +210,7 @@ class ClientEstateController extends Controller
         }
     }
 
-    public function update(UpdateClientEstateRequest $request, $id)
+    public function update($subdomain,UpdateClientEstateRequest $request, $id)
     {
 
         $estate = Estate::find($id);

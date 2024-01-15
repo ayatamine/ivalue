@@ -39,6 +39,8 @@ class TenantManager
         }
 
         config(['database.connections.tenant.database' => $tenant->database]);
+        config(['database.connections.tenant.username' => $tenant->database_username]);
+        config(['database.connections.tenant.password' => $tenant->database_password]);
         \DB::purge('tenant');
         \DB::connection('tenant')->reconnect();
         $this->setTenant($tenant);

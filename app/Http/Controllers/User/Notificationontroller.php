@@ -91,7 +91,7 @@ class Notificationontroller extends Controller
         if (auth()->user()->membership_level == 'previewer' || auth()->user()->hasRole('previewer')) {
             $not = DashNotification::find($not_id);
             if (!$not) {
-                return redirect()->route('home');
+                return redirect()->route('home',$subdomain);
             }
             $estate = Estate::where('id', $not->estate_id)->first();
             return view('frontend.steps.previewer_page', compact('estate'));
@@ -116,7 +116,7 @@ class Notificationontroller extends Controller
         }
     }
 
-    public function completeEntry($estate_id)
+    public function completeEntry($subdomain,$estate_id)
     {
 
         try {
@@ -132,9 +132,9 @@ class Notificationontroller extends Controller
             }
             throw $ex;
         }
-        return redirect()->route('not_open', ['not_id' => $not->id]);
+        return redirect()->route('not_open', ['not_id' => $not->id,'subdomain'=>$subdomain]);
     }
-    public function level_refuse($estate_id, $type)
+    public function level_refuse($subdomain,$estate_id, $type)
     {
         $estate = Estate::where('id', $estate_id)->first();
         $users = User::where('membership_level', 'coordinator')->pluck('id');
@@ -152,10 +152,10 @@ class Notificationontroller extends Controller
             $title = 'تم الرفض الطلب من قبل المقيم';
         }
         $this->send_notification($users, '' . $estate->id . '', '#FF0000', 'fa fa-times', '' . $title . '');
-        return redirect()->route('home')->with('done', 'تم الارسال الى المعاين لابلاغة بالرفض');
+        return redirect()->route('home',$subdomain)->with('done', 'تم الارسال الى المعاين لابلاغة بالرفض');
     }
 
-    public function level_inputs($estate_id, Request $request)
+    public function level_inputs($subdomain,$estate_id, Request $request)
     {
         try {
 
@@ -163,7 +163,7 @@ class Notificationontroller extends Controller
             $estate = Estate::where('id', $estate_id)->first();
             if (!$estate) {
                 DB::rollBack();
-                return redirect()->route('home')->with('done', 'عقار غير موجود');
+                return redirect()->route('home',$subdomain)->with('done', 'عقار غير موجود');
             }
 
             if (auth()->user()->membership_level == 'rater_manager' || auth()->user()->hasRole('rater_manager')) {
@@ -183,7 +183,7 @@ class Notificationontroller extends Controller
                     //TODO:: add show/hide for notitication
                     // DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
-                    return redirect()->route('home')->with('done', 'تم الالغاء والحفظ كمسودة');
+                    return redirect()->route('home',$subdomain)->with('done', 'تم الالغاء والحفظ كمسودة');
                 }
                 if ($request->return) {
 
@@ -210,7 +210,7 @@ class Notificationontroller extends Controller
                     //TODO:: add show/hide for notitication
                     // DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
-                    return redirect()->route('home')->with('done', 'تم رفض الطلب وإعادته للادخال');
+                    return redirect()->route('home',$subdomain)->with('done', 'تم رفض الطلب وإعادته للادخال');
                 }
                 if ($estate->report_type == 'new') {
                     $this->validate($request, [
@@ -340,13 +340,13 @@ class Notificationontroller extends Controller
                     $this->send_notification($users, '' . $estate->id . '', '#4B0082', 'fa fa-user-secret', 'طلب مراجعة الى مدير المنشأة');
                     DB::commit();
 
-                    return redirect()->route('home')->with('done', 'تم الارسال الى مدير المنشأة بنجاح');
+                    return redirect()->route('home',$subdomain)->with('done', 'تم الارسال الى مدير المنشأة بنجاح');
                 } else {
                     $users = User::where('membership_level', 'entre')->pluck('id');
                     $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', '  تم الارسال لاكمال المدخلات');
                     DB::commit();
 
-                    return redirect()->route('home')->with('done', 'تم  الارسال الى مرحلة الادخال ');
+                    return redirect()->route('home',$subdomain)->with('done', 'تم  الارسال الى مرحلة الادخال ');
                 }
             }
             if (auth()->user()->membership_level == 'manager' || auth()->user()->hasRole('manager')) {
@@ -377,7 +377,7 @@ class Notificationontroller extends Controller
                     //TODO:: add show/hide for notitication
                     // DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
-                    return redirect()->route('home')->with('done', 'تم الالغاء والحفظ كمسودة');
+                    return redirect()->route('home',$subdomain)->with('done', 'تم الالغاء والحفظ كمسودة');
                 }
                 if ($request->return) {
                     // $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
@@ -422,7 +422,7 @@ class Notificationontroller extends Controller
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
 
-                    return redirect()->route('home')->with('done', 'تم الارجاع الى ' . $return_to);
+                    return redirect()->route('home',$subdomain)->with('done', 'تم الارجاع الى ' . $return_to);
                 }
                 //ارسال الى الادخال
                 if ($request->approve) {
@@ -452,7 +452,7 @@ class Notificationontroller extends Controller
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
 
-                    return redirect()->route('home')->with('done', 'تم اعتماد الطلب وارساله الى الادخال لإكمال البيانات التفصيلية');
+                    return redirect()->route('home',$subdomain)->with('done', 'تم اعتماد الطلب وارساله الى الادخال لإكمال البيانات التفصيلية');
                 }
                 //ارسال الى الاعتماد المرحلة 14
                 if ($request->send_to_approver) {
@@ -474,7 +474,7 @@ class Notificationontroller extends Controller
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
 
-                    return redirect()->route('home')->with('done', 'تم ارسال الطلب للاعتماد');
+                    return redirect()->route('home',$subdomain)->with('done', 'تم ارسال الطلب للاعتماد');
                 }
                 //17 send report and finish order
                 if ($estate->qema) {
@@ -493,7 +493,7 @@ class Notificationontroller extends Controller
                         DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                         DB::commit();
 
-                        return redirect()->route('home')->with('done', 'تم ارسال الطلب للعميل لتأكيد الاستلام');
+                        return redirect()->route('home',$subdomain)->with('done', 'تم ارسال الطلب للعميل لتأكيد الاستلام');
                     }
                     if ($request->return) {
 
@@ -527,7 +527,7 @@ class Notificationontroller extends Controller
                         DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                         DB::commit();
 
-                        return redirect()->route('home')->with('done', 'تم الارجاع الى معتمد قيمة');
+                        return redirect()->route('home',$subdomain)->with('done', 'تم الارجاع الى معتمد قيمة');
                     }
                     if ($request->cancel) {
 
@@ -547,7 +547,7 @@ class Notificationontroller extends Controller
                         //TODO:: add show/hide for notitication
                         // DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                         DB::commit();
-                        return redirect()->route('home')->with('done', 'تم الالغاء والحفظ كمسودة');
+                        return redirect()->route('home',$subdomain)->with('done', 'تم الالغاء والحفظ كمسودة');
                     }
                     if ($request->end_report) {
 
@@ -560,7 +560,7 @@ class Notificationontroller extends Controller
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
 
-                    return redirect()->route('home')->with('done', 'تم تأكيد الاستلام وإنهاءالطلب');
+                    return redirect()->route('home',$subdomain)->with('done', 'تم تأكيد الاستلام وإنهاءالطلب');
                 }
                 }
                 // $this->validate($request, [
@@ -599,8 +599,8 @@ class Notificationontroller extends Controller
                 DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                 DB::commit();
 
-                return redirect()->route('home')->with('done', 'تم إرسال العقد إلى العميل');
-                // return redirect()->route('home')->with('done', 'تم الارسال الى مرحلة ادخال باقي المعلومات');
+                return redirect()->route('home',$subdomain)->with('done', 'تم إرسال العقد إلى العميل');
+                // return redirect()->route('home',$subdomain)->with('done', 'تم الارسال الى مرحلة ادخال باقي المعلومات');
 
 
             }
@@ -670,7 +670,7 @@ class Notificationontroller extends Controller
 
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
-                    return redirect()->route('home')->with('done', 'تم إعادة الطلب إلى المراجع');
+                    return redirect()->route('home',$subdomain)->with('done', 'تم إعادة الطلب إلى المراجع');
                 }
                 if ($estate->recieved_by_client ==1) {
 
@@ -767,7 +767,7 @@ class Notificationontroller extends Controller
 
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
-                    return redirect()->route('home')->with('done', 'تم إرسال الطلب الى مدير المنشأة');
+                    return redirect()->route('home',$subdomain)->with('done', 'تم إرسال الطلب الى مدير المنشأة');
                 }
                 if ($request->land_size) {
                     $estate->land_size = $request->land_size;
@@ -814,7 +814,7 @@ class Notificationontroller extends Controller
                 DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                 $this->send_notification($users, '' . $estate->id . '', '#00FA9A', 'fa fa-user', 'اكمال عملية التنسيق لاكمال باقي المراحل');
                 DB::commit();
-                return redirect()->route('home')->with('done', 'تم الارسال الى المنسق لاكمال باقي المراحل');
+                return redirect()->route('home',$subdomain)->with('done', 'تم الارسال الى المنسق لاكمال باقي المراحل');
             }
 
             if (auth()->user()->membership_level == 'previewer' || auth()->user()->hasRole('previewer')) {
@@ -849,7 +849,7 @@ class Notificationontroller extends Controller
                 DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                 $this->send_notification($users, '' . $estate->id . '', '#FFFF2E', 'fa fa-star', 'اكمال عملية التنسيق لاكمال باقي المراحل');
                 DB::commit();
-                return redirect()->route('home')->with('done', 'تم الارسال الى المقيم لاكمال باقي المراحل');
+                return redirect()->route('home',$subdomain)->with('done', 'تم الارسال الى المقيم لاكمال باقي المراحل');
             }
 
             if (auth()->user()->membership_level == 'rater' || auth()->user()->hasRole('rater')) {
@@ -882,7 +882,7 @@ class Notificationontroller extends Controller
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
                     $type = $request->type == "coordinator" ? ' المنسق' : 'المعاين';
-                    return redirect()->route('home')->with('done', 'تم إعادة الطلب إلى ' . $type);
+                    return redirect()->route('home',$subdomain)->with('done', 'تم إعادة الطلب إلى ' . $type);
                 }
 
                 if (!$request->assessment) {
@@ -937,7 +937,7 @@ class Notificationontroller extends Controller
                 // if ($request->assessment == 'farm') {
                 //     return redirect()->route('farm.create');
                 // }
-                return redirect()->route('home')->with('done', 'تم الارسال الى المراجع لاكمال باقي المراحل');
+                return redirect()->route('home',$subdomain)->with('done', 'تم الارسال الى المراجع لاكمال باقي المراحل');
             }
 
             if (auth()->user()->membership_level == 'reviewer' || auth()->user()->hasRole('reviewer')) {
@@ -954,7 +954,7 @@ class Notificationontroller extends Controller
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     $this->send_notification($users, '' . $estate->id . '', '#40E0D0', 'fa fa-user', 'أرسل المراجع الطلب بعد المراجعة');
                     DB::commit();
-                    return redirect()->route('home')->with('done', ' تم ارسال الطلب الى مدير المنشأة ومسودة للعميل');
+                    return redirect()->route('home',$subdomain)->with('done', ' تم ارسال الطلب الى مدير المنشأة ومسودة للعميل');
                 } elseif ($request->accept == 'rater') { //reject
                     $estate->rater_reason = $request->reject_note ?? '';
                     $estate->save();
@@ -976,7 +976,7 @@ class Notificationontroller extends Controller
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     $this->send_notification($users, '' . $estate->id . '', '#40E0D0', 'fa fa-user', 'عملية رفض على ما تم تقييمة');
                     DB::commit();
-                    return redirect()->route('home')->with('done', 'تم الارسال الى المقيم مرة اخرى');
+                    return redirect()->route('home',$subdomain)->with('done', 'تم الارسال الى المقيم مرة اخرى');
                 } elseif ($request->accept == 'previewer') { //reject
                     $estate->previewer_reason = $request->reject_note ?? '';
                     $estate->save();
@@ -998,7 +998,7 @@ class Notificationontroller extends Controller
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     $this->send_notification($users, '' . $estate->id . '', '#40E0D0', 'fa fa-user', 'عملية رفض   وتم الارسال الى المعاين ');
                     DB::commit();
-                    return redirect()->route('home')->with('done', 'تم الارسال الى المعاين مرة اخرى');
+                    return redirect()->route('home',$subdomain)->with('done', 'تم الارسال الى المعاين مرة اخرى');
                 }
             }
 
@@ -1030,7 +1030,7 @@ class Notificationontroller extends Controller
 
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
-                    return redirect()->route('home')->with('done', 'تم إعادة الطلب إلى الادخال');
+                    return redirect()->route('home',$subdomain)->with('done', 'تم إعادة الطلب إلى الادخال');
                 }
                 $this->validate($request, [
                     'reviewer_id' => 'required|numeric',
@@ -1056,7 +1056,7 @@ class Notificationontroller extends Controller
                 DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                 $this->send_notification($users, '' . $estate->id . '', '#D18700', 'fa fa-eye', 'يرجى المراجعة لاكمال باقي المراحل');
                 DB::commit();
-                return redirect()->route('home')->with('done', 'تم الارسال الى المعاين لاكمال باقي المراحل');
+                return redirect()->route('home',$subdomain)->with('done', 'تم الارسال الى المعاين لاكمال باقي المراحل');
             }
             if (auth()->user()->membership_level == 'approver' || auth()->user()->hasRole('approver')) {
                 $estate = Estate::where('id', $estate_id)->first();
@@ -1101,7 +1101,7 @@ class Notificationontroller extends Controller
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
 
-                    return redirect()->route('home')->with('done', 'تم الارجاع الى ' . $return_to);
+                    return redirect()->route('home',$subdomain)->with('done', 'تم الارجاع الى ' . $return_to);
                 }
                 //ارسال الى الادخال
                 if ($request->approve) {
@@ -1131,7 +1131,7 @@ class Notificationontroller extends Controller
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
 
-                    return redirect()->route('home')->with('done', 'تم اعتماد الطلب وارساله الى الادخال لإكمال البيانات التفصيلية');
+                    return redirect()->route('home',$subdomain)->with('done', 'تم اعتماد الطلب وارساله الى الادخال لإكمال البيانات التفصيلية');
                 }
                 //ارسال الى الاعتماد المرحلة 14
                 if ($request->send_to_value_approver) {
@@ -1155,7 +1155,7 @@ class Notificationontroller extends Controller
                     // DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
 
-                    return redirect()->route('home')->with('done', 'تم ارسال الطلب لاعتماد قيمة');
+                    return redirect()->route('home',$subdomain)->with('done', 'تم ارسال الطلب لاعتماد قيمة');
                 }
                 // if ($request->accept == 1) {
                 //     $estate->archive = 1;
@@ -1177,7 +1177,7 @@ class Notificationontroller extends Controller
                 //     }
                 //     DB::commit();
 
-                //     return redirect()->route('home')->with('done', 'تمت الموافقة والارسال الى مراجع قيمة ');
+                //     return redirect()->route('home',$subdomain)->with('done', 'تمت الموافقة والارسال الى مراجع قيمة ');
                 // }
                 // if ($request->accept == 2) {
                 //     // $inputs = EstateInput::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->get();
@@ -1199,7 +1199,7 @@ class Notificationontroller extends Controller
                 //     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                 //     DB::commit();
 
-                //     return redirect()->route('home')->with('done', 'تم الارجاع الى مدخل البيانات');
+                //     return redirect()->route('home',$subdomain)->with('done', 'تم الارجاع الى مدخل البيانات');
                 // }
             }
             if (auth()->user()->membership_level == 'qima_approver' || auth()->user()->hasRole('value_approver')) {
@@ -1246,7 +1246,7 @@ class Notificationontroller extends Controller
                     DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
 
-                    return redirect()->route('home')->with('done', 'تم الارجاع الى ' . $return_to);
+                    return redirect()->route('home',$subdomain)->with('done', 'تم الارجاع الى ' . $return_to);
                 }
                 if ($request->cancel) {
 
@@ -1264,7 +1264,7 @@ class Notificationontroller extends Controller
                     //TODO:: add show/hide for notitication
                     // DashNotification::where([['estate_id', $estate_id], ['user_id', auth()->user()->id]])->delete();
                     DB::commit();
-                    return redirect()->route('home')->with('done', 'تم الالغاء والحفظ كمسودة');
+                    return redirect()->route('home',$subdomain)->with('done', 'تم الالغاء والحفظ كمسودة');
                 }
 
                 $estate->qema = $request->qema_code;
@@ -1294,7 +1294,7 @@ class Notificationontroller extends Controller
                 }
                 DB::commit();
 
-                return redirect()->route('home')->with('done', 'تم ارسال الطلب الى مدير المنشأة ');
+                return redirect()->route('home',$subdomain)->with('done', 'تم ارسال الطلب الى مدير المنشأة ');
             }
         } catch (\Exception $e) {
             DB::rollBack();
@@ -1304,7 +1304,7 @@ class Notificationontroller extends Controller
         }
     }
 
-    public function edit_archive($estate_id)
+    public function edit_archive($subdomain,$estate_id)
     {
         try {
             $estate = Estate::where('id', $estate_id)->first();
@@ -1315,7 +1315,7 @@ class Notificationontroller extends Controller
         }
     }
 
-    public function edit_archive_post($estate_id, Request $request)
+    public function edit_archive_post($subdomain,$estate_id, Request $request)
     {
         try {
             DB::beginTransaction();
@@ -1326,21 +1326,21 @@ class Notificationontroller extends Controller
                 $input->save();
             }
             DB::commit();
-            return redirect()->route('home')->with('done', 'تمت التعديل  بنجاح  ');
+            return redirect()->route('home',$subdomain)->with('done', 'تمت التعديل  بنجاح  ');
         } catch (\Exception $e) {
             DB::rollBack();
             // return $request->infos;
             return redirect()->back()->with('error', ' من فضلك قم بملئ جميع الحقول');
         }
     }
-    public function reopenEstateOrder($estate_id)
+    public function reopenEstateOrder($subdomain,$estate_id)
     {
         try {
 
             $estate = Estate::where('id', $estate_id)->first();
             $estate->drafted_by = null;
             $estate->save();
-            return redirect()->route('home')->with('done', 'تم إعادة فتح الطلب  بنجاح  ');
+            return redirect()->route('home',$subdomain)->with('done', 'تم إعادة فتح الطلب  بنجاح  ');
         } catch (\Exception $e) {
             DB::rollBack();
             // return $request->infos;

@@ -91,7 +91,7 @@
                                 <span class="text-warning"><a href="{{ route('estate_paid' , ['estate_id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i title="اضافة عملية دفع" class="feather text-warning icon-dollar-sign"></i></a></span>
                                 @endif
                                 @endif
-                                <span class="text-danger"><a href="{{ route('pdf_pro' , ['estate'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i class="feather icon-file text-danger"></i></a></span>
+                                <span class="text-danger"><a href="{{ route('pdf_pro' , ['id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i class="feather icon-file text-danger"></i></a></span>
                                 <a title="" onclick="return false;" object_id=""
                                    delete_url="{{route('estates.destroy',['estate'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')])}}" class="edit-btn-table remove-alert" href="#">
                                     <i class="feather icon-trash"></i></a>

@@ -130,7 +130,7 @@
                         </div>
                         <div class="modal-body">
                             <form method="post"
-                                  action="{{ route('level_refuse' , ['estate_id'=>$estate->id,'type'=>auth()->user()->membership_level]) }}">
+                                  action="{{ route('level_refuse' , ['estate_id'=>$estate->id,'type'=>auth()->user()->membership_level,'subdomain'=>Route::current()->parameter('subdomain')]) }}">
                                 @csrf
                                 {{ method_field('PATCH') }}
                                 <div class="form-row">
