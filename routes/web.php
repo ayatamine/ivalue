@@ -125,7 +125,11 @@ Route::get('amie',function(){
 
     //    settings
         Route::get('settings', [SettingController::class,'index'])->name('settings');
+        Route::get('settings/reports', [SettingController::class,'reportsSettings'])->name('settings.reports');
+        Route::get('settings/rating', [SettingController::class,'ratingSettings'])->name('settings.rating');
         Route::patch('update_settings', [SettingController::class,'update_settings'])->name('update_settings');
+        Route::patch('update_reports_settings', [SettingController::class,'update_reports_settings'])->name('update_reports_settings');
+        Route::patch('update_rating_settings', [SettingController::class,'update_rating_settings'])->name('update_rating_settings');
 
         Route::get('edit_archive/{estate_id}', [Notificationontroller::class,'edit_archive'])->name('edit_archive');
         Route::post('edit_archive_post/{estate_id}',[Notificationontroller::class,'edit_archive_post'])->name('edit_archive_post');

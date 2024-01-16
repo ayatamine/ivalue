@@ -212,7 +212,7 @@
             @endif
 
               @if(auth()->user()->hasAnyRole('admin','enter') || auth()->user()->hasPermissionTo('export reports'))
-                <li class=""><a href="{{ route('report_page',Route::current()->parameter('subdomain')) }}"><i class="feather icon-file"></i><span class="menu-item" data-i18n="Basic">استخراج تقارير</span></a>
+                <li @class(['active'=> Request::is('report_page')])><a href="{{ route('report_page',Route::current()->parameter('subdomain')) }}"><i class="feather icon-file"></i><span class="menu-item" data-i18n="Basic">استخراج تقارير</span></a>
                 </li>
             @endif
 
@@ -222,6 +222,18 @@
                     <li class="{{ Request::is('establishments')? 'active': '' }}"><a href="{{ route('establishments.index') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic"> جميع  المنشآت</span></a>
                     </li>
                     <li class="{{ Request::is('establishments/create')? 'active': '' }}"><a href="{{ route('establishments.create') }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">إضافة منشأة</span></a>
+                    </li>
+                </ul>
+            </li>
+            @endif
+            @if(auth()->user()->hasRole('admin'))
+            <li class="nav-item has-sub {{ (Request::is('settings') ? 'sidebar-group-active' : '' || Request::is('settings/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-building"></i><span class="menu-title" data-i18n="Card">اعدادات المنشأة</span></a>
+                <ul class="menu-content">
+                    <li class="{{ Request::is('settings')? 'active': '' }}"><a href="{{ route('settings',Route::current()->parameter('subdomain')) }}"><i class="feather icon-settings"></i><span class="menu-item" data-i18n="Basic"> الإعدادات العامة</span></a>
+                    </li>
+                    <li class="{{ Request::is('settings/reports')? 'active': '' }}"><a href="{{ route('settings.reports',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">إعدادات التقرير</span></a>
+                    </li>
+                    <li class="{{ Request::is('settings/rating')? 'active': '' }}"><a href="{{ route('settings.rating',Route::current()->parameter('subdomain')) }}"><i class="fa fa-ravelry"></i><span class="menu-item" data-i18n="Basic">إعدادات التقييم</span></a>
                     </li>
                 </ul>
             </li>

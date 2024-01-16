@@ -13,7 +13,7 @@
                 <ul class="nav navbar-nav float-right">
                     <li class="nav-item d-none d-lg-block"><a class="nav-link nav-link-expand"><i
                                     class="ficon feather icon-maximize"></i></a></li>
-                    @if(auth()->user()->membership_level == 'admin')
+                    @if(auth()->user()->membership_level == 'admin' ||  auth()->user()->hasRole('admin'))
                     <li class="nav-item d-none d-lg-block">
                         <a href="{{ route('settings',Route::current()->parameter('subdomain')) }}" class="nav-link nav-link-label"><i
                                     class="ficon feather icon-settings"></i></a>

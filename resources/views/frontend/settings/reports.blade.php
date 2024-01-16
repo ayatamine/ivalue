@@ -77,194 +77,16 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title"> تعديل معلومات المنشأة  </h4>
+                        <h4 class="card-title"> تعديل إعدادات التقرير  </h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form method="post" action="{{ route('update_settings',Route::current()->parameter('subdomain')) }}" id="myform"
+                            <form method="post" action="{{ route('update_reports_settings',Route::current()->parameter('subdomain')) }}" id="myform"
                                   enctype="multipart/form-data">
                                 @csrf
                                 {{ method_field('PATCH') }}
-                                <div class="form-row">
-                                    <div class="col-md-12 col-12 mb-3">
-                                        <h3>
-                                            بيانات المنشأة
-                                        </h3>
-                                    </div>
-                                    <div class="col-md-12 col-12 mb-3">
-                                        <label for="name_arabic">الاسم </label>
-                                        <input type="text" name="name_arabic" class="form-control" id="name_arabic"
-                                               placeholder="الاسم " value="{{$setting->title}}" required>
-                                        @error('name_arabic')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-12 col-12 mb-3">
-                                        <label for="name_english">الاسم بالانجليزية</label>
-                                        <input type="text" name="name_english" class="form-control" id="name_english"
-                                               placeholder="الاسم بالانجليزية" value="{{$setting->title_en}}"
-                                               required>
-                                        @error('name_english')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-12 col-12 mb-3">
-                                        <label for="phone">رقم الهاتف</label>
-                                        <input type="text" name="phone" class="form-control" id="phone"
-                                               placeholder="رقم الهاتف" value="{{$setting->phone}}"
-                                               required>
-                                        @error('phone')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-12 col-12 mb-3">
-                                        <label for="mobile">رقم الجوال</label>
-                                        <input type="text" name="mobile" class="form-control" id="mobile"
-                                               placeholder="رقم الجوال" value="{{$setting->mobile}}"
-                                               required>
-                                        @error('mobile')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-12 col-12 mb-3">
-                                        <label for="whatsapp">رقم الجوال</label>
-                                        <input type="text" name="whatsapp" class="form-control" id="whatsapp"
-                                               placeholder="رقم الجوال" value="{{$setting->whats}}"
-                                               required>
-                                        @error('whatsapp')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-12 col-12 mb-3">
-                                        <label for="email">البريد الاكتروني</label>
-                                        <input type="email" name="email" class="form-control" id="email"
-                                               placeholder="البريد الاكتروني" value="{{$setting->email}}"
-                                               required>
-                                        @error('email')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-12 col-12 mb-3">
-                                        <label for="website">عنوان الموقع الالكتروني</label>
-                                        <input type="url" name="website" class="form-control" id="website"
-                                               placeholder="عنوان الموقع الالكتروني" value="{{$setting->website}}"
-                                               required>
-                                        @error('website')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-12 col-12 mb-3">
-                                        <label for="about">نبذة عن المنشأة</label>
-                                        <textarea type="text" name="about" class="form-control" id="about"
-                                                  placeholder="نبذة عن المنشأة" required>{{$setting->about}}</textarea>
-                                        @error('about')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-12 col-12 mb-3">
-                                        <label for="address">عنوان المنشأة</label>
-                                        <textarea type="text" name="address" class="form-control" id="address"
-                                                  placeholder="عنوان المنشأة" required>{{$setting->address}}</textarea>
-                                        @error('address')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
 
-                                </div>
                                 <div class="form-row">
-                                    <div class="col-md-12 col-12 mb-3">
-                                        <hr>
-                                    </div>
-                                    <div class="col-md-12 col-12 mb-3">
-                                        <h3>
-                                            المستندات
-                                        </h3>
-                                    </div>
-                                    <div class="col-md-6 col-12 mb-3">
-                                        <label for="commercial_number">رقم السجل التجاري</label>
-                                        <input type="text" name="commercial_number" class="form-control"
-                                               id="commercial_number"
-                                               placeholder="رقم السجل التجاري" value="{{$setting->commercial_number}}"
-                                               required>
-                                        @error('commercial_number')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-6 col-12 mb-3">
-                                        <label for="commercial_date">تاريخ انتهاء السجل التجاري</label>
-                                        <input type="date" name="commercial_date" class="form-control"
-                                               id="commercial_date"
-                                               placeholder="تاريخ انتهاء السجل التجاري"
-                                               value="{{$setting->commercial_date ? \Carbon\Carbon::parse($setting->commercial_date)->format('Y-m-d') : ''}}"
-                                               required>
-                                        @error('commercial_date')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-6 col-12 mb-3">
-                                        <label for="license_number">رقم رخصة الهيئة</label>
-                                        <input type="text" name="license_number" class="form-control"
-                                               id="license_number"
-                                               placeholder="رقم رخصة الهيئة" value="{{$setting->license_number}}"
-                                               required>
-                                        @error('license_number')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-6 col-12 mb-3">
-                                        <label for="license_date">تاريخ انتهاء رخصة الهيئة</label>
-                                        <input type="date" name="license_date" class="form-control" id="license_date"
-                                               placeholder="تاريخ انتهاء رخصة الهيئة"
-                                               value="{{$setting->license_date ? \Carbon\Carbon::parse($setting->license_date)->format('Y-m-d') : ''}}"
-                                               required>
-                                        @error('license_date')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-image">
-                                        <fieldset class="form-group">
-                                            <label for="image_commercial">صورة السجل التجاري</label>
-                                            <div class="custom-file">
-                                                <input name="image_commercial" type="file" class="custom-file-input"
-                                                       id="image_commercial"
-                                                       onchange="readURL(this);"/>
-                                                <label class="custom-file-label" for="image_commercial">اضغط لاختيار
-                                                    الصورة</label>
-                                            </div>
-                                            @error('image_commercial')
-                                            <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </fieldset>
-                                        <div class="text-center">
-                                            <img @if(!$setting->image_commercial_url) class="blah_create"
-                                                 @endif id="blah" src="{{ $setting->image_commercial_url }}"
-                                                 alt="your image"/>
-                                        </div>
-                                        <br>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-image">
-                                        <fieldset class="form-group">
-                                            <label for="image_license"> صورة رخصة الهيئة</label>
-                                            <div class="custom-file">
-                                                <input name="image_license" type="file" class="custom-file-input"
-                                                       id="image_license"
-                                                       onchange="readURL2(this);"/>
-                                                <label class="custom-file-label" for="image_license">اضغط لاختيار
-                                                    الصورة</label>
-                                            </div>
-                                            @error('image_license')
-                                            <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </fieldset>
-                                        <div class="text-center">
-                                            <img @if(!$setting->image_license_url) class="blah_create" @endif id="blah2"
-                                                 src="{{ $setting->image_license_url }}" alt="your image"/>
-                                        </div>
-                                        <br>
-                                    </div>
-                                </div>
-                                {{-- <div class="form-row">
                                     <div class="col-md-12 col-12 mb-3">
                                         <hr>
                                     </div>
@@ -389,8 +211,136 @@
                                         </div>
                                         <br>
                                     </div>
+                                    {{-- ------------------ --}}
+                                    <div class="col-md-12 col-12 mb-3">
+                                        <hr>
+                                    </div>
+                                    <div class="col-md-12 col-12 mb-3">
+                                        <h3>
+                                            القيم الافتراضية للبيانات والحقول
+                                        </h3>
+                                    </div>
+                                   <div class="form-row">
+                                    <div class="col-md-4 col-12 mb-3">
+                                        <label for="offer_price">عرض السعر</label>
+                                        <input type="number" name="offer_price" class="form-control" id="offer_price"
+                                               placeholder="عرض السعر" value="{{$setting->offer_price}}"
+                                               required>
+                                        @error('offer_price')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-4 col-12 mb-3">
+                                        <label for="price_delay">مدة عرض السعر</label>
+                                        <input type="number" name="price_delay" class="form-control" id="price_delay"
+                                               placeholder="مدة عرض السعر" value="{{$setting->price_delay}}" required>
+                                        @error('price_delay')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-sm-4 col-12 mb-3">
+                                        <label for="size_kind">
+                                            العملة
+                                        </label>
+                                        <?php
+                                            $currencies = \DB::table('currncies')->get();
+                                        ?>
+                                        <div class="form-group">
+                                            <select name="currency" id="currency"
+                                                    class="select2 form-control">
+                                                @foreach($currencies as $currency)
+                                                <option value="{{ $currency->name }}"  @if($currency->name == $setting->currency) selected @endif>{{ $currency->name }} </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        @error('currency')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                   </div>
+                                   <div class="form-row">
+                                    <div class="col-md-4 col-12 mb-3">
+                                        <label for="work_area">نطاق العمل</label>
+                                        <input type="text" name="work_area" class="form-control" id="work_area"
+                                               placeholder="نطاق العمل" value="{{$setting->work_area}}"
+                                               required>
+                                        @error('work_area')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-4 col-12 mb-3">
+                                        <label for="work_delay">مده العمل</label>
+                                        <input type="text" name="work_delay" class="form-control" id="work_delay"
+                                               placeholder="مدة العمل" value="{{$setting->work_delay}}" required>
+                                        @error('work_delay')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-3">
+                                        <label for="payment_partitions">عدد الدفعات</label>
+                                        <input type="number" name="payment_partitions" class="form-control" id="payment_partitions"
+                                               placeholder="عدد الدفعات" value="{{$setting->payment_partitions}}" required>
+                                        @error('payment_partitions')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                   </div>
+                                   <div class="form-row">
+                                    <div class="col-md-4 col-12 mb-3">
+                                        <label for="report_standards">معايير التقييم</label>
 
-                                </div> --}}
+
+                                               <div class="form-group">
+                                                        <select name="report_standards" id="report_standards"
+                                                                class="select2 form-control" required>
+
+                                                            <option value="2020" @selected($setting->report_standards == '2020')> 2020</option>
+                                                            <!--<option value="2021"> 2021</option>-->
+                                                            <option value="2022" @selected($setting->report_standards == '2022')> 2022</option>
+
+                                                        </select>
+                                                    </div>
+                                        @error('report_standards')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-4 col-12 mb-3">
+                                        <label for="report_desc">وصف التقرير</label>
+                                        <div class="form-group">
+                                                        <select name="report_desc" id="report_desc"
+                                                                class="select2 form-control">
+
+                                                            <option value="ورقي" @selected($setting->report_desc == 'ورقي')>ورقي </option>
+                                                            <option value="الكتروني" @selected($setting->report_desc == 'الكتروني')>الكتروني </option>
+
+                                                        </select>
+                                                    </div>
+                                        @error('report_desc')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-sm-4 col-12 mb-3">
+                                        <label for="report_kind">
+                                            نوع التقرير
+                                        </label>
+                                        <div class="form-group">
+                                            <select name="report_kind" id="report_kind"
+                                                    class="select2 form-control">
+                                                <option selected hidden disabled value="">اختر نوع التقرير
+                                                </option>
+                                                <option value="تقرير مفصل" @selected($setting->report_kind =="تقرير مفصل") >تقرير مفصل </option>
+                                                <option value="ملخص التقرير" @selected($setting->report_kind=="ملخص التقرير")>ملخص التقرير </option>
+                                                <option value="مراجعة مع قيمة جديدة" @selected($setting->report_kind =="مراجعة مع قيمة جديدة")>مراجعة مع قيمة جديدة</option>
+                                                <option value="مراجعة بدون قيمة جديدة" @selected($setting->report_kind =="مراجعة بدون قيمة جديدة")>مراجعة بدون قيمة جديدة</option>
+                                            </select>
+                                        </div>
+                                        @error('report_kind')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                   </div>
+
+                                </div>
                                 <hr>
                                 <button class="btn btn-primary" type="submit">حفظ</button>
                             </form>
