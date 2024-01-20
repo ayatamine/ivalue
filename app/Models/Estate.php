@@ -146,7 +146,7 @@ class Estate extends Model implements Auditable
         if($images->count() > 0){
             $imgs = [];
             foreach ($images as $image){
-                 $imgs[] = \URL::asset('pictures/estates/'.$image->file);
+                 $imgs[] = 'pictures/estates/'.$image->file;
             }
             return $imgs;
         }

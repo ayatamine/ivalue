@@ -945,6 +945,7 @@
             .append(img);
         $("#filesList > #files-names").append(fileBloc);
     };
+    const dt = new DataTransfer(); // Permet de manipuler les fichiers de l'input file
     // Ajout des fichiers dans l'objet DataTransfer
     for (let file of this.files) {
         dt.items.add(file);
@@ -953,7 +954,7 @@
     this.files = dt.files;
 
     // EventListener pour le bouton de suppression créé
-    $('span.file-delete').click(function(){
+    $(document).on('click','span.file-delete',function(){
         let name = $(this).next('span.name').text();
         // Supprimer l'affichage du nom de fichier
         $(this).parent().remove();
@@ -967,6 +968,26 @@
         }
         // Mise à jour des fichiers de l'input file après suppression
         document.getElementById('attachment').files = dt.files;
+    });
+    $(document).on('click','span.delete-file-from',function(){
+      console.log('sdf')
+      alert('not yet implemented')
+        // let name = $(this).next('span.name').text();
+        //  //send ajax request
+        //  $.ajax({
+
+        // // Supprimer l'affichage du nom de fichier
+        // $(this).parent().remove();
+        // for(let i = 0; i < dt.items.length; i++){
+        //     // Correspondance du fichier et du nom
+        //     if(name === dt.items[i].getAsFile().name){
+        //         // Suppression du fichier dans l'objet DataTransfer
+        //         dt.items.remove(i);
+        //         continue;
+        //     }
+        // }
+        // // Mise à jour des fichiers de l'input file après suppression
+        // document.getElementById('attachment').files = dt.files;
     });
 });
 })(window, document, jQuery);

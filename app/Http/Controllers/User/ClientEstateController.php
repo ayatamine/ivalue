@@ -113,6 +113,15 @@ class ClientEstateController extends Controller
         $estate = new Estate();
         $estate->name_arabic = $request->name_arabic;
         $estate->name_english = $request->name_english;
+
+        $estate->responsible_phone = $request->responsible_phone;
+        $estate->floor = $request->floor;
+        $estate->duration = $request->duration;
+        $estate->duration_start = $request->duration_start;
+        $estate->duration_end = $request->duration_end;
+        $estate->evaluation_date = $request->evaluation_date;
+        $estate->site_link =$request->site_link;
+
         $estate->address = $request->address;
         $estate->about = $request->about;
         $estate->land_size = $request->land_size;
@@ -159,10 +168,14 @@ class ClientEstateController extends Controller
              return redirect()->back()->with('error' , 'يرجى اختيار المرحلة التالية');
         }
         if($request->report_type == 'new'){
-            $users = User::where('membership_level', 'rater_manager')->pluck('id');
+            $users = User::where('membership_level', 'rater_manager')->orWhereHas("roles", function ($q) {
+                $q->where("name", "rater_manager");
+            })->pluck('id');
             $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', 'طلب جديد في مرحلة المراجعة');
         }elseif($request->report_type == 'old'){
-            $users = User::where('membership_level', 'rater_manager')->pluck('id');
+            $users = User::where('membership_level', 'rater_manager')->orWhereHas("roles", function ($q) {
+                $q->where("name", "rater_manager");
+            })->pluck('id');
             $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', 'طلب جديد في مرحلة المراجعة');
             // $users = User::where('membership_level', 'entre')->pluck('id');
             // $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', '  تم الارسال لاكمال المدخلات');
@@ -216,6 +229,15 @@ class ClientEstateController extends Controller
         $estate = Estate::find($id);
         $estate->name_arabic = $request->name_arabic;
         $estate->name_english = $request->name_english;
+
+        $estate->responsible_phone = $request->responsible_phone;
+        $estate->floor = $request->floor;
+        $estate->duration = $request->duration;
+        $estate->duration_start = $request->duration_start;
+        $estate->duration_end = $request->duration_end;
+        $estate->evaluation_date = $request->evaluation_date;
+        $estate->site_link =$request->site_link;
+
         $estate->address = $request->address;
         $estate->about = $request->about;
         $estate->land_size = $request->land_size;

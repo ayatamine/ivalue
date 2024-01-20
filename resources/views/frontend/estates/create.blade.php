@@ -39,6 +39,9 @@
             display: none;
             width: 100%;
         }
+        .floor,.build_size {
+            display: none;
+        }
 
         .iti.iti--allow-dropdown {
             width: 100%;
@@ -117,7 +120,7 @@
         .file-delete > span {
             transform: rotate(45deg);
         }
-
+        .duration_start,.duration_end,.level{display: none}
     </style>
     <!-- END: Custom CSS-->
 @endsection
@@ -156,13 +159,44 @@
                                     {{--<br>--}}
                                     {{--</div>--}}
                                     <div class="col-md-3 col-12 mb-3">
-                                        <label for="name_arabic">عميل التقييم   </label>
+                                        <div class="form-row">
+                                            <div class="col-sm-12 col-12">
+                                                <label for="kind_id">
+                                                     طالب التقرير ( العميل)
+                                                </label>
+                                                <div class="form-group">
+                                                    <select name="user_id" id="user_id"
+                                                            class="select2 form-control">
+                                                        <option selected hidden disabled value="">اختر العميل
+                                                        </option>
+                                                        @foreach($users as $estate)
+                                                            <option value="{{ $estate->id }}">{{ $estate->name }} </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                @error('user_id')
+                                                <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-12 mb-3">
+                                        <label for="name_arabic">اسم المسؤول عن العقار   </label>
                                         <input type="text" name="name_arabic" class="form-control" id="name_arabic"
                                                placeholder="الاسم " value="{{old('name_arabic')}}" required>
                                         @error('name_arabic')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
+                                    <div class="col-md-3 col-12 mb-3">
+                                        <label for="responsible_phone">رقم الهاتف للمسؤول عن العقار   </label>
+                                        <input type="text" name="responsible_phone" class="form-control" id="responsible_phone"
+                                               placeholder="الاسم " value="{{old('responsible_phone')}}" required>
+                                        @error('responsible_phone')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
                                     {{--<div class="col-md-12 col-12 mb-3">--}}
                                     {{--<label for="name_english">الاسم بالانجليزية</label>--}}
                                     {{--<input type="text" name="name_english" class="form-control" id="name_english"--}}
@@ -199,7 +233,7 @@
                                            <div class="col-md-12 col-12 mb-3">
                                                <div class="form-row">
                                                    <div class="col-sm-12 col-12">
-                                                       <label for="kind_id">
+                                                       <label for="category_id">
                                                             نوع المبنى
                                                        </label>
                                                        <div class="form-group">
@@ -220,6 +254,54 @@
                                                </div>
                                            </div>
                                         </div>
+                                    </div>
+                                    <div class="floor col-md-3 col-12 mb-3">
+                                       <div class="row">
+                                           <div class="col-md-12 col-12 mb-3">
+                                               <div class="form-row">
+                                                   <div class="col-sm-12 col-12">
+                                                       <label for="floor">
+                                                            الطابق
+                                                       </label>
+                                                       <div class="form-group">
+                                                        <input type="number" name="floor"
+                                                        class="form-control" id="floor" placeholder=""
+                                                        value="{{old('floor')}}">
+                                                       </div>
+                                                       @error('floor')
+                                                       <span class="text-danger">{{ $message }}</span>
+                                                       @enderror
+                                                   </div>
+                                               </div>
+                                           </div>
+                                        </div>
+                                    </div>
+                                    <div class="land_size col-md-3 col-12 mb-3">
+                                        <label for="land_size">مساحة الارض</label>
+                                        <input type="number" name="land_size"
+                                               class="form-control" id="land_size" placeholder=""
+                                               value="{{ old('land_size')}}" required>
+                                        @error('land_size')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="level col-md-3 col-12 mb-3">
+                                        <label for="">عدد الادوار او الطوابق</label>
+                                        <input type="number" name="level"
+                                               class="form-control" id="" placeholder=""
+                                               value="">
+                                        @error('level')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="build_size col-md-3 col-12 mb-3">
+                                        <label for="build_size">مساحة المبني</label>
+                                        <input type="number" name="build_size"
+                                               class="form-control" id="build_size" placeholder=""
+                                               value="{{old('build_size')}}">
+                                        @error('build_size')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                     </div>
                                     <div class="col-md-3 col-12 mb-3">
                                         <div class="form-row">
@@ -316,40 +398,23 @@
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="col-md-3 col-12 mb-3">
-                                        <div class="form-row">
-                                            <div class="col-sm-12 col-12">
-                                                <label for="kind_id">
-                                                     عميل المنشأة
-                                                </label>
-                                                <div class="form-group">
-                                                    <select name="user_id" id="user_id"
-                                                            class="select2 form-control">
-                                                        <option selected hidden disabled value="">اختر صاحب العقار
-                                                        </option>
-                                                        @foreach($users as $estate)
-                                                            <option value="{{ $estate->id }}">{{ $estate->name }} </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                @error('user_id')
-                                                <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                        <label for="address">العنوان تفصيليا + (الحي - المنطقة)  </label>
+                                        <input type="text" name="address"
+                                                        class="form-control" id="address" placeholder=""
+                                                        value="{{old('address')}}">
                                     </div>
                                     <div class="col-md-12 col-12 mb-3">
-                                        <label for="address"> (الحي) </label>
-                                        <textarea rows="5" type="text" name="address"
-                                                  class="form-control" id="address" placeholder="عنوان "
-                                                  value=""></textarea>
+                                        <label for="site_link"> رابط الموقع</label>
+                                            <input type="site_link" name="site_link"
+                                                   class="form-control" id="site_link" placeholder=""
+                                                   value="{{ old('site_link')}}" required>
+                                            @error('site_link')
+                                            <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                     </div>
-                                    <div class="col-md-12 col-12 mb-3">
-                                        <label for="address">العنوان تفصيليا + (الحي - المنطقة) </label>
-                                        <textarea rows="5" type="text" name="address"
-                                                  class="form-control" id="address" placeholder="عنوان "
-                                                  value=""></textarea>
-                                    </div>
+
                                     {{--<div class="form-row">--}}
                                     {{--<div class="col-sm-12 col-12">--}}
                                     {{--<label for="level">--}}
@@ -417,80 +482,16 @@
                                             <hr>
                                         </div>
                                     </div>
-                                    <div class="member">
-                                       <div class="row">
-                                           <!--<div class="col-md-3 col-12 mb-3">-->
-                                           <!--    <div class="form-row">-->
-                                           <!--        <div class="col-sm-12 col-12">-->
-                                           <!--            <label for="kind_id">-->
-                                           <!--                 نوع المبنى-->
-                                           <!--            </label>-->
-                                           <!--            <div class="form-group">-->
-                                           <!--                <select name="category_id" id="category_id"-->
-                                           <!--                        class="select2 form-control" required>-->
-                                           <!--                    <option selected hidden disabled value="">اختر التصنيف-->
-                                           <!--                        للعقار-->
-                                           <!--                    </option>-->
-                                           <!--                    @foreach($categories as $category)-->
-                                           <!--                        <option value="{{ $category->id }}">{{ $category->name }} </option>-->
-                                           <!--                    @endforeach-->
-                                           <!--                </select>-->
-                                           <!--            </div>-->
-                                           <!--            @error('category_id')-->
-                                           <!--            <span class="text-danger">{{ $message }}</span>-->
-                                           <!--            @enderror-->
-                                           <!--        </div>-->
-                                           <!--    </div>-->
-                                           <!--</div>-->
 
-                                           <div class="col-md-3 col-12 mb-3">
-                                               <label for="build_size">مساحة المبني</label>
-                                               <input type="number" name="build_size"
-                                                      class="form-control" id="build_size" placeholder=""
-                                                      value="{{old('build_size')}}">
-                                               @error('build_size')
-                                               <span class="text-danger">{{ $message }}</span>
-                                               @enderror
-                                           </div>
-                                           <div class="col-md-3 col-12 mb-3">
-                                               <label for="age">عمر العقار بالسنوات</label>
-                                               <input type="number" name="age"
-                                                      class="form-control" id="age" placeholder=""
-                                                      value="{{old('$estate->age')}}">
-                                               @error('age')
-                                               <span class="text-danger">{{ $message }}</span>
-                                               @enderror
-                                           </div>
-                                           <div class="col-md-3 col-12 mb-3">
-                                               <label for="">عدد الادوار او الطوابق</label>
-                                               <input type="number" name="level"
-                                                      class="form-control" id="" placeholder=""
-                                                      value="">
-                                               @error('level')
-                                               <span class="text-danger">{{ $message }}</span>
-                                               @enderror
-                                           </div>
-                                       </div>
-                                    </div>
                                     <div class="col-md-12 col-12 mb-3">
-                                               <label for="land_size">مساحة الارض</label>
-                                               <input type="number" name="land_size"
-                                                      class="form-control" id="land_size" placeholder=""
-                                                      value="{{ old('land_size')}}" required>
-                                               @error('land_size')
-                                               <span class="text-danger">{{ $message }}</span>
-                                               @enderror
-                                           </div>
-                                           <div class="col-md-12 col-12 mb-3">
-                                           <label for="link"> رابط الموقع</label>
-                                               <input type="link" name="link"
-                                                      class="form-control" id="link" placeholder=""
-                                                      value="{{ old('link')}}" required>
-                                               @error('link')
-                                               <span class="text-danger">{{ $message }}</span>
-                                               @enderror
-                                           </div>
-
+                                        <label for="age">عمر العقار بالسنوات</label>
+                                        <input type="number" name="age"
+                                               class="form-control" id="age" placeholder=""
+                                               value="{{old('age')}}">
+                                        @error('age')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
                                     <div class="col-md-6">
                                         <div class="form-row">
                                             <div class="col-sm-12 col-12">
@@ -527,7 +528,7 @@
                                                         <option value="شراء">شراء</option>
                                                         <option value="تمويل">تمويل</option>
                                                         <option value="الرهن">الرهن</option>
-                                                        <option value="تقدري القيمة الاجارية">تقدري القيمة الاجارية
+                                                        <option value="تقدير القيمة الايجارية">تقدير القيمة الايجارية
                                                         </option>
                                                         <option value="النزاعات والتقاضي">النزاعات والتقاضي</option>
                                                         <option value="التمويل">التمويل</option>
@@ -545,11 +546,60 @@
                                         </div>
                                     </div>
                                     <div class="col-md-12 col-12 mb-3">
-                                        <label for="about"> الوصف </label>
+                                        <label for="yearly" class="mb-1"> فترة القيمة الايجارية  </label>
+                                        <div class="custom-control custom-radio ">
+                                            <input type="radio" id="yearly"
+                                                   name="duration" value="سنوي" class="custom-control-input"
+                                                   >
+                                            <label class="custom-control-label" for="yearly">سنوية</label>
+                                        </div>
+                                        <div class="custom-control custom-radio ">
+                                            <input type="radio" id="not_yearly"
+                                                   name="duration" value="فترة محددة" class="custom-control-input"
+                                                  >
+                                            <label class="custom-control-label" for="not_yearly">قترة محددة</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="duration_start col-md-6 col-12 mb-3">
+                                            <label for="duration_start"> من الشهر</label>
+                                                <input type="number" min="1" max="12" name="duration_start"
+                                                       class="form-control" id="duration_start" placeholder=""
+                                                       value="{{ old('duration_start')}}" required>
+                                                @error('duration_start')
+                                                <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                        </div>
+                                        <div class="duration_end col-md-6 col-12 mb-3">
+                                            <label for="duration_end"> إلى الشهر</label>
+                                                <input type="number" min="1" max="12" name="duration_end"
+                                                       class="form-control" id="duration_end" placeholder=""
+                                                       value="{{ old('duration_end')}}" required>
+                                                @error('duration_end')
+                                                <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-12 mb-3">
+                                        <label for="evaluation_date">تاريخ التقييم  </label>
+                                        <div class="form-group">
+                                            <select name="evaluation_date" id="evaluation_date"
+                                                    class="select2 form-control">
+                                                <option value="ميلادي">ميلادي</option>
+                                                <option value="هجري">هجري</option>
+                                            </select>
+                                        </div>
+                                        @error('evaluation_date')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-12 col-12 mb-3">
+                                        <label for="about"> وصف العقار  </label>
                                         <textarea rows="5" type="text" name="about"
                                                   class="form-control" id="about" placeholder="الوصف "
                                                   value=""></textarea>
                                     </div>
+
                                 </div>
                                 <div class="form-row">
                                     <div class="col-md-4">
@@ -569,7 +619,7 @@
                                                 </label>
                                                 <div class="form-group">
                                                     <select name="report_type" id="report_type"
-                                                            class="select2 form-control">
+                                                            class="select2 form-control" required>
                                                         <option selected hidden disabled value="">اختر نوع عملية الادخال
                                                         </option>
                                                         <option value="new">ادخال جديد
@@ -681,10 +731,42 @@
             if ($('#kind_id').val() != 1) {
                 $('.member').show();
                 $('.no_member').hide();
+                $('.land_size').hide();
+                $('.level').show();
+                $('.build_size').show();
             } else {
                 $('.member').hide();
                 $('.no_member').show();
+                 $('.land_size').show();
+                $('.level').hide();
+                $('.build_size').hide();
             }
+        });
+        $('#category_id').change(function () {
+
+            if ( [1,10,11].indexOf(parseInt($('#category_id').val())) != -1 ) {
+                $('.floor').show();
+                $('.level').hide();
+                // $('.build_size').show();
+
+            } else {
+                $('.floor').hide();
+                $('.level').show();
+                // $('.build_size').hide();
+            }
+        });
+        $(document).on('change','input[name="duration"]',function () {
+
+          if($(this).val() == 'سنوية')
+          {
+            $('.duration_start').hide()
+            $('.duration_end').hide()
+          }
+          else
+          {
+            $('.duration_start').show()
+            $('.duration_end').show()
+          }
         });
 
     </script>
@@ -738,47 +820,47 @@
 
         const dt = new DataTransfer(); // Permet de manipuler les fichiers de l'input file
 
-        $("#attachment").on('change', function(e){
-            for(var i = 0; i < this.files.length; i++){
-                const reader = new FileReader();
-                const img = document.createElement('img');
-                reader.onload = function(event) {
+        // $("#attachment").on('change', function(e){
+        //     for(var i = 0; i < this.files.length; i++){
+        //         const reader = new FileReader();
+        //         const img = document.createElement('img');
+        //         reader.onload = function(event) {
 
-                    img.src = event.target.result;
-                    // previewContainer.appendChild(img);
-                };
-                reader.readAsDataURL(this.files.item(i));
-                let fileBloc = $('<span/>', {class: 'file-block'}),
-                    fileName = $('<span/>', {class: 'name', text: this.files.item(i).name});
-                fileBloc.append('<span class="file-delete"><span>+</span></span>')
-                    .append(fileName)
-                    .append(img);
-                $("#filesList > #files-names").append(fileBloc);
-            };
-            // Ajout des fichiers dans l'objet DataTransfer
-            for (let file of this.files) {
-                dt.items.add(file);
-            }
-            // Mise à jour des fichiers de l'input file après ajout
-            this.files = dt.files;
+        //             img.src = event.target.result;
+        //             // previewContainer.appendChild(img);
+        //         };
+        //         reader.readAsDataURL(this.files.item(i));
+        //         let fileBloc = $('<span/>', {class: 'file-block'}),
+        //             fileName = $('<span/>', {class: 'name', text: this.files.item(i).name});
+        //         fileBloc.append('<span class="file-delete"><span>+</span></span>')
+        //             .append(fileName)
+        //             .append(img);
+        //         $("#filesList > #files-names").append(fileBloc);
+        //     };
+        //     // Ajout des fichiers dans l'objet DataTransfer
+        //     for (let file of this.files) {
+        //         dt.items.add(file);
+        //     }
+        //     // Mise à jour des fichiers de l'input file après ajout
+        //     this.files = dt.files;
 
-            // EventListener pour le bouton de suppression créé
-            $('span.file-delete').click(function(){
-                let name = $(this).next('span.name').text();
-                // Supprimer l'affichage du nom de fichier
-                $(this).parent().remove();
-                for(let i = 0; i < dt.items.length; i++){
-                    // Correspondance du fichier et du nom
-                    if(name === dt.items[i].getAsFile().name){
-                        // Suppression du fichier dans l'objet DataTransfer
-                        dt.items.remove(i);
-                        continue;
-                    }
-                }
-                // Mise à jour des fichiers de l'input file après suppression
-                document.getElementById('attachment').files = dt.files;
-            });
-        });
+        //     // EventListener pour le bouton de suppression créé
+        //     $('span.file-delete').click(function(){
+        //         let name = $(this).next('span.name').text();
+        //         // Supprimer l'affichage du nom de fichier
+        //         $(this).parent().remove();
+        //         for(let i = 0; i < dt.items.length; i++){
+        //             // Correspondance du fichier et du nom
+        //             if(name === dt.items[i].getAsFile().name){
+        //                 // Suppression du fichier dans l'objet DataTransfer
+        //                 dt.items.remove(i);
+        //                 continue;
+        //             }
+        //         }
+        //         // Mise à jour des fichiers de l'input file après suppression
+        //         document.getElementById('attachment').files = dt.files;
+        //     });
+        // });
     </script>
 @endsection
 

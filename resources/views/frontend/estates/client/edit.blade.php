@@ -195,19 +195,11 @@
                                     {{--</div>--}}
                                     {{--<br>--}}
                                     {{--</div>--}}
-                                    <div class="col-md-12 col-12 mb-3">
-                                        <label for="name_arabic">الاسم </label>
+                                    <div class="col-md-3 col-12 mb-3">
+                                        <label for="name_arabic">اسم المسؤول عن العقار  </label>
                                         <input type="text" name="name_arabic" class="form-control" id="name_arabic"
                                                placeholder="الاسم " value="{{$estate->name_arabic}}" required>
                                         @error('name_arabic')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-12 col-12 mb-3">
-                                        <label for="name_english">الاسم بالانجليزي </label>
-                                        <input type="text" name="name_english" class="form-control" id="name_english"
-                                               placeholder="الاسم " value="{{$estate->name_english}}" required>
-                                        @error('name_english')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -219,25 +211,108 @@
                                     {{--<span class="text-danger">{{ $message }}</span>--}}
                                     {{--@enderror--}}
                                     {{--</div>--}}
-                                    <div class="form-row">
-                                        <div class="col-sm-12 col-12">
-                                            <label for="kind_id">
-                                                نوع العقار
-                                            </label>
-                                            <div class="form-group">
-                                                <select name="kind_id" id="kind_id"
-                                                        class="select2 form-control">
-                                                    @foreach($kinds as $kind)
-                                                        <option {{$kind->id == $estate->kind_id ? 'selected' : ''}} value="{{ $kind->id }}">{{ $kind->name }} </option>
-                                                    @endforeach
-                                                </select>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="form-row">
+                                            <div class="col-sm-12 col-12">
+                                                <label for="kind_id">
+                                                    نوع العقار
+                                                </label>
+                                                <div class="form-group">
+                                                    <select name="kind_id" id="kind_id"
+                                                            class="select2 form-control">
+                                                        @foreach($kinds as $kind)
+                                                            <option {{$kind->id == $estate->kind_id ? 'selected' : ''}} value="{{ $kind->id }}">{{ $kind->name }} </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                @error('kind_id')
+                                                <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
-                                            @error('kind_id')
-                                            <span class="text-danger">{{ $message }}</span>
-                                            @enderror
                                         </div>
                                     </div>
+                                    @if($estate->kind_id == 2)
+                                    <div class="member col-md-3 col-12 mb-3">
+                                        <div class="row">
+                                            <div class="col-md-12 col-12 mb-3">
+                                                <div class="form-row">
+                                                    <div class="col-sm-12 col-12">
+                                                        <label for="category_id">
+                                                             نوع المبنى
+                                                        </label>
+                                                        <div class="form-group">
+                                                            <select name="category_id" id="category_id"
+                                                                    class="select2 form-control" required>
+                                                                <option selected hidden disabled value="">اختر التصنيف
+                                                                    للعقار
+                                                                </option>
+                                                                @foreach($categories as $category)
+                                                                    <option value="{{ $category->id }}" @selected($category->id ==$estate->category_id) >{{ $category->name }} </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        @error('category_id')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+                                         </div>
+                                     </div>
+                                     <div class="build_size col-md-3 col-12 mb-3">
+                                        <label for="build_size">مساحة المبني</label>
+                                        <input type="number" name="build_size"
+                                               class="form-control" id="build_size" placeholder=""
+                                               value="{{ $estate->build_size}}">
+                                        @error('build_size')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                     @if(in_array($estate->category_id,[1,10,11]))
+                                     <div class="floor col-md-3 col-12 mb-3">
+                                        <div class="row">
+                                            <div class="col-md-12 col-12 mb-3">
+                                                <div class="form-row">
+                                                    <div class="col-sm-12 col-12">
+                                                        <label for="floor">
+                                                             الطابق
+                                                        </label>
+                                                        <div class="form-group">
+                                                         <input type="number" name="floor"
+                                                         class="form-control" id="floor" placeholder=""
+                                                         value="{{$estate->floor}}">
+                                                        </div>
+                                                        @error('floor')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+                                         </div>
+                                     </div>
+                                     @else
 
+                                    <div class="level col-md-3 col-12 mb-3">
+                                        <label for="">عدد الادوار او الطوابق</label>
+                                        <input type="number" name="level"
+                                               class="form-control" id="" placeholder=""
+                                               value=" $estate->level">
+                                        @error('level')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                     @endif
+                                    @else
+                                    <div class="land_size col-md-3 col-12 mb-3">
+                                        <label for="land_size">مساحة الارض</label>
+                                        <input type="number" name="land_size"
+                                               class="form-control" id="land_size" placeholder=""
+                                               value="{{ $estate->land_size}}" required>
+                                        @error('land_size')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    @endif
                                     <div class="form-row">
                                         <div class="col-sm-12 col-12">
                                             <label for="use">
@@ -315,22 +390,21 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <input  type="hidden" name="user_id" class="form-control" id="user_id"
-                                    placeholder="الاسم " value="{{auth()->id()}}" required>
-                                    {{-- <div class="form-row">
-                                        <div class="col-sm-12 col-12">
-                                            <label for="kind_id">
-                                                صاحب العقار
-                                            </label>
-                                            <div class="form-group">
-                                                <input hiddne type="text" name="user_id" class="form-control" id="user_id"
-                                               placeholder="الاسم " value="{{auth()->id()}}" required>
-                                            </div>
-                                            @error('user_id')
+                                    <div class="col-md-12 col-12 mb-3">
+                                        <label for="address">العنوان تفصيليا + (الحي - المنطقة)  </label>
+                                        <input type="text" name="address"
+                                                        class="form-control" id="address" placeholder=""
+                                                        value="{{$estate->address}}">
+                                    </div>
+                                    <div class="col-md-12 col-12 mb-3">
+                                        <label for="site_link"> رابط الموقع</label>
+                                            <input type="site_link" name="site_link"
+                                                   class="form-control" id="site_link" placeholder=""
+                                                   value="{{ $estate->site_link}}" required>
+                                            @error('site_link')
                                             <span class="text-danger">{{ $message }}</span>
                                             @enderror
-                                        </div>
-                                    </div> --}}
+                                    </div>
                                     {{--<div class="form-row">--}}
                                     {{--<div class="col-sm-12 col-12">--}}
                                     {{--<label for="level">--}}
@@ -352,23 +426,15 @@
                                     {{--@enderror--}}
                                     {{--</div>--}}
                                     {{--</div>--}}
-                                    <div class="col-md-12 col-12 mb-3">
-                                        <label for="land_size">مساحة الارض</label>
-                                        <input type="number" name="land_size"
-                                               class="form-control" id="land_size" placeholder=""
-                                               value="{{$estate->land_size}}" required>
-                                        @error('land_size')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
+
                                     <div class="col-md-12 col-12 mb-3">
                                         <label for="files">مستندات العقار
                                         <small class="text-danger">
                                             ( الملفات الأولية )
                                         </small>
                                         </label>
-                                        <input type="file" multiple name="files"
-                                               class="form-control" id="files" placeholder=""
+                                        <input type="file" multiple name="files"  id="attachment"
+                                               class="form-control"  placeholder=""
                                                required>
                                         @error('files')
                                         <span class="text-danger">{{ $message }}</span>
@@ -386,10 +452,11 @@
                                             <span class="file-block">
                                                 {{-- <span class="file-delete"><span>+</span></span> --}}
                                                 {{-- <span class="name">location_mark.svg</span> --}}
-                                                @if(strpos( mime_content_type($file_url), "image/") === 0)
-                                                <img src="{{ $file_url }}">
+                                                {{-- <span class="delete-file-from"><span>+</span></span> --}}
+                                                @if(strpos( mime_content_type(base_path('public/'.$file_url)), "image/") === 0)
+                                                <img src="{{  url($file_url) }}">
                                                 @else
-                                                <a target="_blink" href="{{ $file_url }}" style="display: block;height: 70px;
+                                                <a target="_blink" href="{{ url($file_url) }}" style="display: block;height: 70px;
                                                 width: 70px;
                                                 margin: auto;
                                                 margin-top: 0.5rem;">
@@ -403,8 +470,6 @@
                                     </span>
                                         </span>
                                     </p>
-
-
                                     <div class="form-row">
                                         <div class="col-md-12">
                                             <div class="panel panel-default">
@@ -449,8 +514,8 @@
                                                             <option value="شراء">شراء</option>
                                                             <option value="تمويل">تمويل</option>
                                                             <option value="الرهن">الرهن</option>
-                                                            <option value="تقدري القيمة الاجارية">تقدري القيمة
-                                                                الاجارية
+                                                            <option value="تقدير القيمة الايجارية">تقدير القيمة
+                                                                الايجارية
                                                             </option>
                                                             <option value="النزاعات والتقاضي">النزاعات والتقاضي</option>
                                                             <option value="التمويل">التمويل</option>
@@ -467,30 +532,53 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-row">
-                                            <div class="col-sm-12 col-12">
-                                                <label for="kind_id">
-                                                    تصنيف العقار
-                                                </label>
-                                                <div class="form-group">
-                                                    <select name="category_id" id="category_id"
-                                                            class="select2 form-control">
-                                                        @foreach($categories as $category)
-                                                            <option {{$category->id == $estate->category_id ? 'selected' : ''}} value="{{ $category->id }}">{{ $category->name }} </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                @error('category_id')
-                                                <span class="text-danger">{{ $message }}</span>
-                                                @enderror
+                                        @if($estate->duration)
+                                        <div class="col-md-12 col-12 mb-3">
+                                            <label for="yearly" class="mb-1"> فترة القيمة الايجارية  </label>
+                                            <div class="custom-control custom-radio ">
+                                                <input type="radio" id="yearly" @checked($estate->duration =='سنوي')
+                                                       name="duration" value="سنوي" class="custom-control-input"
+                                                       >
+                                                <label class="custom-control-label" for="yearly">سنوية</label>
+                                            </div>
+                                            <div class="custom-control custom-radio ">
+                                                <input type="radio" id="not_yearly"  @checked($estate->duration =="فترة محددة")
+                                                       name="duration" value="فترة محددة" class="custom-control-input"
+                                                      >
+                                                <label class="custom-control-label" for="not_yearly">قترة محددة</label>
                                             </div>
                                         </div>
+                                        <div class="form-row">
+                                            <div class="duration_start col-md-6 col-12 mb-3">
+                                                <label for="duration_start"> من الشهر</label>
+                                                    <input type="number" min="1" max="12" name="duration_start"
+                                                           class="form-control" id="duration_start" placeholder=""
+                                                           value="{{ $estate->duration_start}}" required>
+                                                    @error('duration_start')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                            </div>
+                                            <div class="duration_end col-md-6 col-12 mb-3">
+                                                <label for="duration_end"> إلى الشهر</label>
+                                                    <input type="number" min="1" max="12" name="duration_end"
+                                                           class="form-control" id="duration_end" placeholder=""
+                                                           value="{{ $estate->duration_end}}" required>
+                                                    @error('duration_end')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                            </div>
+                                        </div>
+                                        @endif
                                         <div class="col-md-12 col-12 mb-3">
-                                            <label for="build_size">مساحة المبني</label>
-                                            <input type="number" name="build_size"
-                                                   class="form-control" id="build_size" placeholder=""
-                                                   value="{{$estate->build_size}}">
-                                            @error('build_size')
+                                            <label for="evaluation_date">تاريخ التقييم  </label>
+                                            <div class="form-group">
+                                                <select name="evaluation_date" id="evaluation_date"
+                                                        class="select2 form-control">
+                                                    <option value="ميلادي" @selected($estate->evalution_date == "ميلادي")>ميلادي</option>
+                                                    <option value="هجري"  @selected($estate->evalution_date == "هجري")>هجري</option>
+                                                </select>
+                                            </div>
+                                            @error('evaluation_date')
                                             <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
@@ -504,17 +592,12 @@
                                             @enderror
                                         </div>
                                         <div class="col-md-12 col-12 mb-3">
-                                            <label for="about">نبذة </label>
+                                            <label for="about">نبذة (وصف العقار)</label>
                                             <textarea rows="10" type="text" name="about"
                                                       class="form-control" id="about" placeholder="عن العقار "
                                             >{{$estate->about}}</textarea>
                                         </div>
-                                        <div class="col-md-12 col-12 mb-3">
-                                            <label for="address">العنوان تفصيليا </label>
-                                            <textarea rows="5" type="text" name="address"
-                                                      class="form-control" id="address" placeholder="عنوان "
-                                            >{{$estate->address}}</textarea>
-                                        </div>
+
                                     </div>
 
                                     <div class="form-row">

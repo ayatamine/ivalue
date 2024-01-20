@@ -67,21 +67,21 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($estates as $user)
+                    @foreach($estates as $estate)
                         <tr >
                             <td>{{ $loop->index + 1 }}</td>
                             {{--<td class="product-img">--}}
-                                {{--<img src="{{ $user->image_url }}">--}}
+                                {{--<img src="{{ $estate->image_url }}">--}}
                             {{--</td>--}}
-                            <td class="product-name">{{ $user->name_arabic }}</td>
-                            <td class="product-name">{{ $user->id }}</td>
-                            <td>{{ $user->level_name }}</td>
-                            <td>{{ $user->getActive() }}</td>
+                            <td class="product-name">{{ $estate->name_arabic }}</td>
+                            <td class="product-name">{{ $estate->id }}</td>
+                            <td>{{ $estate->level_name }}</td>
+                            <td>{{ $estate->getActive() }}</td>
                             <td class="product-action">
                                 <span class="action-edit"><a href="{{ route('estates.edit' ,['estate'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i class="feather icon-edit"></i></a></span>
                                 @if(auth()->user()->membership_level == 'manager')
                                 <?php
-                                     $payment = \App\Models\EstatePayment::where('estate_id',$user->id)->where('done' , 0)->first();
+                                     $payment = \App\Models\EstatePayment::where('estate_id',$estate->id)->where('done' , 0)->first();
                                 ?>
                                 @if($payment)
                                 <span class="text-warning"><a href="{{ route('estate_paid' ,['estate_id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i title="اضافة عملية دفع" class="feather text-warning icon-dollar-sign"></i></a></span>

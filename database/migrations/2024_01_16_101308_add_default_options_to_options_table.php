@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('report_desc')->comment('وصف التقرير (ورقي ’ الكتروني')->default('ورقي');
             $table->string('report_kind')->comment('نوع التقرير')->default('تقرير مفصل');
             //give me default json with this properties previewer , rater
-            $table->json('step_percentage')->comment('نسبة كل مرحلة من مراحل التقييم')->default('[{"previewer":20,"rater":20,"reviewer":20,"approver":20,"value_approver":10,"submit_report":10}]');
-            $table->json('work_hour_percentage')->comment('نسبة ساعات العمل على التقرير')->default('[{"previewer":20,"rater":20,"reviewer":20,"approver":20}]');
+            $table->json('step_percentage')->comment('نسبة كل مرحلة من مراحل التقييم')->default('{"previewer":"20","rater":"20","reviewer":"20","approver":"20","value_approver":"10","submit_report":"10"}');
+            $table->json('work_hour_percentage')->comment('نسبة ساعات العمل على التقرير')->default('{"previewer":"40","rater":"20","reviewer":"20","approver":"20"}');
         });
     }
 
