@@ -1,7 +1,7 @@
 @extends('frontend.layout.master')
 @section('frontend-head')
     <script type="text/javascript"
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAbukNOXKPE1M-2Duze7aLXcRLguKXbJQ&libraries=places&sensor=false"></script>
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYPjl35EWTV88Z3QJ3ePUfX92RVHdqmwA&libraries=places&sensor=false"></script>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600" rel="stylesheet">
     <!-- BEGIN: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend') }}/app-assets/vendors/css/vendors-rtl.min.css">

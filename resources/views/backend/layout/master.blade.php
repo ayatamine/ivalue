@@ -159,7 +159,7 @@
     <!-- END: Footer-->
 </div>
 <!-- /#wrapper -->
-@if(Auth::user()->dark_mode == 0)
+@if(auth()->check() && Auth::user()->dark_mode == 0)
     <script>
         document.getElementById("light_btn").style.display = "none";
     </script>

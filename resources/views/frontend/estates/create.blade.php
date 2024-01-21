@@ -1,7 +1,7 @@
 @extends('frontend.layout.master')
 @section('frontend-head')
     <script type="text/javascript"
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAbukNOXKPE1M-2Duze7aLXcRLguKXbJQ&libraries=places&sensor=false"></script>
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYPjl35EWTV88Z3QJ3ePUfX92RVHdqmwA&libraries=places&sensor=true"></script>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600" rel="stylesheet">
     <!-- BEGIN: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend') }}/app-assets/vendors/css/vendors-rtl.min.css">
@@ -451,9 +451,9 @@
 
                                         </p>
                                         <p id="files-area">
-	<span id="filesList">
-		<span id="files-names"></span>
-	</span>
+                                        <span id="filesList">
+                                            <span id="files-names"></span>
+                                        </span>
                                         </p>
                                         @error('files')
                                         <span class="text-danger">{{ $message }}</span>
@@ -816,6 +816,12 @@
             var lng = marker.getPosition().lng();
             $('#lat').val(lat);
             $('#lng').val(lng);
+        });
+        map.addListener("click", (mapsMouseEvent) => {
+
+            var location = mapsMouseEvent.latLng.toJSON()
+            $('#lat').val(location.lat);
+            $('#lng').val(location.lng);
         });
 
         const dt = new DataTransfer(); // Permet de manipuler les fichiers de l'input file
