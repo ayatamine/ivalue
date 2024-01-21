@@ -213,7 +213,7 @@
                                                         <option selected hidden disabled value="">اختر العميل
                                                         </option>
                                                         @foreach($users as $user)
-                                                            <option @selected($estate->user_id == $user->id) value="{{ $estate->id }}">{{ $estate->user->name }} </option>
+                                                            <option @selected($estate->user_id == $user->id) value="{{ $estate->user_id }}">{{ $estate->user->name }} </option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -463,7 +463,7 @@
                                         </label>
                                         <input type="file" multiple name="files"  id="attachment"
                                                class="form-control"  placeholder=""
-                                               required>
+                                               >
                                         @error('files')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -521,7 +521,6 @@
                                             <hr>
                                         </div>
                                     </div>
-                                    <div class="member">
                                         <?php
                                         $reason = \App\Models\EstateInput::where('key', 'سبب التقييم')->where('estate_id', $estate->id)->first();
                                         ?>
@@ -626,8 +625,6 @@
                                             >{{$estate->about}}</textarea>
                                         </div>
 
-                                    </div>
-
                                     <div class="form-row">
                                         <div class="col-sm-12 col-12">
                                             <label for="size_kind">
@@ -661,7 +658,13 @@
                                     </div>
                                 </div>
                                 <hr>
+                                {{-- if is the enter after revise send it to rater manger --}}
+                                @if(!$estate->revised_by_enter && (auth()->user()->membership_level == 'entre' || auth()->user()->hasRole('enter')))
+                                 <input type="hidden" name="revised_by_enter" value="1">
+                                 <button class="btn btn-primary" type="submit">الموافقة وإرسال لمدير التقييم</button>
+                                @else
                                 <button class="btn btn-primary" type="submit">حفظ</button>
+                                @endif
                             </form>
                         </div>
                     </div>

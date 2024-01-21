@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('duration_end')->nullable();
             $table->string('evaluation_date')->nullable();
             $table->string('site_link')->nullable();
+            $table->boolean('revised_by_enter')->default(false);
         });
     }
 
@@ -35,6 +36,7 @@ return new class extends Migration
             $table->dropColumn('duration_end');
             $table->dropColumn('evaluation_date');
             $table->dropColumn('site_link');
+            $table->dropColumn('revised_by_enter');
         });
     }
 };

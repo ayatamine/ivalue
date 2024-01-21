@@ -12,6 +12,7 @@ use App\Models\EstateInput;
 use App\Traits\UploadTrait;
 use Illuminate\Http\Request;
 use App\Models\EstatePayment;
+use App\Models\DashNotification;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EstateRequest;
 use App\Traits\DashNotificationTrait;
@@ -184,12 +185,12 @@ class EstateController extends Controller
             $users = User::where('membership_level', 'rater_manager')->orWhereHas("roles", function ($q) {
                 $q->where("name", "rater_manager");
             })->pluck('id');
-            $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', 'طلب جديد في مرحلة المراجعة');
+            $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye',  'طلب جديد في مرحلة المراجعة - ادخال جديد');
         }elseif($request->report_type == 'old'){
             $users = User::where('membership_level', 'rater_manager')->orWhereHas("roles", function ($q) {
                 $q->where("name", "rater_manager");
             })->pluck('id');
-            $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', 'طلب جديد في مرحلة المراجعة');
+            $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', 'طلب جديد في مرحلة المراجعة - اعتماد مسبق');
             // $users = User::where('membership_level', 'entre')->pluck('id');
             // $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', '  تم الارسال لاكمال المدخلات');
         }else{
@@ -276,23 +277,53 @@ class EstateController extends Controller
         if ($request->files) {
             $this->saveimages($request->files, 'pictures/estates', $estate->id, Estate::class, 'file');
         }
-        if ($request->reason) {
-            EstateInput::where('key', 'سبب التقييم')->where('estate_id', $estate->id)->where('user_id' , auth()->user()->id)->delete();
-            $input = new EstateInput();
-            $input->key = 'سبب التقييم';
-            $input->value = $request->reason;
-            $input->estate_id = $estate->id;
-            $input->user_id = auth()->user()->id;
-            $input->save();
+        if(!$request->revised_by_enter)
+        {
+            if ($request->reason) {
+                EstateInput::where('key', 'سبب التقييم')->where('estate_id', $estate->id)->where('user_id' , auth()->user()->id)->delete();
+                $input = new EstateInput();
+                $input->key = 'سبب التقييم';
+                $input->value = $request->reason;
+                $input->estate_id = $estate->id;
+                $input->user_id = auth()->user()->id;
+                $input->save();
+            }
+            if ($request->use) {
+                EstateInput::where('key', 'الاستخدام')->where('estate_id', $estate->id)->where('user_id' , auth()->user()->id)->delete();
+                $input = new EstateInput();
+                $input->key = 'الاستخدام';
+                $input->value = $request->use;
+                $input->estate_id = $estate->id;
+                $input->user_id = auth()->user()->id;
+                $input->save();
+            }
         }
-        if ($request->use) {
-            EstateInput::where('key', 'الاستخدام')->where('estate_id', $estate->id)->where('user_id' , auth()->user()->id)->delete();
-            $input = new EstateInput();
-            $input->key = 'الاستخدام';
-            $input->value = $request->use;
-            $input->estate_id = $estate->id;
-            $input->user_id = auth()->user()->id;
-            $input->save();
+        else
+        {
+            //update the user
+            EstateInput::where('key', 'سبب التقييم')->where('estate_id', $estate->id)->where('user_id' , auth()->user()->id)->update(['user_id'=>auth()->id()]);
+            EstateInput::where('key', 'الاستخدام')->where('estate_id', $estate->id)->where('user_id' , auth()->user()->id)->update(['user_id'=>auth()->id()]);
+            //delete the notification
+            DashNotification::where([['estate_id', $estate->id], ['user_id', auth()->user()->id]])->delete();
+
+            if($estate->report_type == 'new'){
+                $users = User::where('membership_level', 'rater_manager')->orWhereHas("roles", function ($q) {
+                    $q->where("name", "rater_manager");
+                })->pluck('id');
+                $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye',  'طلب جديد في مرحلة المراجعة - ادخال جديد');
+            }else
+            {
+                $users = User::where('membership_level', 'rater_manager')->orWhereHas("roles", function ($q) {
+                    $q->where("name", "rater_manager");
+                })->pluck('id');
+                $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', 'طلب جديد في مرحلة المراجعة - اعتماد مسبق');
+            }
+
+            //mark as revised by the enter
+            $estate->revised_by_enter = true;
+            $estate->save();
+
+            return redirect()->route('estates.index',$subdomain)->with('done', 'تم ارسال الى مديرالتقييم  ....');
         }
         return redirect()->route('estates.index',$subdomain)->with('done', 'تم التعديل بنجاح ....');
 

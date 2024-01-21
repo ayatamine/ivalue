@@ -168,15 +168,15 @@ class ClientEstateController extends Controller
              return redirect()->back()->with('error' , 'يرجى اختيار المرحلة التالية');
         }
         if($request->report_type == 'new'){
-            $users = User::where('membership_level', 'rater_manager')->orWhereHas("roles", function ($q) {
-                $q->where("name", "rater_manager");
+            $users = User::where('membership_level', 'entre')->orWhereHas("roles", function ($q) {
+                $q->where("name", "enter");
             })->pluck('id');
-            $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', 'طلب جديد في مرحلة المراجعة');
+            $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', 'طلب جديد  المراجعة - ادخال جديد');
         }elseif($request->report_type == 'old'){
             $users = User::where('membership_level', 'rater_manager')->orWhereHas("roles", function ($q) {
                 $q->where("name", "rater_manager");
             })->pluck('id');
-            $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', 'طلب جديد في مرحلة المراجعة');
+            $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', 'طلب جديد المراجعة - اعتماد مسبق' );
             // $users = User::where('membership_level', 'entre')->pluck('id');
             // $this->send_notification($users, '' . $estate->id . '', '#4169E1', 'fa fa-eye', '  تم الارسال لاكمال المدخلات');
         }else{
@@ -184,7 +184,7 @@ class ClientEstateController extends Controller
         }
 
 
-        return redirect()->route('client.estates.index',$subdomain)->with('done', 'تم الاضافة بنجاح والارسال الى مدير التقييم ....');
+        return redirect()->route('client.estates.index',$subdomain)->with('done', 'تم الاضافة بنجاح والارسال الى الادخال للمراجعة ....');
 
     }
 

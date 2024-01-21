@@ -59,7 +59,7 @@ class Notificationontroller extends Controller
                 // ->
                 where('id', $not->estate_id)->first();
 
-            return view('frontend.steps.entre_second_page', compact('estate'));
+            return $estate->revised_by_enter ? view('frontend.steps.entre_second_page', compact('estate')) : redirect()->route('estates.edit',['subdomain'=>$subdomain,'estate'=>$estate->id]);
         }
 
         if (auth()->user()->membership_level == 'qima_approver' || auth()->user()->hasRole('value_approver')) {

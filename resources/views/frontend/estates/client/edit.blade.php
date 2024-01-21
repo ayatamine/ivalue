@@ -435,7 +435,7 @@
                                         </label>
                                         <input type="file" multiple name="files"  id="attachment"
                                                class="form-control"  placeholder=""
-                                               required>
+                                               >
                                         @error('files')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -493,7 +493,6 @@
                                             <hr>
                                         </div>
                                     </div>
-                                    <div class="member">
                                         <?php
                                         $reason = \App\Models\EstateInput::where('key', 'سبب التقييم')->where('estate_id', $estate->id)->first();
                                         ?>
@@ -598,7 +597,6 @@
                                             >{{$estate->about}}</textarea>
                                         </div>
 
-                                    </div>
 
                                     <div class="form-row">
                                         <div class="col-sm-12 col-12">
