@@ -108,6 +108,7 @@
         .file-delete > span {
             transform: rotate(45deg);
         }
+        .not_previewing_reason,.previewing_way{display: none}
     </style>
 @endsection
 @section('frontend-main')
@@ -160,7 +161,7 @@
                 </div>
                 <div class="card-content">
                     <div class="card-body">
-                        <form method="post" action="{{ route('level_inputs' , $estate->id) }}" id="myform"
+                        <form method="post" action="{{ route('level_inputs' , ['estate_id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}" id="myform"
                               enctype="multipart/form-data">
                             @csrf
                             {{ method_field('PATCH') }}
@@ -373,7 +374,7 @@
                                                    value="  بناء مجاور" readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <select class="selectpicker" name="infos[9][value][]"  multiple data-live-search="true">
+                                            <select class="selectpicker form-control" name="infos[9][value][]"  multiple data-live-search="true">
                                                 <option value="جار شمالي">جار شمالي</option>
                                                 <option value="جر جنوبي">جار جنوبي</option>
                                                 <option value="جار شرقي">جار شرقي</option>
@@ -684,24 +685,51 @@
                                     @enderror
                                 </div>
 
-                                <div class="col-md-12">
+                                <div class="form-row">
+                                    <div class="col-md-12 col-12 mb-3">
+                                        <label for="previewed_in_real" class="mb-1"> هل تم معاينة العقار على الطبيعة  </label>
+                                        <div class="custom-control custom-radio ">
+                                            <input type="radio" id="previewed_in_real_yes"
+                                                   name="previewed_in_real" value="yes" class="custom-control-input"
+                                                   >
+                                            <label class="custom-control-label" for="previewed_in_real_yes">نعم</label>
+                                        </div>
+                                        <div class="custom-control custom-radio ">
+                                            <input type="radio" id="previewed_in_real_no"
+                                                   name="previewed_in_real" value="no" class="custom-control-input"
+                                                  >
+                                            <label class="custom-control-label" for="previewed_in_real_no">لا</label>
+                                        </div>
+                                    </div>
+                                    <div class="previewing_way col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-6 col-6 mb-3">
+                                                <input type="text" name="infos[19][key]" class="form-control"
+                                                       placeholder="طريقة المعاينة" value="طريقة المعاينة" readonly>
+                                            </div>
+                                            <div class="col-md-6 col-6 mb-3">
+                                                <select name="infos[19][value][]" multiple class="form-control selectpicker" required>
+                                                    <option value="معاينة داخلية">معاينة داخلية</option>
+                                                    <option value="معاينة خارجية">معاينة خارجية</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                </div>
+                                <div class="not_previewing_reason col-md-12">
                                     <div class="row">
                                         <div class="col-md-6 col-6 mb-3">
                                             <input type="text" name="infos[19][key]" class="form-control"
-                                                   placeholder="طريقة المعاينة" value="طريقة المعاينة" readonly>
+                                                   placeholder="السبب لعدم المعاينة" value="السبب لعدم المعاينة" readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <select name="infos[19][value][]" multiple class="form-control selectpicker" required>
-                                                <option value="معاينة داخلية">معاينة داخلية</option>
-                                                <option value="معاينة خارجية">معاينة خارجية</option>
-                                            </select>
+                                            <input name="infos[19][value][]" type="text" class="form-control" required>
                                         </div>
                                     </div>
                                     @error('product_price_list')
                                     <div class="alert" style="color:#a94442">{{ $message }}</div>
                                     @enderror
                                 </div>
-
                                 @if($estate->kind_id == 1)
                                     <div class="land">
                                         <h3>
@@ -1549,7 +1577,6 @@
                                                                readonly>
                                                     </div>
                                                     <div class="col-md-6 col-6 mb-3">
-                                             <div class="col-md-6 col-6 mb-3">
 
                                                         <select name="infos[48][value][]" multiple class="form-control selectpicker">
                                                             <option value="كراج كهربي ">كراج كهربي</option>
@@ -1565,7 +1592,6 @@
                                                             <option value=" مخارج طوارئ"> مخارج طوارئ</option>
                                                             <option value=" درج كهربائي"> درج كهربائي</option>
                                                         </select>
-                                                    </div>
                                                     </div>
                                                 </div>
                                                 @error('product_price_list')
@@ -1834,7 +1860,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[75][value]" class="form-control"
+                                            <input type="number" name="infos[75][value]" class="form-control"
                                                    placeholder="غرف نوم" value="" required>
                                         </div>
                                     </div>
@@ -1848,7 +1874,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[76][value]" class="form-control"
+                                            <input type="number" name="infos[76][value]" class="form-control"
                                                    placeholder=" صالة" value="" required>
                                         </div>
                                     </div>
@@ -1863,7 +1889,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[77][value]" class="form-control"
+                                            <input type="number" name="infos[77][value]" class="form-control"
                                                    placeholder=" مجلس" value="" required>
                                         </div>
                                     </div>
@@ -1877,7 +1903,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[77][value]" class="form-control"
+                                            <input type="number" name="infos[77][value]" class="form-control"
                                                    placeholder=" غرفة طعام" value="" required>
                                         </div>
                                     </div>
@@ -1892,7 +1918,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[89][value]" class="form-control"
+                                            <input type="number" name="infos[89][value]" class="form-control"
                                                    placeholder=" غرفة غسيل" value="" required>
                                         </div>
                                     </div>
@@ -1906,7 +1932,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[78][value]" class="form-control"
+                                            <input type="number" name="infos[78][value]" class="form-control"
                                                    placeholder=" مطبخ" value="" required>
                                         </div>
                                     </div>
@@ -1921,7 +1947,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[78][value]" class="form-control"
+                                            <input type="number" name="infos[78][value]" class="form-control"
                                                    placeholder=" غرفة خادمة" value="" required>
                                         </div>
                                     </div>
@@ -1936,7 +1962,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[79][value]" class="form-control"
+                                            <input type="number" name="infos[79][value]" class="form-control"
                                                    placeholder="  مستودع" value="" required>
                                         </div>
                                     </div>
@@ -1951,7 +1977,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[80][value]" class="form-control"
+                                            <input type="number" name="infos[80][value]" class="form-control"
                                                    placeholder="  دورات مياة" value="" required>
                                         </div>
                                     </div>
@@ -1966,7 +1992,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[81][value]" class="form-control"
+                                            <input type="number" name="infos[81][value]" class="form-control"
                                                    placeholder="شرفة" value="" required>
                                         </div>
                                     </div>
@@ -2016,7 +2042,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[84][value]" class="form-control"
+                                            <input type="number" name="infos[84][value]" class="form-control"
                                                    placeholder="غرفة سائق" value="" required>
                                         </div>
                                     </div>
@@ -2047,7 +2073,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[85][value]" class="form-control"
+                                            <input type="number" name="infos[85][value]" class="form-control"
                                                    placeholder="غرف اخرى" value="" required>
                                         </div>
                                     </div>
@@ -2062,7 +2088,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[86][value]" class="form-control"
+                                            <input type="number" name="infos[86][value]" class="form-control"
                                                    placeholder=" عدد ادوار المبنى " value="" required>
                                         </div>
                                     </div>
@@ -2077,7 +2103,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[87][value]" class="form-control"
+                                            <input type="number" name="infos[87][value]" class="form-control"
                                                    placeholder=" عدد ادوار البدروم   " value="" required>
                                         </div>
                                     </div>
@@ -2123,7 +2149,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[92][value]" class="form-control"
+                                            <input type="number" name="infos[92][value]" class="form-control"
                                                    placeholder="مواقف سيارة خاصة" value="" required>
                                         </div>
                                     </div>
@@ -2155,7 +2181,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[75][value]" class="form-control"
+                                            <input type="number" name="infos[75][value]" class="form-control"
                                                    placeholder="غرف نوم" value="" required>
                                         </div>
                                     </div>
@@ -2169,7 +2195,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[76][value]" class="form-control"
+                                            <input type="number" name="infos[76][value]" class="form-control"
                                                    placeholder=" صالة" value="" required>
                                         </div>
                                     </div>
@@ -2184,7 +2210,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[77][value]" class="form-control"
+                                            <input type="number" name="infos[77][value]" class="form-control"
                                                    placeholder=" مجلس" value="" required>
                                         </div>
                                     </div>
@@ -2198,7 +2224,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[77][value]" class="form-control"
+                                            <input type="number" name="infos[77][value]" class="form-control"
                                                    placeholder=" غرفة طعام" value="" required>
                                         </div>
                                     </div>
@@ -2212,7 +2238,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[78][value]" class="form-control"
+                                            <input type="number" name="infos[78][value]" class="form-control"
                                                    placeholder=" مطبخ" value="" required>
                                         </div>
                                     </div>
@@ -2227,7 +2253,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[78][value]" class="form-control"
+                                            <input type="number" name="infos[78][value]" class="form-control"
                                                    placeholder=" غرفة خادمة" value="" required>
                                         </div>
                                     </div>
@@ -2242,7 +2268,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[79][value]" class="form-control"
+                                            <input type="number" name="infos[79][value]" class="form-control"
                                                    placeholder="  مستودع" value="" required>
                                         </div>
                                     </div>
@@ -2257,7 +2283,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[80][value]" class="form-control"
+                                            <input type="number" name="infos[80][value]" class="form-control"
                                                    placeholder="  دورات مياة" value="" required>
                                         </div>
                                     </div>
@@ -2272,7 +2298,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[81][value]" class="form-control"
+                                            <input type="number" name="infos[81][value]" class="form-control"
                                                    placeholder="شرفة" value="" required>
                                         </div>
                                     </div>
@@ -2321,7 +2347,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[84][value]" class="form-control"
+                                            <input type="number" name="infos[84][value]" class="form-control"
                                                    placeholder="غرفة سائق" value="" required>
                                         </div>
                                     </div>
@@ -2335,7 +2361,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[85][value]" class="form-control"
+                                            <input type="number" name="infos[85][value]" class="form-control"
                                                    placeholder="غرف اخرى" value="" required>
                                         </div>
                                     </div>
@@ -2350,7 +2376,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[86][value]" class="form-control"
+                                            <input type="number" name="infos[86][value]" class="form-control"
                                                    placeholder=" رقم الطابق" value="" required>
                                         </div>
                                     </div>
@@ -2365,7 +2391,7 @@
                                                    readonly>
                                         </div>
                                         <div class="col-md-6 col-6 mb-3">
-                                            <input type="text" name="infos[87][value]" class="form-control"
+                                            <input type="number" name="infos[87][value]" class="form-control"
                                                    placeholder="اجمالي عدد ادوار المبنى الرئيسي" value="" required>
                                         </div>
                                     </div>
@@ -2574,16 +2600,33 @@
                                                 <div class="alert" style="color:#a94442">{{ $message }}</div>
                                                 @enderror
                                             </div>
-
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <div class="col-md-6 col-6 mb-3">
                                                         <input type="text" name="infos[74][key]" class="form-control"
+                                                               placeholder=" مقارنات للعقار " value=" مقارنات للعقار "
+                                                               readonly>
+                                                    </div>
+                                                    <div class="col-md-6 col-6 mb-3">
+                                                       <input type="text" name="infos[74][value]" class="form-control"
+                                                               placeholder="  مقارنات للعقار   " value="   "
+                                                               required>
+
+                                                    </div>
+                                                </div>
+                                                @error('product_price_list')
+                                                <div class="alert" style="color:#a94442">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-6 col-6 mb-3">
+                                                        <input type="text" name="infos[75][key]" class="form-control"
                                                                placeholder=" تاريخ المعاينة " value=" تاريخ المعاينة "
                                                                readonly>
                                                     </div>
                                                     <div class="col-md-6 col-6 mb-3">
-                                                       <input type="date" name="infos[74][value]" class="form-control"
+                                                       <input type="date" name="infos[75][value]" class="form-control"
                                                                placeholder="  تاريخ المعاينة   " value="   "
                                                                required>
 
@@ -2593,6 +2636,7 @@
                                                 <div class="alert" style="color:#a94442">{{ $message }}</div>
                                                 @enderror
                                             </div>
+
 
                                             <div class="col-md-12 col-12 mb-3">
                                 <label for="files">ارفاق المستندات</label>
@@ -2718,46 +2762,59 @@
 
         const dt = new DataTransfer(); // Permet de manipuler les fichiers de l'input file
 
-        $("#attachment").on('change', function(e){
-            for(var i = 0; i < this.files.length; i++){
-                const reader = new FileReader();
-                const img = document.createElement('img');
-                reader.onload = function(event) {
+        // $("#attachment").on('change', function(e){
+        //     for(var i = 0; i < this.files.length; i++){
+        //         const reader = new FileReader();
+        //         const img = document.createElement('img');
+        //         reader.onload = function(event) {
 
-                    img.src = event.target.result;
-                    // previewContainer.appendChild(img);
-                };
-                reader.readAsDataURL(this.files.item(i));
-                let fileBloc = $('<span/>', {class: 'file-block'}),
-                    fileName = $('<span/>', {class: 'name', text: this.files.item(i).name});
-                fileBloc.append('<span class="file-delete"><span>+</span></span>')
-                    .append(fileName)
-                    .append(img);
-                $("#filesList > #files-names").append(fileBloc);
-            };
-            // Ajout des fichiers dans l'objet DataTransfer
-            for (let file of this.files) {
-                dt.items.add(file);
+        //             img.src = event.target.result;
+        //             // previewContainer.appendChild(img);
+        //         };
+        //         reader.readAsDataURL(this.files.item(i));
+        //         let fileBloc = $('<span/>', {class: 'file-block'}),
+        //             fileName = $('<span/>', {class: 'name', text: this.files.item(i).name});
+        //         fileBloc.append('<span class="file-delete"><span>+</span></span>')
+        //             .append(fileName)
+        //             .append(img);
+        //         $("#filesList > #files-names").append(fileBloc);
+        //     };
+        //     // Ajout des fichiers dans l'objet DataTransfer
+        //     for (let file of this.files) {
+        //         dt.items.add(file);
+        //     }
+        //     // Mise à jour des fichiers de l'input file après ajout
+        //     this.files = dt.files;
+
+        //     // EventListener pour le bouton de suppression créé
+        //     $('span.file-delete').click(function(){
+        //         let name = $(this).next('span.name').text();
+        //         // Supprimer l'affichage du nom de fichier
+        //         $(this).parent().remove();
+        //         for(let i = 0; i < dt.items.length; i++){
+        //             // Correspondance du fichier et du nom
+        //             if(name === dt.items[i].getAsFile().name){
+        //                 // Suppression du fichier dans l'objet DataTransfer
+        //                 dt.items.remove(i);
+        //                 continue;
+        //             }
+        //         }
+        //         // Mise à jour des fichiers de l'input file après suppression
+        //         document.getElementById('attachment').files = dt.files;
+        //     });
+        // });
+        $(document).on('change','input[name="previewed_in_real"]',function () {
+
+            if($(this).val() == 'no')
+            {
+                $('.previewing_way').hide()
+                $('.not_previewing_reason').show()
             }
-            // Mise à jour des fichiers de l'input file après ajout
-            this.files = dt.files;
-
-            // EventListener pour le bouton de suppression créé
-            $('span.file-delete').click(function(){
-                let name = $(this).next('span.name').text();
-                // Supprimer l'affichage du nom de fichier
-                $(this).parent().remove();
-                for(let i = 0; i < dt.items.length; i++){
-                    // Correspondance du fichier et du nom
-                    if(name === dt.items[i].getAsFile().name){
-                        // Suppression du fichier dans l'objet DataTransfer
-                        dt.items.remove(i);
-                        continue;
-                    }
-                }
-                // Mise à jour des fichiers de l'input file après suppression
-                document.getElementById('attachment').files = dt.files;
-            });
+            else
+            {
+                $('.previewing_way').show()
+                $('.not_previewing_reason').hide()
+            }
         });
     </script>
 @endsection

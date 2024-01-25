@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Models\City;
-use App\Models\Zone;
-use Illuminate\Http\Request;
-use App\Http\Requests\CityRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ZoneRequest;
+use App\Models\Zone;
+use App\Models\Country;
+use Illuminate\Http\Request;
 
-class CityController extends Controller
+class ZoneController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,8 +18,8 @@ class CityController extends Controller
     public function index()
     {
         try {
-            $cities = City::orderBy('id', 'desc')->get();
-            return view('frontend.cities.index',compact('cities'));
+            $zones = Zone::orderBy('id', 'desc')->get();
+            return view('frontend.zones.index',compact('zones'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error Try Again !!');
         }
@@ -33,8 +33,8 @@ class CityController extends Controller
     public function create()
     {
         try {
-            $zones = Zone::all();
-            return view('frontend.cities.create' , compact('zones'));
+            $countries = Country::all();
+            return view('frontend.zones.create' , compact('countries'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error Try Again !!');
         }
@@ -46,7 +46,7 @@ class CityController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($subdomain,CityRequest $request)
+    public function store($subdomain,ZoneRequest $request)
     {
         try {
             if($request->active){
@@ -54,8 +54,8 @@ class CityController extends Controller
             }else{
                 $request->request->add(['active' => 0]);
             }
-            City::create($request->all());
-            return redirect()->route('cities.index',$subdomain)->with('done', 'تم الاضافة بالنجاح ....');
+            Zone::create($request->all());
+            return redirect()->route('zones.index',$subdomain)->with('done', 'تم الاضافة بالنجاح ....');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -80,10 +80,10 @@ class CityController extends Controller
      */
     public function edit($subdomain,$id)
     {
-        $city = City::find($id);
-        if(isset($city)){
-            $zones = Zone::all();
-            return view('frontend.cities.edit' , compact('city' , 'zones'));
+        $zone = Zone::find($id);
+        if(isset($zone)){
+            $countries = Country::all();
+            return view('frontend.zones.edit' , compact('zone' , 'countries'));
         }else{
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -96,17 +96,17 @@ class CityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($subdomain,CityRequest $request, $id)
+    public function update($subdomain,ZoneRequest $request, $id)
     {
         try{
-            $city = City::find($id);
+            $zone = Zone::find($id);
             if($request->active){
                 $request->request->add(['active' => 1]);
             }else{
                 $request->request->add(['active' => 0]);
             }
-            $city->update($request->all());
-            return redirect()->route('cities.index',$subdomain)->with('done' , 'تم التعديل بنجاح ....');
+            $zone->update($request->all());
+            return redirect()->route('zones.index',$subdomain)->with('done' , 'تم التعديل بنجاح ....');
         }catch (\Exception $e){
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -121,8 +121,8 @@ class CityController extends Controller
     public function destroy($subdomain,$id)
     {
         try{
-            $city = City::find($id);
-            $city->delete();
+            $zone = Zone::find($id);
+            $zone->delete();
             return response()->json([
                 'success' => 'Record deleted successfully!'
             ]);
@@ -131,13 +131,13 @@ class CityController extends Controller
         }
     }
 
-    public function delete_cities()
+    public function delete_zones()
     {
         try{
-            $cities = City::all();
-            if(count($cities) > 0){
-                foreach ($cities as $city){
-                    $city->delete();
+            $zones = Zone::all();
+            if(count($zones) > 0){
+                foreach ($zones as $zone){
+                    $zone->delete();
                 }
                 return response()->json([
                     'success' => 'Record deleted successfully!'
@@ -151,9 +151,9 @@ class CityController extends Controller
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
     }
-    public function countryCities($country)
+    public function countryZones($country)
     {
-        $cities = City::whereIn('zone_id', [Zone::whereCountryId($country)->pluck('country_id')])->get();
-        return response()->json($cities);
+        $zones = Zone::where('country_id', $country)->get();
+        return response()->json($zones);
     }
 }

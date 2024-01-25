@@ -11,9 +11,22 @@
             <hr>
             <div class="row m-0">
                 <div class="col-md-6 row" style="padding:0.3rem">
+                    <h5 class="card-title col-md-6">الدولة والمنطقة:</h5>
+                    <p class="card-text col-md-6">{{ $estate->city->zone->country->name .' ، '. $estate->city->zone->name  }} </p>
+                </div>
+                <div class="col-md-6 row" style="padding:0.3rem">
+                    <h5 class="card-title col-md-6">المدينة:</h5>
+                    <p class="card-text col-md-6">{{ $estate->city->name }}</p>
+                </div>
+                <div class="col-md-6 row" style="padding:0.3rem">
                     <h5 class="card-title col-md-6">اسم طالب التقييم:</h5>
                     <p class="card-text col-md-6">{{ $estate->name_arabic }}</p>
                 </div>
+                <div class="col-md-6 row" style="padding:0.3rem">
+                    <h5 class="card-title col-md-6">هاتف المسؤول عن العقار:</h5>
+                    <p class="card-text col-md-6">{{ $estate->responsible_phone }}</p>
+                </div>
+
                 <div class="col-md-6 row" style="padding:0.3rem">
                     <h5 class="card-title col-md-6">كود التقرير:</h5>
                     <p class="card-text col-md-6">{{ $estate->id }}</p>
@@ -27,6 +40,10 @@
                     <p class="card-text col-md-6">{{ $estate->user->name }}</p>
                 </div>
                 <div class="col-md-6 row" style="padding:0.3rem">
+                    <h5 class="card-title col-md-6">تاريخ التقييم</h5>
+                    <p class="card-text col-md-6">{{ $estate->evaluation_date }}</p>
+                </div>
+                <div class="col-md-6 row" style="padding:0.3rem">
                     <h5 class="card-title col-md-6">مساحة الأرض</h5>
                     <p class="card-text col-md-6">{{$estate->land_size}}</p>
                 </div>
@@ -38,15 +55,26 @@
                     <h5 class="card-title col-md-6">مساحة المبنى:</h5>
                     <p class="card-text col-md-6">{{$estate->build_size ?? 'غير محدد'}}</p>
                 </div>
+                @if($estate->floor)
+                <div class="col-md-6 row" style="padding:0.3rem">
+                    <h5 class="card-title col-md-6">الطابق:</h5>
+                    <p class="card-text col-md-6">{{$estate->floor ?? 'غير محدد'}}</p>
+                </div>
+                @else
+                <div class="col-md-6 row" style="padding:0.3rem">
+                    <h5 class="card-title col-md-6">عدد  الطوابق:</h5>
+                    <p class="card-text col-md-6">{{$estate->level ?? 'غير محدد'}}</p>
+                </div>
+                @endif
                 @if(auth()->user()->hasAnyRole(['previewer','rater','reviewer','approver']))
                 <div class="col-md-6 row" style="padding:0.3rem">
-                    @if(auth()->user()->membership_level == 'previewer')
+                    @if(auth()->user()->membership_level == 'previewer' || auth()->user()->hasRole('previewer'))
                     <h5  class="card-title col-md-6">موعد تسليم المرحلة </h5>
-                    @elseif(auth()->user()->membership_level == 'rater')
+                    @elseif(auth()->user()->membership_level == 'rater' || auth()->user()->hasRole('rater'))
                     <h5  class="card-title col-md-6">موعد تسليم المرحلة </h5>
-                    @elseif(auth()->user()->membership_level == 'reviewer')
+                    @elseif(auth()->user()->membership_level == 'reviewer' || auth()->user()->hasRole('reviewer'))
                     <h5  class="card-title col-md-6">موعد تسليم المرحلة </h5>
-                    @elseif(auth()->user()->membership_level == 'approver')
+                    @elseif(auth()->user()->membership_level == 'approver' || auth()->user()->hasRole('approver'))
                     <h5  class="card-title col-md-6">موعد تسليم المرحلة </h5>
                     @endif
 
@@ -80,6 +108,21 @@
                 <div class="col-md-6 row" style="padding:0.3rem">
                     <h5 class="card-title col-md-6">مدر للدخل:</h5>
                     <p class="card-text col-md-6">{{ $estate->diuretic ? 'نعم' : 'لا'}}</p>
+                </div>
+                @if( $estate->duration )
+                <div class="col-md-6 row" style="padding:0.3rem">
+                    <h5 class="card-title col-md-6">فترة القيمة الايجارية :</h5>
+                    @if($estate->duration =='سنوية')
+                    <p class="card-text col-md-6">سنوية</p>
+                    @else
+                    <p class="card-text col-md-6">من الشهر {{$estate->duration_start}} ---- الى الشهر {{$estate->duration_end}}</p>
+
+                    @endif
+                </div>
+                @endif
+                <div class="col-md-6 row" style="padding:0.3rem">
+                    <h5 class="card-title col-md-6">رابط الموقع:</h5>
+                    <a href="{{$estate->site_link}}" target="_blank" class="card-text col-md-6">{{ $estate->site_link }}</a>
                 </div>
             </div>
         </div>
@@ -348,10 +391,10 @@ $note = \App\Models\OrderProcessingNote::whereEstateId($estate->id)->latest()->f
                                 <span class="file-block">
                                     {{-- <span class="file-delete"><span>+</span></span> --}}
                                     {{-- <span class="name">location_mark.svg</span> --}}
-                                    @if(strpos( mime_content_type($file_url), "image/") === 0)
-                                    <img src="{{ $file_url }}">
+                                    @if(strpos( mime_content_type(base_path('public/'.$file_url)), "image/") === 0)
+                                                <img src="{{  url($file_url) }}">
                                     @else
-                                    <a target="_blink" href="{{ $file_url }}" style="display: block;height: 70px;
+                                    <a target="_blink" href="{{ url($file_url) }}" style="display: block;height: 70px;
                                     width: 70px;
                                     margin: auto;
                                     margin-top: 0.5rem;">

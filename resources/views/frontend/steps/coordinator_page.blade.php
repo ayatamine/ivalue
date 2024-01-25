@@ -69,53 +69,140 @@
                               enctype="multipart/form-data">
                             @csrf
                             {{ method_field('PATCH') }}
-                            <div class="form-row">
-                                <div class="row mx-0 col-12">
-                                    <div class="col-md-6 pl-0">
-                                        <div class="form-group">
-                                            <label for="process_start_date">
-                                                تاريخ بداية الطلب
-                                            </label>
-                                            <input placeholder="تاريخ بدايةالطلب " name="process_start_date" id="process_start_date"
-                                                    class="form-control" type="datetime-local" required>
-                                        </div>
+                            <div class="row mx-0 col-12">
+                                <div class="col-md-6 pl-0">
+                                    <div class="form-group">
+                                        <label for="process_start_date">
+                                            بداية معاملة التقييم
+                                        </label>
+                                        <input placeholder="بداية معاملة التقييم" name="process_start_date" id="process_start_date"
+                                                class="form-control" type="datetime-local" required>
                                     </div>
-                                    <div class="col-md-6 pr-0">
-                                        <div class="form-group">
-                                            <label for="process_end_date">
-                                                تاريخ إنتهاء الطلب
+                                </div>
+                                <div class="col-md-6 pr-0">
+                                    <div class="form-group">
+                                        <label for="process_end_date">
+                                           انتهاء المعاملة
+                                        </label>
+                                        <input placeholder="انتهاء المعاملة " name="process_end_date" id="process_end_date"
+                                                class="form-control" type="datetime-local" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <h4 class="col-sm-12 col-12">
+                                المدة المستغرقة :
+                                <span class="mr-2">
+                                    <b class="text-danger  ml-1" id="elapsed_days">0</b> يوم ،
+                                    <b class="text-danger  ml-1" id="elapsed_hours">0</b> ساعة
+                                </span>
+                            </h4>
+                            <br>
+                            <div class="form-row">
+                                <div class="col-md-4 col-12 mb-3">
+                                    <div class="form-row">
+                                        <div class="col-sm-12 col-12">
+                                            <label for="country_id">
+                                                الدولة
                                             </label>
-                                            <input placeholder="تاريخ إنهاء الطلب " name="process_end_date" id="process_end_date"
-                                                    class="form-control" type="datetime-local" required>
+                                            <div class="form-group">
+                                                <select name="country_id" id="country_id"
+                                                        class="select2 form-control">
+                                                    <option selected hidden disabled value="">اختر دولة العقار
+                                                    </option>
+                                                    @foreach($countries as $country)
+                                                        <option value="{{ $country->id }}"  @selected($estate->city->zone->country_id == $country->id)>{{ $country->name }} </option>
+*                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            @error('country_id')
+                                            <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-4 col-12 mb-3">
+                                    <div class="form-row">
+                                        <div class="col-sm-12 col-12">
+                                            <label for="zone_id">
+                                                المنطقة
+                                            </label>
+                                            <div class="form-group">
+                                                <select name="zone_id" id="zone_id"
+                                                        class="select2 form-control">
+                                                    <option selected hidden disabled value="">اختر منطقة
+                                                        العقار
+                                                    </option>
+                                                    @foreach($zones as $zone)
+                                                        <option value="{{ $zone->id }}" @selected($estate->city->zone_id ==$zone->id)>{{ $zone->name }} </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            @error('zone_id')
+                                            <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-12 mb-3">
+                                    <div class="form-row">
+                                        <div class="col-sm-12 col-12">
+                                            <label for="city_id">
+                                                المدينة
+                                            </label>
+                                            <div class="form-group">
+                                                <select name="city_id" id="city_id"
+                                                        class="select2 form-control">
+                                                    <option selected hidden disabled value="">اختر مدينة
+                                                        العقار
+                                                    </option>
+                                                    @foreach($cities as $city)
+                                                        <option value="{{ $city->id }}" @selected($estate->city_id ==$city->id)>{{ $city->name }} </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            @error('city_id')
+                                            <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- <div class="col-md-6 col-12 mb-3">
+                                    <label for="address">العنوان تفصيليا + (الحي )  </label>
+                                    <input type="text" name="address"
+                                                    class="form-control" id="address" placeholder=""
+                                                    value="{{$estate->address}}">
+                                </div> --}}
+                            </div>
+                            <div class="form-row">
+
                                 <div class="col-sm-12 col-12">
-                                    <label for="perviewer_id">
+                                    <label for="previewer_id">
                                         المعاين
                                     </label>
                                     <div class="form-group">
-                                        <select name="perviewer_id" id="perviewer_id"
+                                        <select name="previewer_id" id="previewer_id"
                                                 class="select2 form-control" required>
                                             <option value="" disabled hidden selected>قم بإختيار المعاين</option>
                                             @foreach($previewers as $previewer)
-                                                <option value="{{ $previewer->id }}">{{ $previewer->name ?: '----' }}</option>
+                                                <option value="{{ $previewer->id }}">{{ $previewer->name ?: '----' }}{{'------  عدد العمليات :'.\App\Models\Estate::whereActive(1)->whereNull('previewer_reason')->whereDraftedBy(null)->wherePreviewerId($previewer->id)->count()}}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     {{-- <div class="form-group">
-                                        <input placeholder="تاريخ التسليم للمعاين" name="perviewer_date" id="perviewer_date"
+                                        <input placeholder="تاريخ التسليم للمعاين" name="previewer_date" id="previewer_date"
                                                 class="form-control" type="date" required>
 
                                     </div> --}}
                                     @if($estate->previewer_reason)
                                         <textarea readonly class="form-control"> سبب الرفض : {{ $estate->previewer_reason ? $estate->previewer_reason : '' }}</textarea>
                                     @endif
-                                    @error('perviewer_id')
+                                    @error('previewer_id')
                                     <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
+
                             <br>
                             <div class="form-row">
                                 <div class="col-sm-12 col-12">
@@ -127,7 +214,7 @@
                                                 class="select2 form-control" required>
                                             <option value="" disabled hidden selected>قم بإختيار المقيم</option>
                                             @foreach($raters as $rater)
-                                                <option value="{{ $rater->id }}">{{ $rater->name ?: '----' }}</option>
+                                                <option value="{{ $rater->id }}">{{ $rater->name ?: '----' }}{{'------  عدد العمليات :'.\App\Models\Estate::whereActive(1)->whereNull('rater_reason')->whereDraftedBy(null)->whereRaterId($rater->id)->count()}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -155,7 +242,7 @@
                                                 class="select2 form-control" required>
                                             <option value="" disabled hidden selected>قم بإختيار المراجع</option>
                                             @foreach($reviewers as $reviewer)
-                                                <option value="{{ $reviewer->id }}">{{ $reviewer->name ?: '----' }}</option>
+                                                <option value="{{ $reviewer->id }}">{{ $reviewer->name ?: '----' }}{{'------  عدد العمليات :'.\App\Models\Estate::whereActive(1)->whereNull('reviewer_reason')->whereDraftedBy(null)->whereReviewerId($reviewer->id)->count()}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -183,7 +270,7 @@
                                                 class="select2 form-control" required>
                                             <option value="" disabled hidden selected>قم بإختيار المعتمد</option>
                                             @foreach($approvers as $approver)
-                                                <option value="{{ $approver->id }}">{{ $approver->name ?: '----' }}</option>
+                                                <option value="{{ $approver->id }}">{{ $approver->name ?: '----' }}{{'------  عدد العمليات :'.\App\Models\Estate::whereActive(1)->whereNull('approver_reason')->whereDraftedBy(null)->whereApproverId($approver->id)->count()}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -196,6 +283,34 @@
                                         <textarea readonly class="form-control"> سبب الرفض : {{ $estate->approver_reason ? $estate->approver_reason : '' }}</textarea>
                                     @endif
                                     @error('approver_id')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <br>
+                            <div class="form-row">
+                                <div class="col-sm-12 col-12">
+                                    <label for="value_approver_id">
+                                        معتمد قيمة
+                                    </label>
+                                    <div class="form-group">
+                                        <select name="value_approver_id" id="value_approver_id"
+                                                class="select2 form-control" required>
+                                            <option value="" disabled hidden selected>قم بإختيار معتمد قيمة</option>
+                                            @foreach($value_approvers as $value_approver)
+                                                <option value="{{ $value_approver->id }}">{{ $value_approver->name ?: '----' }}{{'------  عدد العمليات :'.\App\Models\Estate::whereActive(1)->whereNull('value_approver_reason')->whereDraftedBy(null)->whereValueApproverId($value_approver->id)->count()}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    {{-- <div class="form-group">
+                                        <input placeholder="تاريخ التسليم للمعتمد" name="value_approver_date" id="value_approver_date"
+                                                class="form-control" type="date" required>
+
+                                    </div> --}}
+                                    @if($estate->value_approver_reason)
+                                        <textarea readonly class="form-control"> سبب الرفض : {{ $estate->value_approver_reason ? $estate->value_approver_reason : '' }}{{'------  عدد العمليات :'.\App\Models\Estate::whereActive(1)->whereNull('value_approver_reason')->whereDraftedBy(null)->whereValueApproverId($value_approver->id)->count()}}</textarea>
+                                    @endif
+                                    @error('value_approver_id')
                                     <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -243,6 +358,59 @@
                $('#reject_note').remove();
                $('#myform').submit();
         });
+        $(document).on('change','#process_start_date',function(e){
+            if(!$('#process_end_date').val()) return
+
+            let endDate = $('#process_end_date').val();
+            //get elapsed days and time
+            var startDate = new Date($(this).val())
+
+            var difference = Math.abs((new Date(endDate) - startDate) / 1000);
+           console.log(difference);
+            var seconds = Math.floor(difference);
+            var minutes = Math.floor(difference / 60);
+            var hours = Math.floor(minutes / 60);
+
+            $('#elapsed_days').html(`${Math.ceil(difference / (24 *
+                60 * 60))}`) ;
+            $('#elapsed_hours').html(`${Math.floor(hours) % 24}`);
+                // $('#elapsed_days').html(`${Math.round(((hours + 1
+                //     ) * 24)- Math.floor(seconds / (24*60*
+                //     60)))}`);
+
+        })
+        $(document).on('change','#process_end_date',function(e){
+            if(!$('#process_end_date').val()) return
+
+            let endDate = $('#process_end_date').val();
+            //get elapsed days and time
+            var startDate = new Date($(this).val())
+
+            var difference = Math.abs((new Date(endDate) - startDate) / 1000);
+           console.log(difference);
+            var seconds = Math.floor(difference);
+            var minutes = Math.floor(difference / 60);
+            var hours = Math.floor(minutes / 60);
+
+            $('#elapsed_days').html(`${Math.ceil(difference / (24 *
+                60 * 60))}`) ;
+            $('#elapsed_hours').html(`${Math.floor(hours) % 24}`);
+                // $('#elapsed_days').html(`${Math.round(((hours + 1
+                //     ) * 24)- Math.floor(seconds / (24*60*
+                //     60)))}`);
+
+        });
+        // $(document).on('change','#country_id',function()
+        // {
+        //     $.ajax({
+        //         url:"/zones/by-country/"+$(this).val(),
+        //         method:'get',
+        //         data:"_token={{csrf_token()}}",
+        //         success:function(data){
+        //             $('')
+        //         }
+        //     })
+        // })
       })
     </script>
     <!-- BEGIN: Page Vendor JS-->

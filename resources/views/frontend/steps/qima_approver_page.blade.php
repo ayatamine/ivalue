@@ -90,7 +90,7 @@
                         </div>
 
 
-                        <a href="{{ route('pdf_pro' , $estate->id) }}">تصفح التقرير</a>
+                        <a href="{{ route('pdf_pro' , ['id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}">تصفح التقرير</a>
                         <br>
 
 

@@ -31,38 +31,38 @@
     <section class="tooltip-validations" id="tooltip-validation">
         <div class="row">
             <div class="col-12">
+                @include('common.done')
                 @include('common.errors')
             </div>
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">اضافة مدينة جديدة</h4>
+                        <h4 class="card-title">تعديل المدينة " {{ $zone->name }} "</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form method="post" action="{{ route('cities.store',Route::current()->parameter('subdomain')) }}" id="myform">
+                            <form method="post" action="{{ route('zones.update' , ['zone'=>$zone->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}" id="myform">
                                 @csrf
+                                 {{ method_field('PATCH') }}
                                 <div class="form-row">
                                     <div class="col-md-12 col-12 mb-3">
                                         <label for="name">الاسم </label>
-                                        <input type="text" name="name" class="form-control" id="name" placeholder="الاسم " value="{{ old('name') }}" required>
+                                        <input type="text" name="name" class="form-control" id="name" placeholder="الاسم " value="{{ $zone->name ?: '' }}" required>
                                         @error('name')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
-
                                 </div>
                                 <div class="form-row">
                                     <div class="col-sm-12 col-12">
-                                        <label for="zone_id">
+                                        <label for="country_id">
                                             الدولة
                                         </label>
                                         <div class="form-group">
-                                            <select name="zone_id" id="zone_id"
+                                            <select name="country_id" id="country_id"
                                                     class="select2 form-control">
-                                                <option disabled selected hidden>اختر الدولة</option>
-                                                @foreach($zones as $zone)
-                                                    <option value="{{ $zone->id }}">{{ $zone->name }}</option>
+                                                @foreach($countries as $country)
+                                                    <option {{ $country->id == $zone->country_id ? 'selected' : '' }} value="{{ $country->id }}">{{ $country->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -74,14 +74,14 @@
                                 <div class="form-row">
                                     <div class="col-md-4">
                                         <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" checked=""
+                                            <input type="checkbox" @if($zone->active == 1) checked="" @endif
                                                    name="active" value="1" class="custom-control-input" id="customCheck1" >
                                             <label class="custom-control-label" for="customCheck1">فعال</label>
                                         </div>
                                     </div>
                                 </div>
                                 <hr>
-                                <button class="btn btn-primary" type="submit">اضافة</button>
+                                <button class="btn btn-primary" type="submit">حفظ</button>
                             </form>
                         </div>
                     </div>
@@ -118,7 +118,7 @@
                         minlength: 3,
                         maxlength: 100,
                     },
-                    zone_id: {
+                    country_id: {
                         required: true,
                     },
                 },
@@ -127,7 +127,7 @@
                         required : 'هذا الحقل مطلوب',
                         minlength : 'هذا الحقل مطلوب اقل من المسموح',
                     },
-                    zone_id: {
+                    country_id: {
                         required : 'هذا الحقل مطلوب',
                     },
                 }
@@ -135,4 +135,3 @@
         });
     </script>
 @endsection
-

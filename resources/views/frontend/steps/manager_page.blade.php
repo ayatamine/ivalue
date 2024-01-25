@@ -184,11 +184,11 @@
                                 @else
                                     @if(\App\Models\EstateInput::where('key','like',"%موافقة العميل%")->whereValue('موافقة')->whereEstateId($estate->id)->latest()->first())
                                     <button class="btn btn-success w-50 mb-1 mb-md-0" type="submit" id="approve_request">اعتماد الطلب </button>
-                                    <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="submit_order">
+                                    <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="send_to_client">
                                         إعادة الإرسال للعميل
                                     </button>
                                     @else
-                                    <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="submit_order">
+                                    <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="send_to_client">
                                         موافقة وإرسال إلى العميل
                                     </button>
                                     @endif
@@ -197,6 +197,7 @@
                                         التقييم</span>
                                 @endif
                              @endif
+                             <span class="btn btn-danger w-50 mb-1 mb-md-0" id="cancel_order">الغاء وحفظ كمسودة</span>
                             @else
                             {{-- the order is proccessed --}}
                             {{-- <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="submit_order">اعتماد
@@ -204,7 +205,7 @@
                             <span class="btn btn-warning w-50 mb-1 mb-md-0 return_order" data-return_to="rater_manager">رفض والرجوع الى مدير
                                 التقييم</span> --}}
                             @endif
-                            <span class="btn btn-danger w-50 mb-1 mb-md-0" id="cancel_order">الغاء وحفظ كمسودة</span>
+
                         </div>
                         @endif
                     </form>

@@ -50,8 +50,8 @@
                             خيارات
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="{{ route('cities.create',Route::current()->parameter('subdomain')) }}"><i class="fa fa-plus"></i>اضافة جديد</a>
-                            <a class="dropdown-item delete-all" onclick="return false;" delete_url="{{route('delete_cities',Route::current()->parameter('subdomain'))}}">
+                            <a class="dropdown-item" href="{{ route('zones.create',Route::current()->parameter('subdomain')) }}"><i class="fa fa-plus"></i>اضافة جديد</a>
+                            <a class="dropdown-item delete-all" onclick="return false;" delete_url="{{route('delete_zones',Route::current()->parameter('subdomain'))}}">
                                 حذف الكل</a>
                         </div>
                     </div>
@@ -71,17 +71,17 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($cities as $city)
+                    @foreach($zones as $zone)
                         <tr class="delete-all-cats">
                             <td>{{ $loop->index + 1 }}</td>
-                            <td class="product-name">{{ $city->name }}</td>
-                            <td>{{ $city->name }}</td>
-                            <td>{{ $city->zone->name }}</td>
-                            <td>{{ $city->getActive() }}</td>
+                            <td class="product-name">{{ $zone->name }}</td>
+                            <td>{{ $zone->name }}</td>
+                            <td>{{ $zone->country->name }}</td>
+                            <td>{{ $zone->getActive() }}</td>
                             <td class="product-action">
-                                <span class="action-edit"><a href="{{ route('cities.edit' ,['city'=> $city->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i class="feather icon-edit"></i></a></span>
+                                <span class="action-edit"><a href="{{ route('zones.edit' ,['zone'=> $zone->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}"><i class="feather icon-edit"></i></a></span>
                                 <a title="" onclick="return false;" object_id=""
-                                   delete_url="{{route('cities.destroy',['city'=>$city->id,'subdomain'=>Route::current()->parameter('subdomain')])}}" class="edit-btn-table remove-alert" href="#">
+                                   delete_url="{{route('zones.destroy',['zone'=>$zone->id,'subdomain'=>Route::current()->parameter('subdomain')])}}" class="edit-btn-table remove-alert" href="#">
                                     <i class="feather icon-trash"></i></a>
                             </td>
                         </tr>

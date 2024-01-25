@@ -55,14 +55,14 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="col-sm-12 col-12">
-                                        <label for="country_id">
+                                        <label for="zone_id">
                                             الدولة
                                         </label>
                                         <div class="form-group">
-                                            <select name="country_id" id="country_id"
+                                            <select name="zone_id" id="zone_id"
                                                     class="select2 form-control">
-                                                @foreach($countries as $country)
-                                                    <option {{ $country->id == $city->country_id ? 'selected' : '' }} value="{{ $country->id }}">{{ $country->name }}</option>
+                                                @foreach($zones as $country)
+                                                    <option {{ $country->id == $city->zone_id ? 'selected' : '' }} value="{{ $country->id }}">{{ $country->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -118,7 +118,7 @@
                         minlength: 3,
                         maxlength: 100,
                     },
-                    country_id: {
+                    zone_id: {
                         required: true,
                     },
                 },
@@ -127,7 +127,7 @@
                         required : 'هذا الحقل مطلوب',
                         minlength : 'هذا الحقل مطلوب اقل من المسموح',
                     },
-                    country_id: {
+                    zone_id: {
                         required : 'هذا الحقل مطلوب',
                     },
                 }

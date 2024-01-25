@@ -77,6 +77,14 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="nav-item has-sub {{ (Request::is('zones') ? 'sidebar-group-active' : '' || Request::is('zones/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-circle"></i><span class="menu-title" data-i18n="Card">المدن</span></a>
+                        <ul class="menu-content">
+                            <li class="{{ Request::is('zones')? 'active': '' }}"><a href="{{ route('zones.index',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع المدن</span></a>
+                            </li>
+                            <li class="{{ Request::is('zones/create')? 'active': '' }}"><a href="{{ route('zones.create',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Advance">اضافة مدينة جديد</span></a>
+                            </li>
+                        </ul>
+                    </li>
                     <li class="nav-item has-sub {{ (Request::is('cities') ? 'sidebar-group-active' : '' || Request::is('cities/*')) ? 'sidebar-group-active' : ''}}"><a href="#"><i class="fa fa-circle"></i><span class="menu-title" data-i18n="Card">المدن</span></a>
                         <ul class="menu-content">
                             <li class="{{ Request::is('cities')? 'active': '' }}"><a href="{{ route('cities.index',Route::current()->parameter('subdomain')) }}"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Basic">جميع المدن</span></a>

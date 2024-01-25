@@ -378,6 +378,28 @@
                                     <div class="col-md-3 col-12 mb-3">
                                         <div class="form-row">
                                             <div class="col-sm-12 col-12">
+                                                <label for="zone_id">
+                                                    المنطقة
+                                                </label>
+                                                <div class="form-group">
+                                                    <select name="zone_id" id="zone_id"
+                                                            class="select2 form-control">
+                                                        <option selected hidden disabled value="">اختر منطقة العقار
+                                                        </option>
+                                                        @foreach($zones as $zone)
+                                                            <option value="{{ $zone->id }}">{{ $zone->name }} </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                @error('zone_id')
+                                                <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-12 mb-3">
+                                        <div class="form-row">
+                                            <div class="col-sm-12 col-12">
                                                 <label for="city_id">
                                                     المدينة
                                                 </label>
@@ -400,7 +422,7 @@
                                     </div>
 
                                     <div class="col-md-3 col-12 mb-3">
-                                        <label for="address">العنوان تفصيليا + (الحي - المنطقة)  </label>
+                                        <label for="address">العنوان تفصيليا + (الحي)  </label>
                                         <input type="text" name="address"
                                                         class="form-control" id="address" placeholder=""
                                                         value="{{old('address')}}">

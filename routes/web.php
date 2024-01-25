@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\Admin\RoleController;
+use App\Models\Establishment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\PdfController;
@@ -10,6 +9,8 @@ use App\Http\Controllers\User\HomeController;
 use App\Http\Controllers\User\KindController;
 use App\Http\Controllers\User\PageController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\User\ZoneController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Middleware\IsNotClientMiddleware;
 use App\Http\Controllers\User\EstateController;
 use App\Http\Controllers\User\ReportController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\SettingController;
 use App\Http\Controllers\User\CategoryController;
 use App\Http\Controllers\User\TechniqueController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\User\Notificationontroller;
 use App\Http\Controllers\User\ClientEstateController;
 use App\Http\Controllers\User\TechniqueTypeController;
@@ -27,7 +29,6 @@ use App\Http\Controllers\User\Incomes\Substitution\LandController;
 use App\Http\Controllers\User\Incomes\Substitution\BuildController;
 use App\Http\Controllers\User\Incomes\Substitution\ParkingController;
 use App\Http\Controllers\User\Incomes\Substitution\PetrolStationController;
-use App\Models\Establishment;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,6 +86,10 @@ Route::get('amie',function(){
         /***********  cities route ***********/
         Route::resource('cities', CityController::class)->except(['show']);
         Route::delete('delete_cities', [CityController::class,'delete_cities'])->name('delete_cities');
+
+        Route::resource('zones', ZoneController::class)->except(['show']);
+        Route::delete('delete_zones', [ZoneController::class,'delete_zones'])->name('delete_zones');
+        Route::get('/zones/by-country/{country}', [ZoneController::class,'countryZones'])->name('zones.get');
 
         /***********  categories route ***********/
         Route::resource('categories', CategoryController::class)->except(['show']);

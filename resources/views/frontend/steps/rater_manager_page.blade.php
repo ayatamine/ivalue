@@ -63,31 +63,64 @@
                 <div class="card-header">
                     <h4 class="card-title"> مدخلات مدير التقييم </h4>
                 </div>
+                <?php $option = \App\Models\Option::find(1); ?>
                 <div class="card-content">
                     <div class="card-body">
-                        <form method="post" action="{{ route('level_inputs' , ['estate_id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')]) }}" id="myform"
+                        <form method="post" action="{{ route('level_inputs' , ['estate_id'=>$estate->id,'type'=>auth()->user()->membership_level,'subdomain'=>Route::current()->parameter('subdomain')]) }}" id="myform"
                               enctype="multipart/form-data">
                             @csrf
                             {{ method_field('PATCH') }}
+                            <h5>نطاق العمل</h5>
+                            <hr>
                             <div class="form-row">
+                                <div class="col-md-12">
+                                    <div class="form-row">
+                                        <div class="col-sm-12 col-12">
+                                            <label for="size_kind">
+                                                العملة
+                                            </label>
+                                            <?php
+                                                $currencies = \DB::table('currncies')->get();
+                                            ?>
+                                            <div class="form-group">
+                                                <select name="currency" id="currency"
+                                                        class="select2 form-control">
+                                                    @foreach($currencies as $currency)
+                                                    <option value="{{ $currency->name }}">{{ $currency->name }} </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            @error('currency')
+                                            <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 col-6 mb-3">
+                                    <label for="report_desc">وصف التقرير</label>
+                                    <div class="form-group">
+                                                    <select name="report_desc" id="report_desc"
+                                                            class="select2 form-control">
+
+                                                        <option @selected($option->report_desc == 'ورقي') value="ورقي">ورقي </option>
+                                                        <option @selected($option->report_desc == 'الكتروني')  value="الكتروني">الكتروني </option>
+
+                                                    </select>
+                                                </div>
+                                    @error('report_desc')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
                                 <div class="col-md-12 col-12 mb-3">
                                     <label for="works">نطاق العمل والاتعاب</label>
                                     <input type="text" name="works" class="form-control" id="works"
-                                           placeholder="نطاق العمل" value="" required>
+                                           placeholder="نطاق العمل" value="{{$option->work_area}}" required>
                                     @error('works')
                                     <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
-                                @if($estate->report_type != 'old')
-                                <div class="col-md-3 col-12 mb-3">
-                                    <label for="works_delay">مده العمل</label>
-                                    <input type="text" name="works_delay" class="form-control" id="works_delay"
-                                           placeholder="مدة العمل" value="" required>
-                                    @error('works_delay')
-                                    <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                @endif
+
                                 <div class="col-md-3 col-12 mb-3">
                                     <label for="report_standards">معايير التقييم</label>
 
@@ -96,9 +129,10 @@
                                                     <select name="report_standards" id="report_standards"
                                                             class="select2 form-control" required>
 
-                                                        <option value="2020"> 2020</option>
+                                                        <option value="2020" @selected($option->report_standards =='2020')> 2020</option>
                                                         <!--<option value="2021"> 2021</option>-->
-                                                        <option value="2022"> 2022</option>
+                                                        <option value="2022" @selected($option->report_standards =='2022')> 2022</option>
+                                                        <option value="2024" @selected($option->report_standards =='2024')> 2024</option>
 
                                                     </select>
                                                 </div>
@@ -117,17 +151,7 @@
                                     <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
-                                @if($estate->report_type != 'old')
-                                <div class="col-md-3 col-6 mb-3">
-                                    <label for="price">عرض السعر التكاليف</label>
-                                    <input type="number" name="price" class="form-control" id="price"
-                                           placeholder="عرض السعر التكاليف" value="" required>
-                                    ريال
-                                    @error('price')
-                                    <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                @endif
+
                                 <div class="col-md-3 col-12 mb-3">
                                     <div class="form-row">
                                         <div class="col-sm-12 col-12">
@@ -139,10 +163,10 @@
                                                         class="select2 form-control">
                                                     <option selected hidden disabled value="">اختر نوع التقرير
                                                     </option>
-                                                    <option value="تقرير مفصل">تقرير مفصل </option>
-                                                    <option value="ملخص التقرير">ملخص التقرير </option>
-                                                    <option value="مراجعة مع قيمة جديدة">مراجعة مع قيمة جديدة</option>
-                                                    <option value="مراجعة بدون قيمة جديدة">مراجعة بدون قيمة جديدة</option>
+                                                    <option  @selected($option->report_kind =="تقرير مفصل") value="تقرير مفصل">تقرير مفصل </option>
+                                                    <option  @selected($option->report_kind =="ملخص التقرير") value="ملخص التقرير">ملخص التقرير </option>
+                                                    <option  @selected($option->report_kind =="مراجعة مع قيمة جديدة") value="مراجعة مع قيمة جديدة">مراجعة مع قيمة جديدة</option>
+                                                    <option  @selected($option->report_kind =="مراجعة بدون قيمة جديدة") value="مراجعة بدون قيمة جديدة">مراجعة بدون قيمة جديدة</option>
                                                 </select>
                                             </div>
                                             @error('report_kind')
@@ -200,20 +224,10 @@
                                     </div>
                                 </div>
                                 @if($estate->report_type != 'old')
-                                <div class="col-md-3 col-6 mb-3">
-                                    <label for="qty">عدد الدفعات</label>
-                                    <input type="number" name="qty" class="form-control" id="qty"
-                                           placeholder="عدد الدفعات" value="" required>
-                                    @error('qty')
-                                    <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                @endif
-                                @if($estate->report_type != 'old')
                                 <div class="col-md-3 col-12 mb-3">
                                     <label for="price_delay">مدة عرض السعر</label>
                                     <input type="number" name="price_delay" class="form-control" id="price_delay"
-                                           placeholder="مدة عرض السعر" value="" required>
+                                           placeholder="مدة عرض السعر" value="{{$option->price_delay}}" required>
                                     @error('price_delay')
                                     <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -228,45 +242,46 @@
                                     @enderror
                                 </div>
                                 @endif
-                                <div class="col-md-12">
-                                        <div class="form-row">
-                                            <div class="col-sm-12 col-12">
-                                                <label for="size_kind">
-                                                    العملة
-                                                </label>
-                                                <?php
-                                                    $currencies = \DB::table('currncies')->get();
-                                                ?>
-                                                <div class="form-group">
-                                                    <select name="currency" id="currency"
-                                                            class="select2 form-control">
-                                                        @foreach($currencies as $currency)
-                                                        <option value="{{ $currency->name }}">{{ $currency->name }} </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                @error('currency')
-                                                <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-                                <div class="col-md-12 col-6 mb-3">
-                                    <label for="report_desc">وصف التقرير</label>
-                                    <div class="form-group">
-                                                    <select name="report_desc" id="report_desc"
-                                                            class="select2 form-control">
 
-                                                        <option value="ورقي">ورقي </option>
-                                                        <option value="الكتروني">الكتروني </option>
-
-                                                    </select>
-                                                </div>
-                                    @error('report_desc')
+                            </div>
+                            <div class="form-row">
+                                <h4 class="col-12 mb-3">عرض السعر</h4>
+                                <hr>
+                                @if($estate->report_type != 'old')
+                                <div class="col-md-3 col-12 mb-3">
+                                    <label for="works_delay">مده العمل</label>
+                                    <input type="text" name="works_delay" class="form-control" id="works_delay"
+                                           placeholder="مدة العمل" value="{{$option->work_delay}}" required>
+                                    @error('works_delay')
                                     <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
+                                <div class="col-md-3 col-6 mb-3">
+                                    <label for="price">عرض السعر التكاليف</label>
+                                    <input type="number" name="price" class="form-control" id="price"
+                                           placeholder="عرض السعر التكاليف" value="{{$option->offer_price}}" required>
+                                    ريال
+                                    @error('price')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-3 col-6 mb-3">
+                                    <label for="qty">عدد الدفعات</label>
+                                    <select name="qty" id="qty"
+                                                        class="select2 form-control">
+                                                    <option value="1">1 </option>
+                                                    <option value="2">2 </option>
+                                                    <option value="3">3 </option>
+                                    </select>
+
+                                    @error('qty')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div id="qte-wrapper" class="col-12 form-row"></div>
+                                @endif
                             </div>
+
                             <hr id="last_hr">
                             <div class="flex-column d-flex flex-md-row justify-content-between align-items-center " style="    gap: 1%;" >
                                 <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="submit_order">إرسال إلى مدير المنشأة</button>
@@ -328,6 +343,33 @@
                $('#order_return').remove();
                $('#draft_note').remove();
                $('#myform').submit();
+        });
+        $(document).on('change','#qty',function (e) {
+               e.preventDefault();
+               console.log($(this).val())
+               $('#qte-wrapper').html('')
+               for(let i=1;i<=$(this).val();i++)
+               {
+                //remove all items
+
+                $('#qte-wrapper').append(`
+                <div class="col-md-4 col-6 mb-3">
+                                    <label for="payment_partitions">موعد الدفعة ${i}</label>
+                                    <select name="payment_partitions[]" id="payment_partitions"
+                                                        class="select2 form-control">
+                                                    <option value="عند توقيع العقد">عند توقيع العفد </option>
+                                                    <option value="عند الموافقة على عرض السعر">عند الموافقة على عرض السعر </option>
+                                                    <option value="عند استلام المسودة">عند استلام المسودة </option>
+                                                    <option value="عند الانتهاء من التقييم">عند الانتهاء من التقييم </option>
+                                                    <option value="عند استلام التقرير النهائي">عند استلام التقرير النهائي </option>
+                                    </select>
+
+                                    @error('payment_partitions')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                `)
+               }
         });
       })
     </script>

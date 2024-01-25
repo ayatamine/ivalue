@@ -383,17 +383,43 @@
                                                     <?php
                                                     $city = \App\Models\City::find($estate->city_id);
                                                     ?>
-                                                    @foreach($countries as $kind)
+                                                    @foreach($countries as $country)
                                                         @if($city)
-                                                            <option {{ $city->country_id == $kind->id ? 'selected' : ''}} value="{{ $kind->id }}">{{ $kind->name }} </option>
+                                                            <option {{ $city->zone->country_id == $country->id ? 'selected' : ''}} value="{{ $country->id }}">{{ $country->name }} </option>
                                                         @else
-                                                            <option value="{{ $kind->id }}">{{ $kind->name }} </option>
+                                                            <option value="{{ $country->id }}">{{ $country->name }} </option>
 
                                                         @endif
                                                     @endforeach
                                                 </select>
                                             </div>
                                             @error('country_id')
+                                            <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col-sm-12 col-12">
+                                            <label for="zone_id">
+                                                المنطقة
+                                            </label>
+                                            <div class="form-group">
+                                                <select name="zone_id" id="zone_id"
+                                                        class="select2 form-control">
+                                                    <?php
+                                                    $city = \App\Models\City::find($estate->city_id);
+                                                    ?>
+                                                    @foreach($zones as $zone)
+                                                        @if($city)
+                                                            <option {{ $city->zone_id == $zone->id ? 'selected' : ''}} value="{{ $zone->id }}">{{ $zone->name }} </option>
+                                                        @else
+                                                            <option value="{{ $zone->id }}">{{ $zone->name }} </option>
+
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            @error('zone_id')
                                             <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
@@ -419,7 +445,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-12 col-12 mb-3">
-                                        <label for="address">العنوان تفصيليا + (الحي - المنطقة)  </label>
+                                        <label for="address">العنوان تفصيليا + (الحي)  </label>
                                         <input type="text" name="address"
                                                         class="form-control" id="address" placeholder=""
                                                         value="{{$estate->address}}">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Models\City;
 use App\Models\Kind;
 use App\Models\User;
+use App\Models\Zone;
 use App\Models\Estate;
 use App\Models\Country;
 use App\Models\Category;
@@ -64,12 +65,13 @@ class EstateController extends Controller
     public function create()
     {
         try {
+            $zones = Zone::all();
             $cities = City::all();
             $countries = Country::all();
             $users = User::where('membership_level', 'client')->orWhereNull('membership_level')->get();
             $categories = Category::all();
             $kinds = Kind::all();
-            return view('frontend.estates.create', compact('cities', 'users', 'categories', 'kinds', 'countries'));
+            return view('frontend.estates.create', compact('cities', 'users', 'categories', 'kinds','zones', 'countries'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }
@@ -227,12 +229,13 @@ class EstateController extends Controller
     {
         $estate = Estate::where('id', $id)->first();
         if (isset($estate)) {
+            $zones = Zone::all();
             $cities = City::all();
             $countries = Country::all();
             $users = User::where('membership_level', 'client')->orWhereNull('membership_level')->get();
             $categories = Category::all();
             $kinds = Kind::all();
-            return view('frontend.estates.edit', compact('estate', 'cities', 'users', 'categories', 'kinds', 'countries'));
+            return view('frontend.estates.edit', compact('estate', 'cities', 'zones','users', 'categories', 'kinds', 'countries'));
         } else {
             return redirect()->back()->with('error', 'حدث خطأ !!');
         }

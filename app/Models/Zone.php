@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class City extends Model
+class Zone extends Model
 {
+    use HasFactory;
     protected $fillable = [
-        'name','zone_id', 'active' ,'created_at' , 'updated_at'
+        'name','country_id', 'active' ,'created_at' , 'updated_at'
     ];
     protected $hidden = [
-        'created_at', 'updated_at','zone_id',
+        'created_at', 'updated_at','country_id',
     ];
     public function scopeActive($query)
     {
@@ -20,8 +22,8 @@ class City extends Model
     {
         return  $this->active == 1 ? 'فعال' : 'غير فعال';
     }
-    public function zone()
+    public function country()
     {
-        return $this->belongsTo('App\Models\Zone');
+        return $this->belongsTo('App\Models\Country');
     }
 }

@@ -40,7 +40,7 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form method="post" action="{{ route('cities.store',Route::current()->parameter('subdomain')) }}" id="myform">
+                            <form method="post" action="{{ route('zone.store',Route::current()->parameter('subdomain')) }}" id="myform">
                                 @csrf
                                 <div class="form-row">
                                     <div class="col-md-12 col-12 mb-3">
@@ -54,15 +54,15 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="col-sm-12 col-12">
-                                        <label for="zone_id">
+                                        <label for="country_id">
                                             الدولة
                                         </label>
                                         <div class="form-group">
-                                            <select name="zone_id" id="zone_id"
+                                            <select name="country_id" id="country_id"
                                                     class="select2 form-control">
                                                 <option disabled selected hidden>اختر الدولة</option>
-                                                @foreach($zones as $zone)
-                                                    <option value="{{ $zone->id }}">{{ $zone->name }}</option>
+                                                @foreach($countries as $country)
+                                                    <option value="{{ $country->id }}">{{ $country->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -118,7 +118,7 @@
                         minlength: 3,
                         maxlength: 100,
                     },
-                    zone_id: {
+                    country_id: {
                         required: true,
                     },
                 },
@@ -127,7 +127,7 @@
                         required : 'هذا الحقل مطلوب',
                         minlength : 'هذا الحقل مطلوب اقل من المسموح',
                     },
-                    zone_id: {
+                    country_id: {
                         required : 'هذا الحقل مطلوب',
                     },
                 }

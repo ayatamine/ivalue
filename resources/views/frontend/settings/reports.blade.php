@@ -298,6 +298,8 @@
                                                             <!--<option value="2021"> 2021</option>-->
                                                             <option value="2022" @selected($setting->report_standards == '2022')> 2022</option>
 
+                                                            <option value="2024" @selected($setting->report_standards == '2024')> 2024</option>
+
                                                         </select>
                                                     </div>
                                         @error('report_standards')
