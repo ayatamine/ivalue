@@ -35,7 +35,7 @@ return new class extends Migration
             $table->timestamps();
         });
         Schema::table('estates', function (Blueprint $table) {
-            $table->foreign('city')->references('id')->on('cities')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('city_id')->references('id')->on('cities')->nullOnDelete()->onUpdate('cascade');
         });
     }
 
