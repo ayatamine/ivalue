@@ -37,6 +37,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\IdentifyTenant::class,
             \App\Http\Middleware\TeamsPermission::class,
 
         ],
@@ -71,7 +72,7 @@ class Kernel extends HttpKernel
         'tenant' => \App\Http\Middleware\IdentifyTenant::class,
     ];
     protected $middlewarePriority = [
-        \App\Http\Middleware\TeamsPermission::class,
         \App\Http\Middleware\IdentifyTenant::class,
+        \App\Http\Middleware\TeamsPermission::class,
     ];
 }

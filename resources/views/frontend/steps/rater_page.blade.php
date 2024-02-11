@@ -313,6 +313,17 @@
                             </div>
                         </div>
                         <div id="spreadsheet"></div>
+
+                        <div id="rating_ways_block" style="display: none">
+                            <hr>
+                            <h6>جدول طرق التقييم</h6>
+                            <div id="rating_ways_table"></div>
+                        </div>
+                        <div id="value_equalizer_block" style="display: none">
+                            <hr>
+                            <h6>جدول ترجيح القيمة</h6>
+                            <div id="value_equalizer_table"></div>
+                        </div>
                         <!--<div class="rate_info">-->
                         <!--    <div class="col-md-12">-->
                         <!--            <div class="row">-->
@@ -629,14 +640,30 @@
         });
 </script>
 <script>
+    var value_equalizer = [['','قيمة العقار بعد الترجيح','0','']];
+    var selected_ways = [];
+
     $(document).on('change','#market_way',function(){
-     var columns = [ {
-                        type: 'text',
-                        title:'تجربة',
-                        width:400,
-                        readOnly:true,
-                    },];
-     var data = [['تجربة']];
+        selected_ways.push(
+            [
+                "أسلوب السوق",$(this).find("option:selected").text(),""
+            ]
+        )
+        value_equalizer =  value_equalizer.slice(0,-1);
+        value_equalizer.push(
+            [
+                $(this).find("option:selected").text(),"0","0","0"
+            ],
+            ['','قيمة العقار بعد الترجيح','0','']
+        )
+        //get selected option text
+        var columns = [ {
+                            type: 'text',
+                            title:'تجربة',
+                            width:400,
+                            readOnly:true,
+                        },];
+        var data = [['تجربة']];
     switch ($(this).val()) {
 
         case 'comparative_comulative':
@@ -819,6 +846,75 @@
              handleSheet('comparative_heuristic',columns,data);
             break;
     }
+    //create rating ways table  جدول طرق التقييم
+    $('#rating_ways_block').css('display','block')
+    $('#value_equalizer_block').css('display','block')
+    //add element before table
+
+    var rating_ways_table =jspreadsheet(document.getElementById('rating_ways_table'), {
+                data:selected_ways,
+                columns: [
+                    {
+                            type: 'text',
+                            title:'أسلوب التقييم',
+                            width:400,
+                            // readOnly:true,
+                    },
+                    {
+                            type: 'text',
+                            title:'طريقة التقييم',
+                            width:200,
+                            // readOnly:true,
+                    },
+                    {
+                            type: 'text',
+                            title:'تفصيل', width:300,
+                            // readOnly:true,
+                    }
+                ],
+                mergeCells:{
+                },
+                style: {
+                },
+    })
+   //value_equalizer_table
+    var value_equalizer_table =jspreadsheet(document.getElementById('value_equalizer_table'), {
+                data:value_equalizer,
+                columns: [
+                    {
+                            type: 'text',
+                            title:'طريقة التقييم',
+                            width:300,
+                            // readOnly:true,
+                    },
+                    {
+                            type: 'text',
+                            title:'القيمة',
+                            // mask:"0.00",
+                            // decimal:',',
+                            width:200,
+                            // readOnly:true,
+                    },
+                    {
+                            type: 'numeric',
+                            title:'نسبةالترجيح',
+                            mask:"0.00%",
+                            decimal:',',
+                            width:200
+                    },
+                    {
+                            type: 'numeric',
+                            title:'الوزن',
+                            mask:"0.00",
+                            decimal:',',
+                            width:200
+                    }
+                ],
+                mergeCells:{
+                },
+                style: {
+                },
+            })
 
    })
    function handleSheet(type,columns,data)
@@ -1175,7 +1271,7 @@
             })
             break;
         case 'comparative_summation':
-            if("{{$estate->category_id}}" == 2) //شقة
+            if("{{$estate->category_id}}" == 1) //شقة
             {
                 data =
                 [
@@ -1303,7 +1399,7 @@
                 })
                 return;
             }
-           if("{{$estate->category_id}}" == 3) //فيلا
+           if("{{$estate->category_id}}" == 2) //فيلا
             {
                 data =
                 [
