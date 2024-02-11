@@ -261,11 +261,12 @@
                                 </label>
                                 <div class="form-group mt-1">
                                     <select name="market_way" id="market_way" class="select2 form-control ">
+                                        <option value="" selected disabled> اختر</option>
                                         <optgroup label="طريقة المعاملات المقارنة">
                                             <option value="comparative_summation">--- جمع</option>
                                             <option value="comparative_comulative">--- تراكمي</option>
                                         </optgroup>
-                                        <option value="الطريقة الارشادية للمقارنات المتداولة"> الطريقة الارشادية
+                                        <option value="comparative_heuristic"> الطريقة الارشادية
                                             للمقارنات المتداولة</option>
 
                                     </select>
@@ -322,7 +323,7 @@
                         <!--                </div>-->
                         <!--                <div class="col-md-6 col-6 mb-3">-->
                         <!--                    <select name="infos[0][value]" class="form-control" required>-->
-                        <!--                        <option value="نعم">نعم</option>-->
+                        <!--                        <option value="لا">لا</option>-->
                         <!--                        <option value="لا">لا</option>-->
 
 
@@ -421,7 +422,7 @@
                         </div>
                     </form>
                     @php
-                        // $inputs = \App\Models\EstateInput::whereEstateId($estate->id);
+                    // $inputs = \App\Models\EstateInput::whereEstateId($estate->id);
                     @endphp
                 </div>
             </div>
@@ -625,140 +626,948 @@
                 });
 
             });
-            //طريقة السوق
-            $(document).on('change','#market_way',function(){
-                let way = $(this).val()
-                switch (way) {
-                    case 'comparative_comulative':
-
-                        break;
-                    case 'comparative_summation':
-
-                        break;
-
-                    default:
-                        break;
-                }
-            })
         });
 </script>
 <script>
+    $(document).on('change','#market_way',function(){
+     var columns = [ {
+                        type: 'text',
+                        title:'تجربة',
+                        width:400,
+                        readOnly:true,
+                    },];
+     var data = [['تجربة']];
+    switch ($(this).val()) {
 
-    var data = [
-        ['سعر المتر المربع الواحد', '', '', '10 ريال', '10 ريال', '10 ريال'],
-        ['نوع العقار', '', "{{$estate->kind->name}}", "{{$estate->kind->name}}","{{$estate->kind->name}}", "{{$estate->kind->name}}"],
-        ['تسوية نوع العقار','', '', '0', '0', '0'],
-        ['نوع المعاملة','', 'بيع', 'بيع', 'بيع', 'عرض'],
-        ['تسمية نوع المعاملة','', '', '0', '0', '0'],
-        ['شروط التمويل','', '', '', 'نقدا', 'دفعات'],
-        [' تسوية شروط التمويل','', '', '0', '0', '0'],
-        [' شروط البيع','', 'لايوجد', 'لايوجد', 'لايوجد', 'لايوجد'],
-        [' تسوية شروط البيع','', '', '0', '0', '0'],
-        [' ظروف السوق','تاريخ التقييم', '25-05-2020', 'الان', '3 أشهر', 'شهرين'],
-        [' تسوية ظروف السوق','', '', '0', '0', '0'],
-        [' التخطيط نظام البناء','', 'عمائر', 'تجاري عمائر', 'تجاري عمائر', 'تجاري فيلال'],
-        [' تسوية التخطيط نظام البناء','', '', '0', '0', '0'],
-        ['المساحة','', "{{$estate->land_size}} م2", '0 م2', '0 م2', '0 م2'],
-        ['تسوية المساحة بطريقة الامثال','5,00', '0', '0', '0', '0'],
-        ['عددالشوارع','', '2', '2', '2', '2'],
-        ['تسوية عدد الشوارع','', '', '0', '0', '0'],
-        ['واجهات الشوارع','', 'شمالي جنوبي', 'شمالي غربي', 'جنوبي', 'شرقي'],
-        ['تسوية واجهات الشوارع','', '', '0', '0', '0'],
-        ['عرض الشارع الرئيس','', '22 م2', '22,0 م2', '22,0 م2', '22,0 م2'],
-        ['تسوية عرض الشارع الرئيسي','', '', '0', '0', '0'],
-        ['عرض الواجهة الرئيسية','', '22 م2', '20,0 م2', '25,0 م2', '23,0 م2'],
-        ['تسوية عرض الواجهة الرئيسية مقارنة بالعمق','5', '',
-        '=ROUND((D22/D14*100*B23-(C22/C14*100*B23))*-1 /10 ,2)', '=ROUND((E22/E14*100*B23-(C22/C14*100*B23))*-1  /10 ,2)', '=ROUND((F22/F14*100*B23-(C22/C14*100*B23))*-1  /10 ,2)'],
-        ['طبيعة الأرض','', 'مستوية', 'مستوية', 'مستوية', 'مستوية'],
-        ['تسوية طبيعة الأرض','', '', '0', '0', '0'],
-        ['منطقة العقار (الحي)','', "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}"],
-        ['تسوية منطقة العقار (الحي)','', '', '0', '0', '0'],
-        ['موقع العقار سهولة الوصول والاستدلال','', 'جيد', 'متوسط', 'ممتاز', 'ممتاز'],
-        ['تسوية بعد العقار عن مركز المدينة','', '', '0', '0', '0'],
-        ['مميزات العقار','', '', '0', '0', 'مواقف'],
-        ['تسوية مميزات العقار','', '', '0', '0', '0'],
-        ['أخرى ...','', 'لايوجد', '0', '0', 'مواقف'],
-        ['تسوية أخرى','', '', '0', '0', '0'],
-        ['سعر المتر بعد تسويات خصائص العقار','', '', "=(1+D33)*(1+D31)*(1+D29)*(1+D27)*(1+D25)*(1+D23)*(1+D21)*(1+D19)*(1+D17)*(1+D15)*(1+D13)*(1+D11)*(1+D9)*(1+D7)*(1+D5)*(1+D3)*D1",
-        "=(1+E33)*(1+E31)*(1+E29)*(1+E27)*(1+E25)*(1+E23)*(1+E21)*(1+E19)*(1+E17)*(1+E15)*(1+E13)*(1+E11)*(1+E9)*(1+E7)*(1+E5)*(1+E3)*E1",
-        "=(1+F33)*(1+F31)*(1+F29)*(1+F27)*(1+F25)*(1+F23)*(1+F21)*(1+F19)*(1+F17)*(1+F15)*(1+F13)*(1+F11)*(1+F9)*(1+F7)*(1+F5)*(1+F3)*F1",],
-        ['نسب الترجيح','', '', '0', '0', '0'],
-        ['سعر المتر المربع بعد الترجيح','=D35*D34+D35*D34+F35*F34', '', '', '', ''],
-        ['مساحة الأرض',"{{$estate->land_size}} م2", '', '', '', ''],
-        ['قيمة الأرض','=B36*B37', '', '', '', ''],
-    ];
+        case 'comparative_comulative':
+              //columns for أرض
+                columns =
+                [
+                    {
+                        type: 'text',
+                        title:'خصائص التسويات',
+                        width:400,
+                        readOnly:true,
+                    },
+                    {
+                        type: 'text',
+                        title:'بند',
+                        width:100
+                    },
+                    {
+                        type: 'text',
+                        title:'عقار التقييم',
+                        width:100,
+                        // readOnly:true,
+                    },
+                    {
+                        type: 'numeric',
+                        title:'مقارنة 1',
+                        // mask:'0,0 %',
+                        width:100
+                    },
+                    {
+                        type: 'numeric',
+                        title:'مقارنة 2',
+                        // mask:'0,0 %',
+                        width:100
+                    },
+                    {
+                        type: 'numeric',
+                        title:'مقارنة 3',
+                        // mask:'0,0 %',
+                        width:100
+                    },
+                ]
+                data =
+                [
+                        ['سعر المتر المربع الواحد (ريال)', '', '', '0', '0', '0'],
+                        ['نوع العقار', '', "{{$estate->kind->name}}", "{{$estate->kind->name}}","{{$estate->kind->name}}", "{{$estate->kind->name}}"],
+                        ['تسوية نوع العقار','', '', '0', '0', '0'],
+                        ['نوع المعاملة','', 'بيع', 'بيع', 'بيع', 'عرض'],
+                        ['تسوية نوع المعاملة','', '', '0', '0', '0'],
+                        ['شروط التمويل','', '', '', 'نقدا', 'دفعات'],
+                        [' تسوية شروط التمويل','', '', '0', '0', '0'],
+                        [' شروط البيع','', 'لايوجد', 'لايوجد', 'لايوجد', 'لايوجد'],
+                        [' تسوية شروط البيع','', '', '0', '0', '0'],
+                        [' ظروف السوق','تاريخ التقييم', new Date().toJSON().slice(0, 10), 'الان', 'الان', 'الان'],
+                        [' تسوية ظروف السوق','', '', '0', '0', '0'],
+                        [' التخطيط نظام البناء','', 'عمائر', 'تجاري عمائر', 'تجاري عمائر', 'تجاري فيلال'],
+                        [' تسوية التخطيط نظام البناء','', '', '0', '0', '0'],
+                        ['المساحة (م2)','', "{{$estate->land_size}}", '0', '0', '0'],
+                        ['تسوية المساحة بطريقة الامثال','5,00', '', '0', '0', '0'],
+                        ['عددالشوارع','', '2', '0', '0', '0'],
+                        ['تسوية عدد الشوارع','', '', '0', '0', '0'],
+                        ['واجهات الشوارع','', 'شمالي', 'شمالي', 'شمالي', 'شمالي'],
+                        ['تسوية واجهات الشوارع','', '', '0', '0', '0'],
+                        ['عرض الشارع الرئيس','', '0', '0,0', '0,0', '0,0'],
+                        ['تسوية عرض الشارع الرئيسي','', '', '0', '0', '0'],
+                        ['عرض الواجهة الرئيسية','', '0', '0,0', '0,0', '0,0'],
+                        ['تسوية عرض الواجهة الرئيسية مقارنة بالعمق','5', '',
+                        '=ROUND((D22/D14*100*B23-(C22/C14*100*B23))*-1 /10 ,2)', '=ROUND((E22/E14*100*B23-(C22/C14*100*B23))*-1  /10 ,2)', '=ROUND((F22/F14*100*B23-(C22/C14*100*B23))*-1  /10 ,2)'],
+                        ['طبيعة الأرض','', 'مستوية', 'مستوية', 'مستوية', 'مستوية'],
+                        ['تسوية طبيعة الأرض','', '', '0', '0', '0'],
+                        ['منطقة العقار (الحي)','', "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}"],
+                        ['تسوية منطقة العقار (الحي)','', '', '0', '0', '0'],
+                        ['موقع العقار سهولة الوصول والاستدلال','', 'جيد', 'متوسط', 'ممتاز', 'ممتاز'],
+                        ['تسوية بعد العقار عن مركز المدينة','', '', '0', '0', '0'],
+                        ['مميزات العقار','', '', 'لايوجد', 'لايوجد', 'لايوجد'],
+                        ['تسوية مميزات العقار','', '', '0', '0', '0'],
+                        ['أخرى ...','', 'لايوجد', 'لايوجد', 'لايوجد', 'لايوجد'],
+                        ['تسوية أخرى','', '', '0', '0', '0'],
+                        ['سعر المتر بعد تسويات خصائص العقار (ريال)','', '', "=(1+D33)*(1+D31)*(1+D29)*(1+D27)*(1+D25)*(1+D23)*(1+D21)*(1+D19)*(1+D17)*(1+D15)*(1+D13)*(1+D11)*(1+D9)*(1+D7)*(1+D5)*(3+D5)*(1+D3)*D1",
+                        "=(1+E33)*(1+E31)*(1+E29)*(1+E27)*(1+E25)*(1+E23)*(1+E21)*(1+E19)*(1+E17)*(1+E15)*(1+E13)*(1+E11)*(1+E9)*(1+E7)*(1+E5)*(1+E3)*E1",
+                        "=(1+F33)*(1+F31)*(1+F29)*(1+F27)*(1+F25)*(1+F23)*(1+F21)*(1+F19)*(1+F17)*(1+F15)*(1+F13)*(1+F11)*(1+F9)*(1+F7)*(1+F5)*(1+F3)*F1",],
+                        ['نسب الترجيح','', '', '0', '0', '0'],
+                        ['سعر المتر المربع بعد الترجيح (ريال)','=ROUND(D35*D34+D35*D34+F35*F34,2)', '', '', '', ''],
+                        ['مساحة الأرض (م2)',"=C14", '', '', '', ''],
+                        ['قيمة الأرض (ريال)','=ROUND(B36*B37,2)', '', '', '', ''],
+                ];
+              handleSheet('comparative_comulative',columns,data);
+            break;
+        case 'comparative_summation':
+                //columns for أرض
+                columns =
+                [
+                    {
+                        type: 'text',
+                        title:'خصائص التسويات',
+                        width:400,
+                        readOnly:true,
+                    },
+                    {
+                        type: 'text',
+                        title:'بند',
+                        width:100
+                    },
+                    {
+                        type: 'text',
+                        title:'عقار التقييم',
+                        width:100,
+                        // readOnly:true,
+                    },
+                    {
+                        type: 'numeric',
+                        title:'مقارنة 1',
+                        // mask:'0,0 %',
+                        width:100
+                    },
+                    {
+                        type: 'numeric',
+                        title:'مقارنة 2',
+                        // mask:'0,0 %',
+                        width:100
+                    },
+                    {
+                        type: 'numeric',
+                        title:'مقارنة 3',
+                        // mask:'0,0 %',
+                        width:100
+                    },
+                ]
+                data =
+                [
+                        ['سعر المتر المربع الواحد (ريال)', '', '', '0', '0', '0'],
+                        ['نوع العقار', '', "{{$estate->kind->name}}", "{{$estate->kind->name}}","{{$estate->kind->name}}", "{{$estate->kind->name}}"],
+                        ['تسوية نوع العقار','', '', '0', '0', '0'],
+                        ['نوع المعاملة','', 'بيع', 'بيع', 'بيع', 'عرض'],
+                        ['تسوية نوع المعاملة','', '', '0', '0', '0'],
+                        ['شروط التمويل','', '', '', 'نقدا', 'دفعات'],
+                        [' تسوية شروط التمويل','', '', '0', '0', '0'],
+                        [' شروط البيع','', 'لايوجد', 'لايوجد', 'لايوجد', 'لايوجد'],
+                        [' تسوية شروط البيع','', '', '0', '0', '0'],
+                        [' ظروف السوق','تاريخ التقييم', new Date().toJSON().slice(0, 10), 'الان', 'الان', 'الان'],
+                        [' تسوية ظروف السوق','', '', '0', '0', '0'],
+                        [' التخطيط نظام البناء','', 'عمائر', 'تجاري عمائر', 'تجاري عمائر', 'تجاري فيلال'],
+                        [' تسوية التخطيط نظام البناء','', '', '0', '0', '0'],
+                        ['المساحة (م2)','', "{{$estate->land_size}}", '0', '0', '0'],
+                        ['تسوية المساحة بطريقة الامثال','5,00', '', '=ROUND((D14-C14)/D14*B15 ,2)', '=ROUND((E14-C14)/E14*B15 ,2)', '=ROUND((F14-C14)/F14*B15 ,2)'],
+                        ['عددالشوارع','', '2', '0', '0', '0'],
+                        ['تسوية عدد الشوارع','', '', '0', '0', '0'],
+                        ['واجهات الشوارع','', 'شمالي', 'شمالي', 'شمالي', 'شمالي'],
+                        ['تسوية واجهات الشوارع','', '', '0', '0', '0'],
+                        ['عرض الشارع الرئيس','', '0', '0,0', '0,0', '0,0'],
+                        ['تسوية عرض الشارع الرئيسي','', '', '0', '0', '0'],
+                        ['عرض الواجهة الرئيسية','', '0', '0,0', '0,0', '0,0'],
+                        ['تسوية عرض الواجهة الرئيسية مقارنة بالعمق','5', '',
+                        '=ROUND((D22/D14*100*B23-(C22/C14*100*B23))*-1 /10 ,2)', '=ROUND((E22/E14*100*B23-(C22/C14*100*B23))*-1  /10 ,2)', '=ROUND((F22/F14*100*B23-(C22/C14*100*B23))*-1  /10 ,2)'],
+                        ['طبيعة الأرض','', 'مستوية', 'مستوية', 'مستوية', 'مستوية'],
+                        ['تسوية طبيعة الأرض','', '', '0', '0', '0'],
+                        ['منطقة العقار (الحي)','', "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}"],
+                        ['تسوية منطقة العقار (الحي)','', '', '0', '0', '0'],
+                        ['موقع العقار سهولة الوصول والاستدلال','', 'جيد', 'متوسط', 'ممتاز', 'ممتاز'],
+                        ['تسوية بعد العقار عن مركز المدينة','', '', '0', '0', '0'],
+                        ['مميزات العقار','', '', '0', '0', 'لايوجد'],
+                        ['تسوية مميزات العقار','', '', '0', '0', '0'],
+                        ['أخرى ...','', 'لايوجد', '0', '0', 'لايوجد'],
+                        ['تسوية أخرى','', '', '0', '0', '0'],
+                        ['اجمالي التسويات','', '', '=D33+D31+D29+D27+D25+D23+D21+D19+D17+D15+D13+D11+D9+D7+D5+D3',
+                         '=E33+E31+E29+E27+E25+E23+E21+E19+E17+E15+E13+E11+E9+E7+E5+E3',
+                          '=F33+F31+F29+F27+F25+F23+F21+F19+F17+F15+F13+F11+F9+F7+F5+F3'],
+                        ['سعر المتر بعد تسويات خصائص العقار (ريال)','', '', "=(1+D34)*D1",
+                        "=(1+E34)*E1",
+                        "=(1+F34)*F1",],
+                        ['نسب الترجيح','', '', '0', '0', '0'],
+                        ['سعر المتر المربع بعد الترجيح (ريال)','=ROUND(D35*D34+D35*D34+F35*F34,2)', '', '', '', ''],
+                        ['مساحة الأرض (م2)',"{{$estate->land_size}}", '', '', '', ''],
+                        ['قيمة الأرض (ريال)','=ROUND(B37*B38,2)', '', '', '', ''],
+                ];
+              handleSheet('comparative_summation',columns,data);
+            break;
 
-    var compare_table =jspreadsheet(document.getElementById('spreadsheet'), {
-        data:data,
-        columns: [
+        default:
+             handleSheet('comparative_heuristic',columns,data);
+            break;
+    }
+
+   })
+   function handleSheet(type,columns,data)
+   {
+    $('#spreadsheet').html('');
+    switch (type) {
+        case 'comparative_comulative':
+            if("{{$estate->category_id}}" == 1) //شقة
             {
-                type: 'text',
-                title:'خصائص التسويات',
-                width:400,
-                readOnly:true,
-            },
+                data =
+                [
+                        ['قيمة الوحدة (ريال)', '', '', '0', '0', '0'],
+                        ['مساحة المباني (م2)', '', "{{$estate->build_size}}", "","", ""],
+                        ['تسوية قيمة المباني','', '', '=ROUND(D1/D2*C2 , 2)', '=ROUND(E1/E2*C2 , 2)', '=ROUND(F1/F2*C2 , 2)'],
+                        ['نوع العقار', '', "{{$estate->kind->name}}", "{{$estate->kind->name}}","{{$estate->kind->name}}", "{{$estate->kind->name}}"],
+                        ['تسوية نوع العقار','', '','0','0','0'],
+                        ['نوع المعاملة','', 'بيع', 'بيع', 'بيع', 'عرض'],
+                        ['تسوية نوع المعاملة','', '', '0', '0', '0'],
+                        ['شروط التمويل','', '', '', 'نقدا', 'دفعات'],
+                        [' تسوية شروط التمويل','', '', '0', '0', '0'],
+                        [' شروط البيع','', 'لايوجد', 'لايوجد', 'لايوجد', 'لايوجد'],
+                        [' تسوية شروط البيع','', '', '0', '0', '0'],
+                        [' ظروف السوق','تاريخ التقييم', new Date().toJSON().slice(0, 10), 'الان', 'الان', 'الان'],
+                        [' تسوية ظروف السوق','', '', '0', '0', '0'],
+                        ['مساحة المباني (م2)', '', "=C2", "=D2","=E2", "=F2"],
+                        ['تسوية مساحة المباني بطريقة الامثال','5', '', '0', '0', '0'],
+                        ['الطابق','', '0', '0', '0', '0'],
+                        ['تسوية الطابق','', '', '0', '0', '0'],
+                        ['موقع العقار من المبنى','', 'أمامية', 'أمامية', 'أمامية', 'أمامية'],
+                        ['تسوية موقع العقار من المبنى','', '', '0', '0', '0'],
+                        ['واجهة العمارة','', 'شمالي', 'شمالي', 'شمالي', 'شمالي'],
+                        ['تسوية واجهة العمارة','', '', '0', '0', '0'],
+                        ['مستوى التشطيب','', 'فاخر',	'فاخر',	'جيد',	'فاخر'],
+                        ['تسويات مستوى التشطيب','', '', '0', '0', '0'],
+                        ['عمر العقار','', '0 سنة','0 سنة','0 سنة','0 سنة'],
+                        ['تسوية عمر العقار','', '','','',''],
+                        ['توفر موقف خاص','', 'لا', 'لا', 'لا', 'لا'],
+                        ['تسوية توفر موقف خاص','', '', '0', '0', '0'],
+                        ['توفر غرفة سائق','', 'لا', 'لا', 'لا', 'لا'],
+                        ['تسوية توفر غرفة سائق','', '', '0', '0', '0'],
+                        ['توفر سطح خاص/بلكونة','', 'لا', 'لا', 'لا', 'لا'],
+                        ['تسوية توفر سطح خاص/بلكونة','', '', '0', '0', '0'],
+                        ['منطقة العقار (الحي)','', "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}"],
+                        ['تسوية منطقة العقار (الحي)','', '', '0', '0', '0'],
+                        ['مميزات الموقع العام','','لايوجد','0','0','0'],
+                        ['تسوية مميزات العقار','', '', '0', '0', '0'],
+                        ['أخرى ...','', 'لايوجد', 'لايوجد', 'لايوجد', 'لايوجد'],
+                        ['تسوية أخرى','', '', '0', '0', '0'],
+                        ['قيمة العقار بعد تسوية خصائص العقار (ريال)','', '',
+                        "=(1+D37)*(1+D35)*(1+D33)*(1+D31)*(1+D29)*(1+D27)*(1+D25)*(1+D23)*(1+D21)*(1+D19)*(1+D17)*(1+D15)*(1+D13)*(1+D11)*(1+D9)*(1+D7)*(1+D5)*D3",
+                        "=(1+E37)*(1+E35)*(1+E33)*(1+E31)*(1+E29)*(1+E27)*(1+E25)*(1+E23)*(1+E21)*(1+E19)*(1+E17)*(1+E15)*(1+E13)*(1+E11)*(1+E9)*(1+E7)*(1+E5)*E3",
+                        "=(1+E37)*(1+E35)*(1+E33)*(1+E31)*(1+E29)*(1+E27)*(1+E25)*(1+E23)*(1+E21)*(1+E19)*(1+E17)*(1+E15)*(1+E13)*(1+E11)*(1+E9)*(1+E7)*(1+E5)*E3",
+                        ],
+                        ['نسب الترجيح','', '', '0', '0', '0'],
+                        ['','قيمة العقار بعد الترجيح (ريال)','','=ROUND(D39*D38+E39*E38+F39*F38 ,2)','', ''],
+                ];
+
+                var percentged_rows =Array.from(Array(38).keys()).filter(function(i){ return i%2 ==0 && i != 0;})
+                var currency_rows =[0,37,39]
+                var area_rows =[1,13]
+             var compare_table =jspreadsheet(document.getElementById('spreadsheet'), {
+                data:data,
+                columns: columns,
+                mergeCells:{
+                    B40:[2,1]
+                },
+                style: {
+                    C40:'background-color: #EEECE1;color:#000;font-weight:bold',
+                    D40:'background-color: #EEECE1;color:#000;font-weight:bold',
+                },
+                onload:function(instance, cell, x, y, value) {
+                    //if there is not inner span
+
+
+
+                    percentged_rows.forEach(y => {
+
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+
+                    })
+                    currency_rows.forEach((y,i) => {
+
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        //the last total cell has no x-4,x-5
+                        if(i != currency_rows.length-1)
+                        {
+                            if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        }
+
+                    })
+                    area_rows.forEach((y,i) => {
+
+                        if(!$(`td[data-x="2"][data-y="${y}"]`).find("span").length) $(`td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+
+                    })
+                },
+                oneditionend:function(instance, cell, x, y, value) {
+                    //if there is not inner span
+                    if(percentged_rows.indexOf(y) != -1)
+                    {
+
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+
+                    }
+                    currency_rows.forEach((y,i) => {
+
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        //the last total cell has no x-4,x-5
+                        if(i != currency_rows.length-1)
+                        {
+                            if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        }
+
+                    })
+                    area_rows.forEach((y,i) => {
+
+                        if(!$(`td[data-x="2"][data-y="${y}"]`).find("span").length) $(`td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+
+                    })
+
+                }
+             })
+             return;
+            }
+           if("{{$estate->category_id}}" == 2) //فيلا
             {
-                type: 'text',
-                title:'بند',
-                width:100
-            },
+                data =
+                [
+                        ['قيمة الوحدة (ريال)', '', '', '0', '0', '0'],
+                        ['مساحة الأرض للوحدة (م2)', '', "{{$estate->build_size}}", "","", ""],
+                        ['تسوية قيمة العقار لمساحة الأرض','', '', '=ROUND(D1/D2*C2 , 2)', '=ROUND(E1/E2*C2 , 2)', '=ROUND(F1/F2*C2 , 2)'],
+                        ['نوع العقار', '', "فيلا سكنية", "فيلا سكنية","فيلا سكنية", "فيلا سكنية"],
+                        ['تسوية نوع العقار','', '', '0','0','0'],
+                        ['نوع المعاملة','', 'بيع', 'بيع', 'بيع', 'عرض'],
+                        ['تسوية نوع المعاملة','', '', '0', '0', '0'],
+                        ['شروط التمويل','', '', '', 'نقدا', 'دفعات'],
+                        [' تسوية شروط التمويل','', '', '0', '0', '0'],
+                        [' شروط البيع','', 'لايوجد', 'لايوجد', 'لايوجد', 'لايوجد'],
+                        [' تسوية شروط البيع','', '', '0', '0', '0'],
+                        [' ظروف السوق','تاريخ التقييم', new Date().toJSON().slice(0, 10), 'الان', 'الان', 'الان'],
+                        [' تسوية ظروف السوق','', '', '0', '0', '0'],
+                        [' التخطيط نظام البناء','', 'سكني', 'سكني', 'سكني', 'سكني'],
+                        [' تسوية التخطيط ونظام البناء','', '', '0', '0', '0'],
+                        ['مساحة الأرض للوحدة (م2)', '', "=C2", "=D2","=E2", "=F2"],
+                        ['تسوية مساحة الأرض بطريقة الامثال','5', '', '0', '0', '0'],
+                        ['عدد طوابق العقار','', '1', '0', '0', '0'],
+                        ['تسوية عدد طوابق العقار','', '', '0', '0', '0'],
+                        ['عدد الشوارع','', '1', '0', '0', '0'],
+                        ['تسوية عدد الشوارع','', '', '0', '0', '0'],
+                        ['واجهة المبنى','', 'شمالي', 'شمالي', 'شمالي', 'شمالي'],
+                        ['تسوية واجهات الشوارع','', '', '0', '0', '0'],
+                        ['مستوى التشطيب','', 'فاخر',	'فاخر',	'جيد',	'فاخر'],
+                        ['تسويات مستوى التشطيب','', '', '0', '0', '0'],
+                        ['عمر العقار','', '0 سنة','0 سنة','0 سنة','0 سنة'],
+                        ['تسوية عمر العقار','', '','','',''],
+                        ['منطقة العقار (الحي)','', "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}"],
+                        ['تسوية منطقة العقار (الحي)','', '', '0', '0', '0'],
+                        ['مميزات الموقع العام','','لايوجد','0','0','0'],
+                        ['تسوية مميزات العقار','', '', '0', '0', '0'],
+                        ['أخرى ...','', 'لايوجد', '0', '0', 'لايوجد'],
+                        ['تسوية أخرى','', '', '0', '0', '0'],
+                        ['قيمة العقار بعد تسوية خصائص العقار','', '',
+                        "=(1+D33)*(1+D31)*(1+D29)*(1+D27)*(1+D25)*(1+D23)*(1+D21)*(1+D19)*(1+D17)*(1+D15)*(1+D13)*(1+D11)*(1+D9)*(1+D7)*(1+D5)*D3",
+                        "=(1+E33)*(1+E31)*(1+E29)*(1+E27)*(1+E25)*(1+E23)*(1+E21)*(1+E19)*(1+E17)*(1+E15)*(1+E13)*(1+E11)*(1+E9)*(1+E7)*(1+E5)*E3",
+                        "=(1+E33)*(1+E31)*(1+E29)*(1+E27)*(1+E25)*(1+E23)*(1+E21)*(1+E19)*(1+E17)*(1+E15)*(1+E13)*(1+E11)*(1+E9)*(1+E7)*(1+E5)*E3",
+                        ],
+                        ['مسبح'	,	'','لا','لا',	'لا',	'لا'],
+                        ['تسوية قيمة المسبح','', '', '0', '0', '0'],
+                        ['مصعد'	,'','لا','لا',	'لا',	'لا'],
+                        ['تسوية قيمة المصعد','', '', '0', '0', '0'],
+                        ['أخرى ...','', 'لايوجد', '0', '0', 'لايوجد'],
+                        ['تسوية أخرى','', '', '0', '0', '0'],
+                        ['قيمة العقار بعد تسوية خصائص العقار','', '',
+                         '=D34+D36+D38+D40',
+                         '=E34+E36+E38+E40',
+                         '=F34+F36+F38+F40'
+                        ],
+                        ['نسب الترجيح','', '', '0', '0', '0'],
+                        ['','قيمة العقار بعد الترجيح','','=ROUND(=D42*D41+E42*E41+F42*F41 ,2)','', ''],
+                ];
+                var percentged_rows =Array.from(Array(34).keys()).filter(function(i){ return i%2 ==0 && i != 0;})
+                percentged_rows = percentged_rows.concat([35,37,39,41]);
+                var currency_rows =[0,33,40,42]
+                var area_rows =[1,15]
+                var compare_table =jspreadsheet(document.getElementById('spreadsheet'), {
+                    data:data,
+                    columns: columns,
+                    tableOverflow: true,
+                    mergeCells:{
+                        B43:[2,1]
+                    },
+                    style: {
+                        C43:'background-color: #EEECE1;color:#000;;font-weight:bold',
+                        D43:'background-color: #EEECE1;color:#000;;font-weight:bold',
+                    },
+                    onload:function(instance, cell, x, y, value) {
+                        //if there is not inner span
+
+
+
+                        percentged_rows.forEach(y => {
+
+                            if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                            if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                            if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+
+                        })
+                        currency_rows.forEach((y,i) => {
+
+                            if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            //the last total cell has no x-4,x-5
+                            if(i != currency_rows.length-1)
+                            {
+                                if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                                if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            }
+
+                        })
+                        area_rows.forEach((y,i) => {
+
+                            if(!$(`td[data-x="2"][data-y="${y}"]`).find("span").length) $(`td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                            if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                            if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                            if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+
+                        })
+                    },
+                    oneditionend:function(instance, cell, x, y, value) {
+                        //if there is not inner span
+                        if(percentged_rows.indexOf(y) != -1)
+                        {
+
+                            if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                            if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                            if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+
+                        }
+                        currency_rows.forEach((y,i) => {
+
+                            if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            //the last total cell has no x-4,x-5
+                            if(i != currency_rows.length-1)
+                            {
+                                if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                                if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            }
+
+                        })
+                        area_rows.forEach((y,i) => {
+
+                            if(!$(`td[data-x="2"][data-y="${y}"]`).find("span").length) $(`td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                            if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                            if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                            if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+
+                        })
+
+                    }
+                })
+                return;
+            }
+            var percentged_rows =Array.from(Array(36).keys()).filter(function(i){ return i%2 ==0 && i != 0;})
+            var currency_rows =[0,33,35,37]
+            var area_rows =[13,36]
+            var compare_table =jspreadsheet(document.getElementById('spreadsheet'), {
+                data:data,
+                columns: columns,
+                mergeCells:{
+                    C36:[4,3]
+                },
+                style: {
+                    A36:'background-color: #EEECE1;color:#000;',
+                    B36:'background-color: #EEECE1;color:#000;',
+                    A37:'background-color: #EEECE1;color:#000;',
+                    B37:'background-color: #EEECE1;color:#000;',
+                    A38:'background-color: #EEECE1;color:#000;',
+                    B38:'background-color: #EEECE1;color:#000;',
+                },
+                onload:function(instance, cell, x, y, value) {
+                    //if there is not inner span
+
+
+
+                    percentged_rows.forEach(y => {
+
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+
+                    })
+                    currency_rows.forEach((y,i) => {
+
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        //the last total cell has no x-4,x-5
+                        if(i != currency_rows.length-1)
+                        {
+                            if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        }
+
+                    })
+                    area_rows.forEach((y,i) => {
+
+                        if(!$(`td[data-x="2"][data-y="${y}"]`).find("span").length) $(`td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+
+                    })
+                },
+                oneditionend:function(instance, cell, x, y, value) {
+                    //if there is not inner span
+                    if(percentged_rows.indexOf(y) != -1)
+                    {
+
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+
+                    }
+                    currency_rows.forEach((y,i) => {
+
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        //the last total cell has no x-4,x-5
+                        if(i != currency_rows.length-1)
+                        {
+                            if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        }
+
+                    })
+                    area_rows.forEach((y,i) => {
+
+                        if(!$(`td[data-x="2"][data-y="${y}"]`).find("span").length) $(`td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+
+                    })
+
+                }
+            })
+            break;
+        case 'comparative_summation':
+            if("{{$estate->category_id}}" == 2) //شقة
             {
-                type: 'text',
-                title:'عقار التقييم',
-                width:100,
-                readOnly:true,
-            },
+                data =
+                [
+                        ['قيمة الوحدة (ريال)', '', '', '0', '0', '0'],
+                        ['مساحة المباني (م2)', '', "{{$estate->build_size}}", "","", ""],
+                        ['تسوية قيمة المباني','', '', '=ROUND(D1/D2*C2 , 2)', '=ROUND(E1/E2*C2 , 2)', '=ROUND(F1/F2*C2 , 2)'],
+                        ['نوع العقار', '', "{{$estate->kind->name}}", "{{$estate->kind->name}}","{{$estate->kind->name}}", "{{$estate->kind->name}}"],
+                        ['تسوية نوع العقار','', '','0','0','0'],
+                        ['نوع المعاملة','', 'بيع', 'بيع', 'بيع', 'عرض'],
+                        ['تسوية نوع المعاملة','', '', '0', '0', '0'],
+                        ['شروط التمويل','', '', '', 'نقدا', 'دفعات'],
+                        [' تسوية شروط التمويل','', '', '0', '0', '0'],
+                        [' شروط البيع','', 'لايوجد', 'لايوجد', 'لايوجد', 'لايوجد'],
+                        [' تسوية شروط البيع','', '', '0', '0', '0'],
+                        [' ظروف السوق','تاريخ التقييم', new Date().toJSON().slice(0, 10), 'الان', 'الان', 'الان'],
+                        [' تسوية ظروف السوق','', '', '0', '0', '0'],
+                        ['مساحة المباني (م2)', '', "=C2", "=D2","=E2", "=F2"],
+                        ['تسوية مساحة المباني بطريقة الامثال','5', '', '0', '0', '0'],
+                        ['الطابق','', '0', '0', '0', '0'],
+                        ['تسوية الطابق','', '', '0', '0', '0'],
+                        ['موقع العقار من المبنى','', 'أمامية', 'أمامية', 'أمامية', 'أمامية'],
+                        ['تسوية موقع العقار من المبنى','', '', '0', '0', '0'],
+                        ['واجهة العمارة','', 'شمالي', 'شمالي', 'شمالي', 'شمالي'],
+                        ['تسوية واجهة العمارة','', '', '0', '0', '0'],
+                        ['مستوى التشطيب','', 'فاخر',	'فاخر',	'جيد',	'فاخر'],
+                        ['تسويات مستوى التشطيب','', '', '0', '0', '0'],
+                        ['عمر العقار','', '0 سنة','0 سنة','0 سنة','0 سنة'],
+                        ['تسوية عمر العقار','', '','','',''],
+                        ['توفر موقف خاص','', 'لا', 'لا', 'لا', 'لا'],
+                        ['تسوية توفر موقف خاص','', '', '0', '0', '0'],
+                        ['توفر غرفة سائق','', 'لا', 'لا', 'لا', 'لا'],
+                        ['تسوية توفر غرفة سائق','', '', '0', '0', '0'],
+                        ['توفر سطح خاص/بلكونة','', 'لا', 'لا', 'لا', 'لا'],
+                        ['تسوية توفر سطح خاص/بلكونة','', '', '0', '0', '0'],
+                        ['منطقة العقار (الحي)','', "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}"],
+                        ['تسوية منطقة العقار (الحي)','', '', '0', '0', '0'],
+                        ['مميزات الموقع العام','','لايوجد','0','0','0'],
+                        ['تسوية مميزات العقار','', '', '0', '0', '0'],
+                        ['أخرى ...','', 'لايوجد', '0', '0', 'لايوجد'],
+                        ['تسوية أخرى','', '', '0', '0', '0'],
+                        ['قيمة العقار بعد تسوية خصائص العقار (ريال)','', '',
+                        "=(1+D37)*(1+D35)*(1+D33)*(1+D31)*(1+D29)*(1+D27)*(1+D25)*(1+D23)*(1+D21)*(1+D19)*(1+D17)*(1+D15)*(1+D13)*(1+D11)*(1+D9)*(1+D7)*(1+D5)*D3",
+                        "=(1+E37)*(1+E35)*(1+E33)*(1+E31)*(1+E29)*(1+E27)*(1+E25)*(1+E23)*(1+E21)*(1+E19)*(1+E17)*(1+E15)*(1+E13)*(1+E11)*(1+E9)*(1+E7)*(1+E5)*E3",
+                        "=(1+E37)*(1+E35)*(1+E33)*(1+E31)*(1+E29)*(1+E27)*(1+E25)*(1+E23)*(1+E21)*(1+E19)*(1+E17)*(1+E15)*(1+E13)*(1+E11)*(1+E9)*(1+E7)*(1+E5)*E3",
+                        ],
+                        ['نسب الترجيح','', '', '0', '0', '0'],
+                        ['','قيمة العقار بعد الترجيح (ريال)','','=ROUND(D39*D38+E39*E38+F39*F38 ,2)','', ''],
+                ];
+                var percentged_rows =Array.from(Array(40).keys()).filter(function(i){ return i%2 ==0 && i != 0;})
+                var currency_rows =[0,37,39]
+                var area_rows =[1,13]
+                var compare_table =jspreadsheet(document.getElementById('spreadsheet'), {
+                    data:data,
+                    columns: columns,
+                    mergeCells:{
+                        B40:[2,1]
+                    },
+                    style: {
+                        C40:'background-color: #EEECE1;color:#000;font-weight:bold',
+                        D40:'background-color: #EEECE1;color:#000;font-weight:bold',
+                    },
+                    onload:function(instance, cell, x, y, value) {
+                    //if there is not inner span
+
+
+
+                    percentged_rows.forEach(y => {
+
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+
+                    })
+                    currency_rows.forEach((y,i) => {
+
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        //the last total cell has no x-4,x-5
+                        if(i != currency_rows.length-1)
+                        {
+                            if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        }
+
+                    })
+                    area_rows.forEach((y,i) => {
+
+                        if(!$(`td[data-x="2"][data-y="${y}"]`).find("span").length) $(`td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+
+                    })
+                },
+                oneditionend:function(instance, cell, x, y, value) {
+                    //if there is not inner span
+                    if(percentged_rows.indexOf(y) != -1)
+                    {
+
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+
+                    }
+                    currency_rows.forEach((y,i) => {
+
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        //the last total cell has no x-4,x-5
+                        if(i != currency_rows.length-1)
+                        {
+                            if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        }
+
+                    })
+                    area_rows.forEach((y,i) => {
+
+                        if(!$(`td[data-x="2"][data-y="${y}"]`).find("span").length) $(`td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+
+                    })
+
+                }
+                })
+                return;
+            }
+           if("{{$estate->category_id}}" == 3) //فيلا
             {
-                type: 'numeric',
-                title:'مقارنة 1',
-                // mask:'0,0 %',
-                width:100
-            },
-            {
-                type: 'numeric',
-                title:'مقارنة 2',
-                // mask:'0,0 %',
-                width:100
-            },
-            {
-                type: 'numeric',
-                title:'مقارنة 3',
-                // mask:'0,0 %',
-                width:100
-            },
-         ],
-         mergeCells:{
-            C36:[4,3]
-        },
-         style: {
-            A36:'background-color: #EEECE1;color:#000;',
-            B36:'background-color: #EEECE1;color:#000;',
-            A37:'background-color: #EEECE1;color:#000;',
-            B37:'background-color: #EEECE1;color:#000;',
-            A38:'background-color: #EEECE1;color:#000;',
-            B38:'background-color: #EEECE1;color:#000;',
-        },
-        // onchange:change,
+                data =
+                [
+                        ['قيمة الوحدة (ريال)', '', '', '0', '0', '0'],
+                        ['مساحة الأرض للوحدة (م2)', '', "{{$estate->build_size}}", "","", ""],
+                        ['تسوية قيمة العقار لمساحة الأرض','', '',, '=ROUND(D1/D2*C2 , 2)', '=ROUND(E1/E2*C2 , 2)', '=ROUND(F1/F2*C2 , 2)'],
+                        ['نوع العقار', '', "فيلا سكنية", "فيلا سكنية","فيلا سكنية", "فيلا سكنية"],
+                        ['تسوية نوع العقار','', '', '0','0','0'],
+                        ['نوع المعاملة','', 'بيع', 'بيع', 'بيع', 'عرض'],
+                        ['تسوية نوع المعاملة','', '', '0', '0', '0'],
+                        ['شروط التمويل','', '', '', 'نقدا', 'دفعات'],
+                        [' تسوية شروط التمويل','', '', '0', '0', '0'],
+                        [' شروط البيع','', 'لايوجد', 'لايوجد', 'لايوجد', 'لايوجد'],
+                        [' تسوية شروط البيع','', '', '0', '0', '0'],
+                        [' ظروف السوق','تاريخ التقييم', new Date().toJSON().slice(0, 10), 'الان', 'الان', 'الان'],
+                        [' تسوية ظروف السوق','', '', '0', '0', '0'],
+                        [' التخطيط نظام البناء','', 'سكني', 'سكني', 'سكني', 'سكني'],
+                        [' تسوية التخطيط ونظام البناء','', '', '0', '0', '0'],
+                        ['مساحة الأرض للوحدة (م2)', '', "=C2", "=D2","=E2", "=F2"],
+                        ['تسوية مساحة الأرض بطريقة الامثال','5', '', '0', '0', '0'],
+                        ['عدد طوابق العقار','', '1', '0', '0', '0'],
+                        ['تسوية عدد طوابق العقار','', '', '0', '0', '0'],
+                        ['عدد الشوارع','', '1', '0', '0', '0'],
+                        ['تسوية عدد الشوارع','', '', '0', '0', '0'],
+                        ['واجهة المبنى','', 'شمالي', 'شمالي', 'شمالي', 'شمالي'],
+                        ['تسوية واجهات الشوارع','', '', '0', '0', '0'],
+                        ['مستوى التشطيب','', 'فاخر',	'فاخر',	'جيد',	'فاخر'],
+                        ['تسويات مستوى التشطيب','', '', '0', '0', '0'],
+                        ['عمر العقار','', '0 سنة','0 سنة','0 سنة','0 سنة'],
+                        ['تسوية عمر العقار','', '','','',''],
+                        ['منطقة العقار (الحي)','', "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}"],
+                        ['تسوية منطقة العقار (الحي)','', '', '0', '0', '0'],
+                        ['مميزات الموقع العام','','لايوجد','0','0','0'],
+                        ['تسوية مميزات العقار','', '', '0', '0', '0'],
+                        ['أخرى ...','', 'لايوجد', 'لايوجد', 'لايوجد', 'لايوجد'],
+                        ['تسوية أخرى','', '', '0', '0', '0'],
+                        ['قيمة العقار بعد تسوية خصائص العقار','', '',
+                        "=(1+D33)*(1+D31)*(1+D29)*(1+D27)*(1+D25)*(1+D23)*(1+D21)*(1+D19)*(1+D17)*(1+D15)*(1+D13)*(1+D11)*(1+D9)*(1+D7)*(1+D5)*D3",
+                        "=(1+E33)*(1+E31)*(1+E29)*(1+E27)*(1+E25)*(1+E23)*(1+E21)*(1+E19)*(1+E17)*(1+E15)*(1+E13)*(1+E11)*(1+E9)*(1+E7)*(1+E5)*E3",
+                        "=(1+E33)*(1+E31)*(1+E29)*(1+E27)*(1+E25)*(1+E23)*(1+E21)*(1+E19)*(1+E17)*(1+E15)*(1+E13)*(1+E11)*(1+E9)*(1+E7)*(1+E5)*E3",
+                        ],
+                        ['مسبح'	,'',	'لا','لا',	'لا',	'لا'],
+                        ['تسوية قيمة المسبح','', '', '0', '0', '0'],
+                        ['مصعد'	,'',	'لا','لا',	'لا',	'لا'],
+                        ['تسوية قيمة المصعد','', '', '0', '0', '0'],
+                        ['أخرى ...','', 'لايوجد', 'لايوجد', 'لايوجد', 'لايوجد'],
+                        ['تسوية أخرى','', '', '0', '0', '0'],
+                        ['قيمة العقار بعد تسوية خصائص العقار','', '',
+                         '=D34+D36+D38+D40',
+                         '=E34+E36+E38+E40',
+                         '=F34+F36+F38+F40'
+                        ],
+                        ['نسب الترجيح','', '', '0', '0', '0'],
+                        ['','قيمة العقار بعد الترجيح','','=ROUND(=D42*D41+E42*E41+F42*F41 ,2)','', ''],
+                ];
+                var percentged_rows =Array.from(Array(34).keys()).filter(function(i){ return i%2 ==0 && i != 0;})
+                percentged_rows = percentged_rows.concat([35,37,39,41]);
+                var currency_rows =[0,33,40,42]
+                var area_rows =[1,15]
+                var compare_table =jspreadsheet(document.getElementById('spreadsheet'), {
+                    data:data,
+                    columns: columns,
+                    tableOverflow: true,
+                    mergeCells:{
+                        B43:[2,1]
+                    },
+                    style: {
+                        C43:'background-color: #EEECE1;color:#000;;font-weight:bold',
+                        D43:'background-color: #EEECE1;color:#000;;font-weight:bold',
+                    },
+                    onload:function(instance, cell, x, y, value) {
+                        //if there is not inner span
 
 
 
+                        percentged_rows.forEach(y => {
 
-    })
-    // function change(instance, cell, x, y, value) {
-    //     console.log('x is '+x)
-    //     if((x != 0) && (parseInt(x) % 2 == 0))
-    //     {
+                            if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                            if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                            if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
 
-    //         cellName = jspreadsheet.getColumnNameFromId([x,y]);
+                        })
+                        currency_rows.forEach((y,i) => {
 
-    //         ["D","E","F"].forEach(letter=>{
-    //             compare_table.setReadOnly(`${letter+x}`,true)
-    //         })
-    //     }
-    //             // var cellName = jspreadsheet.getColumnNameFromId([x,y]);
-    //             // console.log('New change on cell ' + cellName + ' to: ' + value + '');
+                            if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            //the last total cell has no x-4,x-5
+                            if(i != currency_rows.length-1)
+                            {
+                                if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                                if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            }
 
-	//             // compare_table.updateProperty(0,0, {mask: '0.00%' });
-    // }
-    </script>
+                        })
+                        area_rows.forEach((y,i) => {
+
+                            if(!$(`td[data-x="2"][data-y="${y}"]`).find("span").length) $(`td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                            if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                            if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                            if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+
+                        })
+                    },
+                    oneditionend:function(instance, cell, x, y, value) {
+                        //if there is not inner span
+                        if(percentged_rows.indexOf(y) != -1)
+                        {
+
+                            if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                            if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                            if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+
+                        }
+                        currency_rows.forEach((y,i) => {
+
+                            if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            //the last total cell has no x-4,x-5
+                            if(i != currency_rows.length-1)
+                            {
+                                if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                                if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            }
+
+                        })
+                        area_rows.forEach((y,i) => {
+
+                            if(!$(`td[data-x="2"][data-y="${y}"]`).find("span").length) $(`td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                            if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                            if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                            if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+
+                        })
+
+                    }
+                })
+                return;
+            }
+            //default for summation is  أرض
+            var percentged_rows =Array.from(Array(34).keys()).filter(function(i){ return i%2 ==0 && i != 0;})
+            percentged_rows = percentged_rows.concat([33,35])
+            var currency_rows =[0,34,36,38]
+            var area_rows =[13,19,21,37]
+            var compare_table =jspreadsheet(document.getElementById('spreadsheet'), {
+                data:data,
+                columns: columns,
+                mergeCells:{
+                    C37:[4,3]
+                },
+                style: {
+                    A37:'background-color: #EEECE1;color:#000;',
+                    B37:'background-color: #EEECE1;color:#000;',
+                    A38:'background-color: #EEECE1;color:#000;',
+                    B38:'background-color: #EEECE1;color:#000;',
+                    A39:'background-color: #EEECE1;color:#000;',
+                    B39:'background-color: #EEECE1;color:#000;',
+                },
+                onload:function(instance, cell, x, y, value) {
+                    //if there is not inner span
+
+
+                    percentged_rows.forEach(y => {
+
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+
+                    })
+                    currency_rows.forEach((y,i) => {
+
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        //the last total cell has no x-4,x-5
+                        if((i != currency_rows.length-1) && (i != currency_rows.length-2))
+                        {
+                            if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        }else{//second
+                            if(!$(`td[data-x="1"][data-y="${y}"]`).find("span").length) $(`td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            // if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        }
+
+                    })
+                    area_rows.forEach((y,i) => {
+                        if(i ==area_rows.length -1)
+                        {
+                            if(!$(`td[data-x="1"][data-y="${y}"]`).find("span").length) $(`td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        }
+                        else
+                        {
+                        if(!$(`td[data-x="2"][data-y="${y}"]`).find("span").length) $(`td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        }
+                    })
+                },
+                oneditionend:function(instance, cell, x, y, value) {
+                    //if there is not inner span
+                    if(percentged_rows.indexOf(y) != -1)
+                    {
+
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+
+                    }
+                    currency_rows.forEach((y,i) => {
+
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        //the last total cell has no x-4,x-5
+                        if((i != currency_rows.length-1) && (i != currency_rows.length-2))
+                        {
+                            if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        }else{//second
+                            if(!$(`td[data-x="1"][data-y="${y}"]`).find("span").length) $(`td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            // if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                        }
+
+                    })
+                    area_rows.forEach((y,i) => {
+
+                        if(i ==area_rows.length -1)
+                        {
+                            if(!$(`td[data-x="1"][data-y="${y}"]`).find("span").length) $(`td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        }
+                        else
+                        {
+                        if(!$(`td[data-x="2"][data-y="${y}"]`).find("span").length) $(`td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                        }
+
+                    })
+
+                }
+            })
+            break;
+        default:
+        var compare_table =jspreadsheet(document.getElementById('spreadsheet'), {
+                data:data,
+                columns: columns,
+                mergeCells:{
+                },
+                style: {
+                },
+            })
+            break;
+    }
+    }
+        // function change(instance, cell, x, y, value) {
+        //     console.log('x is '+x)
+        //     if((x != 0) && (parseInt(x) % 2 == 0))
+        //     {
+
+        //         cellName = jspreadsheet.getColumnNameFromId([x,y]);
+
+        //         ["D","E","F"].forEach(letter=>{
+        //             compare_table.setReadOnly(`${letter+x}`,true)
+        //         })
+        //     }
+        //             // var cellName = jspreadsheet.getColumnNameFromId([x,y]);
+        //             // console.log('New change on cell ' + cellName + ' to: ' + value + '');
+
+        //             // compare_table.updateProperty(0,0, {mask: '0.00%' });
+        // }
+</script>
 @endsection
