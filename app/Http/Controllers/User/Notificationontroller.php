@@ -1375,4 +1375,28 @@ class Notificationontroller extends Controller
             return redirect()->back()->with('error', $e->getMessages());
         }
     }
+
+    /**
+     * save estate rater tables on the rating step
+     */
+    public function saveEstateRatingTables($subdomain,Request $request,$estate_id)
+    {
+        try
+        {
+            $previous_record = DB::table('estate_rater_tables')->whereEstateId($estate_id)->first();
+            if(!$previous_record)   DB::table('estate_rater_tables')->insert(['estate_id' => $estate_id]);
+
+            $edited_record =  DB::table('estate_rater_tables')->whereEstateId($estate_id)->update([
+                "rating_ways_table_data"=>json_encode($request->rating_ways_table_data),
+                "value_equalizer_table_data"=>json_encode($request->value_equalizer_table_data),
+                "value_edit_table_data"=>json_encode($request->value_edit_table_data),
+            ]);
+            return response()->json($previous_record,201);
+        }
+        catch(\Exception $e)
+        {
+            return response()->json($e->getMessage(),400);
+        }
+
+    }
 }

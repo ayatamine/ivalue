@@ -327,6 +327,12 @@
                             <h6>جدول ترجيح القيمة</h6>
                             <div id="value_equalizer_table"></div>
                         </div>
+                        <div id="value_edit_block" >
+                            <hr>
+                            <h6>جدول تعديل القيمة</h6>
+                            <div id="value_edit_table"></div>
+                        </div>
+                        <button class="btn btn-primary w-50 mb-1 mb-md-0" type="submit" id="save-copy" >حفظ نسخة</button>
                         <!--<div class="rate_info">-->
                         <!--    <div class="col-md-12">-->
                         <!--            <div class="row">-->
@@ -734,27 +740,24 @@
                 },
     })
     $('#value_equalizer_block').css('display','block')
-
+        var value_equalizer_table=null;
         //value_equalizer_table
         if($('#value_equalizer_table').html() == '')
         {
 
-            var value_equalizer_table =jspreadsheet(document.getElementById('value_equalizer_table'), {
-                    data:[[]],
+             value_equalizer_table =jspreadsheet(document.getElementById('value_equalizer_table'), {
+                    data:[[],[],[],['','قيمة العقار بعد الترجيح','=ROUND(D1 + D2 + D3,2)','']],
                     columns: [
                         {
                                 type: 'text',
                                 title:'طريقة التقييم',
                                 width:300,
-                                readOnly:true,
+                                // readOnly:true,
                         },
                         {
                                 type: 'text',
                                 title:'القيمة',
-                                // mask:"0.00",
-                                // decimal:',',
                                 width:200,
-                                // readOnly:true,
                         },
                         {
                                 type: 'numeric',
@@ -769,13 +772,18 @@
                     ],
                     mergeCells:{
                     },
+                    allowInsertColumn:false,
+                    allowInsertRow:false,
+                    allowDeleteRow:false,
                     style: {
+                        B4:'background-color: #EEECE1;color:#000;',
+                        C4:'background-color: #EEECE1;color:#000;',
                     },
                     onload:function(instance, cell, x, y, value) {
 
                                 // if(!$(`#value_equalizer_table td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'></span>");
                                 if(!$(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
-                                // if(!$(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>,00</span>");
+                                if(!$(`#value_equalizer_table td[data-x="2"][data-y="3"]`).find("span").length) $(`#value_equalizer_table td[data-x="2"][data-y="3}"]`).append("<span  class='ml-1'>ريال</span>");
 
                     },
                     oneditionend:function(instance, cell, x, y, value) {
@@ -784,9 +792,92 @@
                                 if(!$(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
                                 // if(!$(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>,00</span>");
                                 $(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).text(
-                                    value_equalizer_table.setValue(`D${y+1}`,`=B${y+1}*C${y+1}*0.01`)
+                                    value_equalizer_table.getValue(`D${y+1}`,`=B${y+1}*C${y+1}*0.01`)
                                 )
 
+                    },
+                    onchange:function(instance, cell, x, y, value) {
+                        if(!$(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                        // if(!$(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>,00</span>");
+                        $(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).text(
+                                    value_equalizer_table.getValue(`D${y+1}`,`=B${y+1}*C${y+1}*0.01`)
+                         )
+
+                        let calc_value =0;
+                        if(parseFloat( $(`#value_edit_table td[data-x="1"][data-y="0"]`).text()) == 0)
+                        {
+                            calc_value = parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text())
+                        }
+                        else
+                        {
+                            calc_value =(parseFloat( $(`#value_edit_table td[data-x="1"][data-y="0"]`).text()) * 0.01) *  parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text())
+
+                        }
+                        $(`#value_edit_table td[data-x="2"][data-y="0"]`).text(calc_value.toFixed(2))
+                    }
+            })
+        }
+        var value_edit_table =null;
+        if($('#value_edit_table').html() == '')
+        {
+
+             value_edit_table =jspreadsheet(document.getElementById('value_edit_table'), {
+                    data:[['',0,0,0]],
+                    columns: [
+                        {
+                                type: 'text',
+                                title:'الغرض من التقييم',
+                                width:300,
+                                // readOnly:true,
+                        },
+                        {
+                                type: 'text',
+                                title:'نسبة التعديل',
+                                width:200,
+                        },
+                        {
+                                type: 'numeric',
+                                title:'قيمة التعديل',
+                                width:200
+                        },
+                        {
+                                type: 'numeric',
+                                title:'قيمة العقار بعد التعديل',
+                                width:200
+                        }
+                    ],
+                    mergeCells:{
+                    },
+                    allowInsertColumn:false,
+                    allowInsertRow:false,
+                    allowDeleteRow:false,
+                    style: {
+                        // B4:'background-color: #EEECE1;color:#000;',
+                        // C4:'background-color: #EEECE1;color:#000;',
+                    },
+                    onload:function(instance, cell, x, y, value) {
+
+                        if(!$(`#value_edit_table td[data-x="1"][data-y="0"]`).find("span").length) $(`#value_edit_table td[data-x="1"][data-y="0"]`).append("<span  class='ml-1'>%</span>");
+                    },
+                    oneditionend:function(instance, cell, x, y, value) {
+
+                        if(!$(`#value_edit_table td[data-x="1"][data-y="0"]`).find("span").length) $(`#value_edit_table td[data-x="1"][data-y="0"]`).append("<span  class='ml-1'>%</span>");
+                        $(`#value_edit_table td[data-x="2"][data-y="0"]`).text(
+                            parseFloat($(`#value_edit_table td[data-x="1"][data-y="0"]`).text()) * 0.01 * parseFloat($(`#value_edit_table td[data-x="2"][data-y="0"]`).text())
+                        )
+                        $(`#value_edit_table td[data-x="3"][data-y="0"]`).text(
+                            (parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text()) - parseFloat($(`#value_edit_table td[data-x="2"][data-y="0"]`).text())).toFixed(2)
+                        )
+                    },
+                    onchange:function(instance, cell, x, y, value) {
+
+                        if(!$(`#value_edit_table td[data-x="1"][data-y="0"]`).find("span").length) $(`#value_edit_table td[data-x="1"][data-y="0"]`).append("<span  class='ml-1'>%</span>");
+                        $(`#value_edit_table td[data-x="2"][data-y="0"]`).text(
+                            parseFloat($(`#value_edit_table td[data-x="1"][data-y="0"]`).text()) * 0.01 * parseFloat($(`#value_edit_table td[data-x="2"][data-y="0"]`).text())
+                        )
+                        $(`#value_edit_table td[data-x="3"][data-y="0"]`).text(
+                            (parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text()) - parseFloat($(`#value_edit_table td[data-x="2"][data-y="0"]`).text())).toFixed(2)
+                        )
                     },
             })
         }
@@ -1189,11 +1280,13 @@
     function updateValueEqualizerTable(instance,x,y)
     {
           //update جدول ترجيح
-          let table_id = instance.getAttribute('id');
-                        let row_number = table_id.slice(11,12)
+        let table_id = instance.getAttribute('id');
+        let row_number = table_id.slice(11,12)
 
-                        value_equalizer_table.setRowData(parseInt(row_number),
-                        [`=A${row_number}`,parseFloat($(`#${table_id} td[data-x="${x}"][data-y="${y}"]`).text()),0,parseFloat($(`#${table_id} td[data-x="${x}"][data-y="${y}"]`).text())])
+        value_equalizer_table.setRowData(parseInt(row_number),
+                        [$(`#value_equalizer_table td[data-x="0"][data-y="${row_number}"]`).text(),parseFloat($(`#${table_id} td[data-x="${x}"][data-y="${y}"]`).text()),0,parseFloat($(`#${table_id} td[data-x="${x}"][data-y="${y}"]`).text())])
+
+        // if(!$(`#value_equalizer_table td[data-x="3"][data-y="${selected_methods.length}"]`).length)
     }
    function handleSheet(type,columns,data)
    {
@@ -1222,19 +1315,21 @@
                     </div>
                 `)
 
-                if(parseInt(active_row) ==0)
-                {
-                    // let last_row_number = $(`#spreadsheet${active_row}111  tbody tr:last-child td`).data('y');
-                      $(`#value_equalizer_table td[data-x="0"][data-y="0"]`).text(
-                        selected_method_name
-                      );
+                // if(parseInt(active_row) ==0)
+                // {
+                //     // let last_row_number = $(`#spreadsheet${active_row}111  tbody tr:last-child td`).data('y');
+                //       $(`#value_equalizer_table td[data-x="0"][data-y="0"]`).text(
+                //         selected_method_name
+                //       );
 
-                }else{
-
-                    value_equalizer_table.insertRow(
+                // }else{
+                    // $(`#value_equalizer_table td[data-x="1"][data-y="0"]`).text(
+                    //     selected_method_name
+                    //   );
+                value_equalizer_table.setRowData(parseInt(active_row),
                         [selected_method_name,0,0,0]
                     )
-                }
+                // }
                 if("{{$estate->category_id}}" == 1) //شقة
                 {
                     data =
@@ -1300,8 +1395,6 @@
                     },
                     onload:function(instance, cell, x, y, value) {
                         //if there is not inner span
-
-
 
                         percentged_rows.forEach(y => {
 
@@ -1655,20 +1748,20 @@
                 `)
 
 
-                if(parseInt(active_row) ==0)
-                {
-                    // let last_row_number = $(`#spreadsheet${active_row}111  tbody tr:last-child td`).data('y');
-                      $(`#value_equalizer_table td[data-x="0"][data-y="0"]`).text(
-                        selected_method_name
-                      );
+                // if(parseInt(active_row) ==0)
+                // {
+                //     // let last_row_number = $(`#spreadsheet${active_row}111  tbody tr:last-child td`).data('y');
+                //       $(`#value_equalizer_table td[data-x="0"][data-y="0"]`).text(
+                //         selected_method_name
+                //       );
 
-                }else{
+                // }else{
 
-                    value_equalizer_table.insertRow(
+                    value_equalizer_table.setRowData(active_row,
                         [selected_method_name,0,0,0]
                     )
-                }
-                if("{{$estate->category_id}}" == 3) //شقة
+                // }
+                if("{{$estate->category_id}}" == 1) //شقة
                 {
                     data =
                     [
@@ -2496,19 +2589,19 @@
                         <div id="spreadsheet${active_row}212"></div>
                     </div>
                 `)
-                if(parseInt(active_row) ==0)
-                {
-                    // let last_row_number = $(`#spreadsheet${active_row}111  tbody tr:last-child td`).data('y');
-                      $(`#value_equalizer_table td[data-x="0"][data-y="0"]`).text(
-                        selected_method_name
-                      );
+                // if(parseInt(active_row) ==0)
+                // {
+                //     // let last_row_number = $(`#spreadsheet${active_row}111  tbody tr:last-child td`).data('y');
+                //       $(`#value_equalizer_table td[data-x="0"][data-y="0"]`).text(
+                //         selected_method_name
+                //       );
 
-                }else{
+                // }else{
 
-                    value_equalizer_table.insertRow(
-                        [selected_method_name,0,0,0]
+                    value_equalizer_table.setRowData(
+                        ["sddd",0,0,0]
                     )
-                }
+                // }
                 if("{{$estate->category_id}}" == 1) //شقة
                 {
                     data =
@@ -2897,6 +2990,40 @@
 
 //    })
     }
+    $(function () {
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $('#save-copy').click(function (e) {
+        e.preventDefault();
+            let rating_ways_table_data = rating_ways_table.getData();
+            let value_equalizer_table_data = value_equalizer_table.getData();
+            let value_edit_table_data = value_edit_table.getData();
+            // send ajax
+            console.log(value_edit_table)
+            let fdata = new FormData
+            $.ajax({
+                url: `{{route('save_estate_rating_tables',['estate_id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')])}}`,
+                type: 'POST',
+                dataType: "json",
+                data: {
+                    rating_ways_table_data,
+                   value_equalizer_table_data,
+                   value_edit_table_data
+                },
+                success: function(response) {
+                    console.log(response)
+                },
+                error: function(error) {
+                    // Handle an error response
+                }
+            });
+
+        })
+    })
 
         // function change(instance, cell, x, y, value) {
         //     console.log('x is '+x)
