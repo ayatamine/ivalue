@@ -13,6 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('estate_rater_tables', function (Blueprint $table) {
+            $table->id();
             $table->foreignIdFor(Estate::class)->cascadeOnDelete();
             $table->text('rating_ways_table_data')->nullable(); //user choose a way max 3 ways
             $table->text('choosen_tables_data')->nullable(); //user fill the choosen_table

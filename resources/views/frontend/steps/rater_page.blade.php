@@ -653,7 +653,7 @@
     var selected_methods=[]
     var  active_row = 0;
     var sheets = [ ];
-
+    var choosen_tables_data=[]
 
 
     methodsdropdownFilter = function(instance, cell, c, r, source) {
@@ -787,20 +787,20 @@
 
                     },
                     oneditionend:function(instance, cell, x, y, value) {
-
+                            console.log('value',value)
                                 // if(!$(`#value_equalizer_table td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>,00</span>");
                                 if(!$(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
                                 // if(!$(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>,00</span>");
                                 $(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).text(
-                                    value_equalizer_table.getValue(`D${y+1}`,`=B${y+1}*C${y+1}*0.01`)
+                                    value_equalizer_table.setValue(`D${y+1}`,`=B${y+1}*C${y+1}*0.01`)
                                 )
 
                     },
-                    onchange:function(instance, cell, x, y, value) {
+                    onchange:function(instance, cell, x, y, value) { console.log('value',value)
                         if(!$(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
                         // if(!$(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>,00</span>");
                         $(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).text(
-                                    value_equalizer_table.getValue(`D${y+1}`,`=B${y+1}*C${y+1}*0.01`)
+                                    value_equalizer_table.setValue(`D${y+1}`,`=B${y+1}*C${y+1}*0.01`)
                          )
 
                         let calc_value =0;
@@ -1383,7 +1383,7 @@
                     var percentged_rows =Array.from(Array(38).keys()).filter(function(i){ return i%2 ==0 && i > 2;})
                     var currency_rows =[0,2,37,39]
                     var area_rows =[1,13]
-                    var compare_table =jspreadsheet(document.getElementById('spreadsheet'+active_row+'111'), {
+                    choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'+active_row+'111'), {
                     data:data,
                     columns: columns,
                     mergeCells:{
@@ -1527,7 +1527,7 @@
                     percentged_rows = percentged_rows.concat([35,37,39,41]);
                     var currency_rows =[0,2,33,40,42]
                     var area_rows =[1,15]
-                    var compare_table =jspreadsheet(document.getElementById('spreadsheet'+active_row+'111'), {
+                    choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'+active_row+'111'), {
                         data:data,
                         columns: columns,
                         tableOverflow: true,
@@ -1618,7 +1618,7 @@
                 var percentged_rows =Array.from(Array(36).keys()).filter(function(i){ return i%2 ==0 && i > 0;})
                 var currency_rows =[0,33,35,37]
                 var area_rows =[13,36]
-                var compare_table =jspreadsheet(document.getElementById('spreadsheet'+active_row+'111'), {
+                choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'+active_row+'111'), {
                     data:data,
                     columns: columns,
                     mergeCells:{
@@ -1813,7 +1813,7 @@
                     var percentged_rows =Array.from(Array(40).keys()).filter(function(i){ return i%2 ==0 && i >2;})
                     var currency_rows =[0,2,37,39]
                     var area_rows =[1,13]
-                    var compare_table =jspreadsheet(document.getElementById('spreadsheet'+active_row+'112'), {
+                    choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'+active_row+'112'), {
                         data:data,
                         columns: columns,
                         mergeCells:{
@@ -1956,7 +1956,7 @@
                     percentged_rows = percentged_rows.concat([35,37,39,41]);
                     var currency_rows =[0,2,33,40,42]
                     var area_rows =[1,15]
-                    var compare_table =jspreadsheet(document.getElementById('spreadsheet'+active_row+'112'), {
+                    choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'+active_row+'112'), {
                         data:data,
                         columns: columns,
                         tableOverflow: true,
@@ -2047,7 +2047,7 @@
                 percentged_rows = percentged_rows.concat([33,35])
                 var currency_rows =[0,34,36,38]
                 var area_rows =[13,19,21,37]
-                var compare_table =jspreadsheet(document.getElementById('spreadsheet'+active_row+'112'), {
+                choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'+active_row+'112'), {
                     data:data,
                     columns: columns,
                     mergeCells:{
@@ -2249,7 +2249,7 @@
                     var percentged_rows =Array.from(Array(40).keys()).filter(function(i){ return i%2 ==0 && i >2;})
                     var currency_rows =[0,2,37,39]
                     var area_rows =[1,13]
-                    var compare_table =jspreadsheet(document.getElementById('spreadsheet'+active_row+'211'), {
+                    choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'+active_row+'211'), {
                         data:data,
                         columns: columns,
                         mergeCells:{
@@ -2385,7 +2385,7 @@
                     percentged_rows = percentged_rows.concat([35,37,39,41]);
                     var currency_rows =[0,2,33,40,42]
                     var area_rows =[1,15]
-                    var compare_table =jspreadsheet(document.getElementById('spreadsheet'+active_row+'211'), {
+                    choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'+active_row+'211'), {
                         data:data,
                         columns: columns,
                         tableOverflow: true,
@@ -2473,7 +2473,7 @@
                 percentged_rows = percentged_rows.concat([33,35])
                 var currency_rows =[0,34,36,38]
                 var area_rows =[13,19,21,37]
-                var compare_table =jspreadsheet(document.getElementById('spreadsheet'+active_row+'211'), {
+                choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'+active_row+'211'), {
                     data:data,
                     columns: columns,
                     mergeCells:{
@@ -2654,7 +2654,7 @@
                     var percentged_rows =Array.from(Array(40).keys()).filter(function(i){ return i%2 ==0 && i >2;})
                     var currency_rows =[0,2,37,39]
                     var area_rows =[1,13]
-                    var compare_table =jspreadsheet(document.getElementById('spreadsheet'+active_row+'212'), {
+                    choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'+active_row+'212'), {
                         data:data,
                         columns: columns,
                         mergeCells:{
@@ -2790,7 +2790,7 @@
                     percentged_rows = percentged_rows.concat([35,37,39,41]);
                     var currency_rows =[0,2,33,40,42]
                     var area_rows =[1,15]
-                    var compare_table =jspreadsheet(document.getElementById('spreadsheet'+active_row+'212'), {
+                    choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'+active_row+'212'), {
                         data:data,
                         columns: columns,
                         tableOverflow: true,
@@ -2878,7 +2878,7 @@
                 percentged_rows = percentged_rows.concat([33,35])
                 var currency_rows =[0,34,36,38]
                 var area_rows =[13,19,21,37]
-                var compare_table =jspreadsheet(document.getElementById('spreadsheet'+active_row+'212'), {
+                choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'+active_row+'212'), {
                     data:data,
                     columns: columns,
                     mergeCells:{
@@ -2975,7 +2975,7 @@
                 })
                 break
             default:
-            var compare_table =jspreadsheet(document.getElementById('spreadsheet'), {
+            choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'), {
                     data:data,
                     columns: columns,
                     mergeCells:{
@@ -2992,19 +2992,56 @@
     }
     $(function () {
 
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+        //get saved data
+        $.ajax({
+                url: `{{route('getSavedTables',['estate_id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')])}}`,
+                type: 'GET',
+                dataType: "json",
+                success: function(response) {
+                    console.log(response)
+                    rating_ways_table.setData(response.rating_ways_table_data)
+                    value_equalizer_table.setData(response.value_equalizer_table_data)
+                    value_edit_table.setData(response.value_edit_table_data)
+
+                    response.rating_ways_table_data.forEach((item,index)=>{
+                        let concat = item.toString().replaceAll(',','')
+                        switch (concat) {
+                            case '111':
+                                prepareSheet(1,true);
+                                choosen_tables_data[index].setData(response.choosen_tables_data[index])
+                                active_row++;
+                                break;
+                            case '112':
+                                console.log('ind',index)
+                                prepareSheet(2,true);
+                                choosen_tables_data[index].setData(response.choosen_tables_data[index])
+                                active_row++;
+                                break;
+
+
+                            default:
+                                break;
+                        }
+                    })
+                },
+                error: function(error) {
+                    // Handle an error response
+                }
+        });
+
         $('#save-copy').click(function (e) {
         e.preventDefault();
             let rating_ways_table_data = rating_ways_table.getData();
             let value_equalizer_table_data = value_equalizer_table.getData();
             let value_edit_table_data = value_edit_table.getData();
             // send ajax
-            console.log(value_edit_table)
-            let fdata = new FormData
+            let choosen_tables_data_final = choosen_tables_data.map(item => item.getData())
             $.ajax({
                 url: `{{route('save_estate_rating_tables',['estate_id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')])}}`,
                 type: 'POST',
@@ -3012,7 +3049,8 @@
                 data: {
                     rating_ways_table_data,
                    value_equalizer_table_data,
-                   value_edit_table_data
+                   value_edit_table_data,
+                   choosen_tables_data:choosen_tables_data_final
                 },
                 success: function(response) {
                     console.log(response)

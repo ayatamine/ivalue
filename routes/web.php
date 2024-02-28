@@ -140,6 +140,7 @@ Route::get('amie',function(){
         Route::post('edit_archive_post/{estate_id}',[Notificationontroller::class,'edit_archive_post'])->name('edit_archive_post');
 
         Route::post('save_estate_rating_tables/{estate_id}',[Notificationontroller::class,'saveEstateRatingTables'])->name('save_estate_rating_tables');
+        Route::get('get-saved-tables-data/{estate_id}',[Notificationontroller::class,'getSavedTablesData'])->name('getSavedTables');
     });
 
     Route::get('pdf', [PdfController::class,'generatePDF'])->name('pdf');

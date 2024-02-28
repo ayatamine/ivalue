@@ -1390,8 +1390,29 @@ class Notificationontroller extends Controller
                 "rating_ways_table_data"=>json_encode($request->rating_ways_table_data),
                 "value_equalizer_table_data"=>json_encode($request->value_equalizer_table_data),
                 "value_edit_table_data"=>json_encode($request->value_edit_table_data),
+                "choosen_tables_data"=>json_encode($request->choosen_tables_data),
             ]);
             return response()->json($previous_record,201);
+        }
+        catch(\Exception $e)
+        {
+            return response()->json($e->getMessage(),400);
+        }
+
+    }
+    public function getSavedTablesData($subdomain,$estate_id)
+    {
+        try
+        {
+            $record = DB::table('estate_rater_tables')->whereEstateId($estate_id)->first();
+
+            if(is_null($record))    return response()->json("No Data Found", 404);
+            return response()->json([
+                "choosen_tables_data"=>json_decode($record->choosen_tables_data),
+                "rating_ways_table_data"=>json_decode($record->rating_ways_table_data),
+                "value_equalizer_table_data"=>json_decode($record->value_equalizer_table_data),
+                "value_edit_table_data"=>json_decode($record->value_edit_table_data),
+            ],201);
         }
         catch(\Exception $e)
         {
