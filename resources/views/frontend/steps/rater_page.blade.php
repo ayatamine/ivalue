@@ -784,25 +784,32 @@
                                 // if(!$(`#value_equalizer_table td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'></span>");
                                 if(!$(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
                                 if(!$(`#value_equalizer_table td[data-x="2"][data-y="3"]`).find("span").length) $(`#value_equalizer_table td[data-x="2"][data-y="3}"]`).append("<span  class='ml-1'>ريال</span>");
-
+                                if(y != 3)$(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).text(parseFloat( $(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).text()) * parseFloat( $(`#value_equalizer_table td[data-x="1"][data-y="${y}"]`).text()) * 0.01);
+                                //حساب قيمة الترجيح
+                                $(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text(
+                                     parseFloat( $(`#value_equalizer_table td[data-x="3"][data-y="0"]`).text())
+                                    +~~parseFloat( $(`#value_equalizer_table td[data-x="3"][data-y="1"]`).text())
+                                    +~~parseFloat( $(`#value_equalizer_table td[data-x="3"][data-y="2"]`).text())
+                                )
                     },
                     oneditionend:function(instance, cell, x, y, value) {
-                            console.log('value',value)
+
                                 // if(!$(`#value_equalizer_table td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>,00</span>");
                                 if(!$(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
                                 // if(!$(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>,00</span>");
-                                $(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).text(
-                                    value_equalizer_table.setValue(`D${y+1}`,`=B${y+1}*C${y+1}*0.01`)
+                                if(y != 3)$(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).text(parseFloat( $(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).text()) * parseFloat( $(`#value_equalizer_table td[data-x="1"][data-y="${y}"]`).text()) * 0.01);
+
+                                $(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text(
+                                     parseFloat( $(`#value_equalizer_table td[data-x="3"][data-y="0"]`).text())
+                                    +~~parseFloat( $(`#value_equalizer_table td[data-x="3"][data-y="1"]`).text())
+                                    +~~parseFloat( $(`#value_equalizer_table td[data-x="3"][data-y="2"]`).text())
                                 )
 
                     },
-                    onchange:function(instance, cell, x, y, value) { console.log('value',value)
+                    onchange:function(instance, cell, x, y, value) {
                         if(!$(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
                         // if(!$(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>,00</span>");
-                        $(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).text(
-                                    value_equalizer_table.setValue(`D${y+1}`,`=B${y+1}*C${y+1}*0.01`)
-                         )
-
+                        if(y != 3)$(`#value_equalizer_table td[data-x="3"][data-y="${y}"]`).text(parseFloat( $(`#value_equalizer_table td[data-x="2"][data-y="${y}"]`).text()) * parseFloat( $(`#value_equalizer_table td[data-x="1"][data-y="0"]`).text()) * 0.01);
                         let calc_value =0;
                         if(parseFloat( $(`#value_edit_table td[data-x="1"][data-y="0"]`).text()) == 0)
                         {
@@ -814,6 +821,11 @@
 
                         }
                         $(`#value_edit_table td[data-x="2"][data-y="0"]`).text(calc_value.toFixed(2))
+                        $(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text(
+                                     parseFloat( $(`#value_equalizer_table td[data-x="3"][data-y="0"]`).text())
+                                    +~~parseFloat( $(`#value_equalizer_table td[data-x="3"][data-y="1"]`).text())
+                                    +~~parseFloat( $(`#value_equalizer_table td[data-x="3"][data-y="2"]`).text())
+                                )
                     }
             })
         }
