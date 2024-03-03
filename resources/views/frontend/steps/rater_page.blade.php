@@ -1449,6 +1449,8 @@
                             if(!$(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
 
                         })
+                         //update جدول ترجيح
+                         updateValueEqualizerTable(instance,3,39)
                     },
                     oneditionend:function(instance, cell, x, y, value) {
                         //////////////////////////
@@ -1608,6 +1610,7 @@
                                 if(!$(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
 
                             })
+                            updateValueEqualizerTable(instance,3,42)
                         },
                         oneditionend:function(instance, cell, x, y, value) {
                              //////////////////////////
@@ -1721,6 +1724,7 @@
                             }
 
                         })
+                        updateValueEqualizerTable(instance,1,37)
                     },
                     oneditionend:function(instance, cell, x, y, value) {
                         //if there is not inner span
@@ -1903,6 +1907,7 @@
                                 if(!$(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
 
                             })
+                            updateValueEqualizerTable(instance,3,38)
                         },
                         oneditionend:function(instance, cell, x, y, value) {
                             //تسوية المساحة نسبة مئوية
@@ -1936,7 +1941,7 @@
 
                             })
                             //update value equalizer table
-                            updateValueEqualizerTable(instance,3,39);
+                            updateValueEqualizerTable(instance,3,38)
 
                         },
                         onchange:function(instance, cell, x, y, value) {
@@ -1947,7 +1952,7 @@
                             if(!$(`#spreadsheet${active_row}112 td[data-x="4"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="4"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
                             if(!$(`#spreadsheet${active_row}112 td[data-x="5"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="5"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
                             //update جدول ترجيح
-                            updateValueEqualizerTable(instance,3,39)
+                            updateValueEqualizerTable(instance,3,38)
                         }
                     })
                     return;
@@ -2064,6 +2069,7 @@
                                 if(!$(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
 
                             })
+                             updateValueEqualizerTable(instance,3,41)
                         },
                         oneditionend:function(instance, cell, x, y, value) {
                              //تسوية المساحة نسبة مئوية
@@ -2096,7 +2102,7 @@
                                 if(!$(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
 
                             })
-                            updateValueEqualizerTable(instance,3,42)
+                            updateValueEqualizerTable(instance,3,41)
 
                         },
                         onchange:function(instance, cell, x, y, value) {
@@ -2107,7 +2113,7 @@
                             if(!$(`#spreadsheet${active_row}112 td[data-x="4"][data-y="16"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="4"][data-y="16"]`).append("<span  class='ml-1'>%</span>");
                             if(!$(`#spreadsheet${active_row}112 td[data-x="5"][data-y="16"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="5"][data-y="16"]`).append("<span  class='ml-1'>%</span>");
 
-                            updateValueEqualizerTable(instance,3,42)
+                            updateValueEqualizerTable(instance,3,41)
                         }
                     })
                     return;
@@ -2176,6 +2182,7 @@
                             if(!$(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
                             }
                         })
+                        updateValueEqualizerTable(instance,1,38)
                     },
                     oneditionend:function(instance, cell, x, y, value) {
                         //////////////////////////
