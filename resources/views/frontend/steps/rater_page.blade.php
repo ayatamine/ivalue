@@ -875,25 +875,31 @@
                     onload:function(instance, cell, x, y, value) {
 
                         if(!$(`#value_edit_table td[data-x="1"][data-y="0"]`).find("span").length) $(`#value_edit_table td[data-x="1"][data-y="0"]`).append("<span  class='ml-1'>%</span>");
+                        $(`#value_edit_table td[data-x="2"][data-y="0"]`).text(
+                           (parseFloat($(`#value_edit_table td[data-x="1"][data-y="0"]`).text()) * 0.01 +1) * (parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text()))
+                        )
+                        $(`#value_edit_table td[data-x="3"][data-y="0"]`).text(
+                            (parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text()) + parseFloat($(`#value_edit_table td[data-x="2"][data-y="0"]`).text())).toFixed(2)
+                        )
                     },
                     oneditionend:function(instance, cell, x, y, value) {
 
                         if(!$(`#value_edit_table td[data-x="1"][data-y="0"]`).find("span").length) $(`#value_edit_table td[data-x="1"][data-y="0"]`).append("<span  class='ml-1'>%</span>");
                         $(`#value_edit_table td[data-x="2"][data-y="0"]`).text(
-                            parseFloat($(`#value_edit_table td[data-x="1"][data-y="0"]`).text()) * 0.01 * parseFloat($(`#value_edit_table td[data-x="2"][data-y="0"]`).text())
+                           (parseFloat($(`#value_edit_table td[data-x="1"][data-y="0"]`).text()) * 0.01 +1) * (parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text()))
                         )
                         $(`#value_edit_table td[data-x="3"][data-y="0"]`).text(
-                            (parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text()) - parseFloat($(`#value_edit_table td[data-x="2"][data-y="0"]`).text())).toFixed(2)
+                            (parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text()) + parseFloat($(`#value_edit_table td[data-x="2"][data-y="0"]`).text())).toFixed(2)
                         )
                     },
                     onchange:function(instance, cell, x, y, value) {
 
                         if(!$(`#value_edit_table td[data-x="1"][data-y="0"]`).find("span").length) $(`#value_edit_table td[data-x="1"][data-y="0"]`).append("<span  class='ml-1'>%</span>");
                         $(`#value_edit_table td[data-x="2"][data-y="0"]`).text(
-                            parseFloat($(`#value_edit_table td[data-x="1"][data-y="0"]`).text()) * 0.01 * parseFloat($(`#value_edit_table td[data-x="2"][data-y="0"]`).text())
+                           (parseFloat($(`#value_edit_table td[data-x="1"][data-y="0"]`).text()) * 0.01 +1) * (parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text()))
                         )
                         $(`#value_edit_table td[data-x="3"][data-y="0"]`).text(
-                            (parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text()) - parseFloat($(`#value_edit_table td[data-x="2"][data-y="0"]`).text())).toFixed(2)
+                            (parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text()) + parseFloat($(`#value_edit_table td[data-x="2"][data-y="0"]`).text())).toFixed(2)
                         )
                     },
             })
@@ -1062,9 +1068,9 @@
                                 [' ظروف السوق','تاريخ التقييم', new Date().toJSON().slice(0, 10), 'الان', 'الان', 'الان'],
                                 [' تسوية ظروف السوق','', '', '0', '0', '0'],
                                 [' التخطيط نظام البناء','', 'عمائر', 'تجاري عمائر', 'تجاري عمائر', 'تجاري فيلال'],
-                                [' تسوية التخطيط نظام البناء','', '', '0', '0', '0'],
+                                [' تسوية التخطيط و نظام البناء','', '', '0', '0', '0'],
                                 ['المساحة (م2)','', "{{$estate->land_size}}", '0', '0', '0'],
-                                ['تسوية المساحة بطريقة الامثال','5,00', '', '=ROUND((D14-C14)/D14*B15 ,2)', '=ROUND((E14-C14)/E14*B15 ,2)', '=ROUND((F14-C14)/F14*B15 ,2)'],
+                                ['تسوية المساحة بطريقة الامثال','5,00', '', '=ROUND((D14-C14)/D14*B15*0.01 ,1)', '=ROUND((E14-C14)/E14*B15*0.01 ,1)', '=ROUND((F14-C14)/F14*B15*0.01 ,1)'],
                                 ['عددالشوارع','', '2', '0', '0', '0'],
                                 ['تسوية عدد الشوارع','', '', '0', '0', '0'],
                                 ['واجهات الشوارع','', 'شمالي', 'شمالي', 'شمالي', 'شمالي'],
@@ -1073,7 +1079,7 @@
                                 ['تسوية عرض الشارع الرئيسي','', '', '0', '0', '0'],
                                 ['عرض الواجهة الرئيسية','', '0', '0,0', '0,0', '0,0'],
                                 ['تسوية عرض الواجهة الرئيسية مقارنة بالعمق','5', '',
-                                '=ROUND((D22/D14*100*B23*0.01-(C22/C14*100*B23*0.01))*-1 ,2)', '=ROUND((E22/E14*100*B23*0.01-(C22/C14*100*B23*0.01))*-1  ,2)', '=ROUND((F22/F14*100*B23*0.01-(C22/C14*100*B23*0.01))*-1  ,2)'],
+                                '=ROUND((D22/D14*100*B23-(C22/C14*100*B23))*-1 ,1)', '=ROUND((E22/E14*100*B23-(C22/C14*100*B23))*-1  ,1)', '=ROUND((F22/F14*100*B23-(C22/C14*100*B23))*-1  ,1)'],
                                 ['طبيعة الأرض','', 'مستوية', 'مستوية', 'مستوية', 'مستوية'],
                                 ['تسوية طبيعة الأرض','', '', '0', '0', '0'],
                                 ['منطقة العقار (الحي)','', "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}", "{{$estate->city->zone->name}}"],
@@ -1085,16 +1091,16 @@
                                 ['أخرى ...','', 'لايوجد', '0', '0', 'لايوجد'],
                                 ['تسوية أخرى','', '', '0', '0', '0'],
                                 ['اجمالي التسويات','', '',
-                                '=ROUND(D33*0.01+D31*0.01+D29*0.01+D27*0.01+D25*0.01+D23*0.01+D21*0.01+D19*0.01+D17*0.01+D15*0.01+D13*0.01+D11*0.01+D9*0.01+D7*0.01+D5*0.01+D3 ,2)',
-                                '=ROUND(E33*0.01+E31*0.01+E29*0.01+E27*0.01+E25*0.01+E23*0.01+E21*0.01+E19*0.01+E17*0.01+E15*0.01+E13*0.01+E11*0.01+E9*0.01+E7*0.01+E5*0.01+E3 ,2)',
-                                '=ROUND(F33*0.01+F31*0.01+F29*0.01+F27*0.01+F25*0.01+F23*0.01+F21*0.01+F19*0.01+F17*0.01+F15*0.01+F13*0.01+F11*0.01+F9*0.01+F7*0.01+F5*0.01+F3 ,2)'],
-                                ['سعر المتر بعد تسويات خصائص العقار (ريال)','', '', "=(1+D34*0.01)*D1",
-                                "=(1+E34*0.01)*E1",
-                                "=(1+F34*0.01)*F1",],
+                                '=ROUND(D33+D31+D29+D27+D25+D23+D21+D19+D17+D15+D13+D11+D9+D7+D5+D3 ,1)',
+                                '=ROUND(E33+E31+E29+E27+E25+E23+E21+E19+E17+E15+E13+E11+E9+E7+E5+E3 ,1)',
+                                '=ROUND(F33+F31+F29+F27+F25+F23+F21+F19+F17+F15+F13+F11+F9+F7+F5+F3 ,1)'],
+                                ['سعر المتر بعد تسويات خصائص العقار (ريال)','', '', "=ROUND((1+(D34*0.01))*D1 ,3)",
+                                "=ROUND((1+(E34*0.01))*E1 ,3)",
+                                "=ROUND((1+(F34*0.01))*F1 ,3)",],
                                 ['نسب الترجيح','', '', '0', '0', '0'],
-                                ['سعر المتر المربع بعد الترجيح (ريال)','=ROUND(D36*0.01*D35+E36*0.01*E35+F36*0.01*F35,2)', '', '', '', ''],
+                                ['سعر المتر المربع بعد الترجيح (ريال)','=ROUND(D36*0.01*D35+E36*0.01*E35+F36*0.01*F35,3)', '', '', '', ''],
                                 ['مساحة الأرض (م2)',"{{$estate->land_size}}", '', '', '', ''],
-                                ['قيمة الأرض (ريال)','=ROUND(B37*B38,2)', '', '', '', ''],
+                                ['قيمة الأرض (ريال)','=ROUND(B37*B38,3)', '', '', '', ''],
                         ];
                     handleSheet('comparative_summation',columns,data);
                     break;
@@ -1347,7 +1353,7 @@
                         [selected_method_name,0,0,0]
                     )
                 // }
-                if("{{$estate->category_id}}" == 1) //شقة
+                if("{{$estate->category_id}}" == 2) //شقة
                 {
                     data =
                     [
@@ -1411,7 +1417,11 @@
                         D40:'background-color: #EEECE1;color:#000;font-weight:bold',
                     },
                     onload:function(instance, cell, x, y, value) {
-                        //if there is not inner span
+
+                        //////////////////////////
+                        //تسوية المساحة نسبة مئوية
+                        if(!$(`#spreadsheet${active_row}111 td[data-x="1"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="1"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
+                        ///////////////////////////////
 
                         percentged_rows.forEach(y => {
 
@@ -1441,6 +1451,10 @@
                         })
                     },
                     oneditionend:function(instance, cell, x, y, value) {
+                        //////////////////////////
+                        //تسوية المساحة نسبة مئوية
+                        if(!$(`#spreadsheet${active_row}111 td[data-x="1"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="1"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
+                        ///////////////////////////////
                         //if there is not inner span
                         if(percentged_rows.indexOf(y) != -1)
                         {
@@ -1474,6 +1488,11 @@
 
                     },
                     onchange:function(instance, cell, x, y, value) {
+                        //////////////////////////
+                        //تسوية المساحة نسبة مئوية
+                        if(!$(`#spreadsheet${active_row}111 td[data-x="1"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="1"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
+                        ///////////////////////////////
+
                         if(!$(`#spreadsheet${active_row}111 td[data-x="3"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="3"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
                         if(!$(`#spreadsheet${active_row}111 td[data-x="4"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="4"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
                         if(!$(`#spreadsheet${active_row}111 td[data-x="5"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="5"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
@@ -1483,7 +1502,7 @@
                 })
                 return;
                 }
-                if("{{$estate->category_id}}" == 2) //فيلا
+                if("{{$estate->category_id}}" == 1) //فيلا
                 {
 
                     data =
@@ -1557,37 +1576,44 @@
                         },
                         onload:function(instance, cell, x, y, value) {
                             //if there is not inner span
-
+                            //////////////////////////
+                            //تسوية المساحة نسبة مئوية
+                            if(!$(`#spreadsheet${active_row}111 td[data-x="1"][data-y="16"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="1"][data-y="16"]`).append("<span  class='ml-1'>%</span>");
+                            ///////////////////////////////
 
 
                             percentged_rows.forEach(y => {
 
-                                if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
-                                if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
-                                if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                                if(!$(`#spreadsheet${active_row}111 td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                                if(!$(`#spreadsheet${active_row}111 td[data-x="4"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                                if(!$(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
 
                             })
                             currency_rows.forEach((y,i) => {
 
-                                if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                                if(!$(`#spreadsheet${active_row}111 td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
                                 //the last total cell has no x-4,x-5
                                 if(i != currency_rows.length-1)
                                 {
-                                    if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
-                                    if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                                    if(!$(`#spreadsheet${active_row}111 td[data-x="4"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                                    if(!$(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
                                 }
 
                             })
                             area_rows.forEach((y,i) => {
 
-                                if(!$(`td[data-x="2"][data-y="${y}"]`).find("span").length) $(`td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
-                                if(!$(`td[data-x="3"][data-y="${y}"]`).find("span").length) $(`td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
-                                if(!$(`td[data-x="4"][data-y="${y}"]`).find("span").length) $(`td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
-                                if(!$(`td[data-x="5"][data-y="${y}"]`).find("span").length) $(`td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                                if(!$(`#spreadsheet${active_row}111 td[data-x="2"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                                if(!$(`#spreadsheet${active_row}111 td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                                if(!$(`#spreadsheet${active_row}111 td[data-x="4"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="4"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
+                                if(!$(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
 
                             })
                         },
                         oneditionend:function(instance, cell, x, y, value) {
+                             //////////////////////////
+                            //تسوية المساحة نسبة مئوية
+                            if(!$(`#spreadsheet${active_row}111 td[data-x="1"][data-y="16"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="1"][data-y="16"]`).append("<span  class='ml-1'>%</span>");
+                            ///////////////////////////////
                             //if there is not inner span
                             if(percentged_rows.indexOf(y) != -1)
                             {
@@ -1620,6 +1646,10 @@
 
                         },
                         onchange:function(instance, cell, x, y, value) {
+                            //////////////////////////
+                            //تسوية المساحة نسبة مئوية
+                            if(!$(`#spreadsheet${active_row}111 td[data-x="1"][data-y="16"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="1"][data-y="16"]`).append("<span  class='ml-1'>%</span>");
+                            ///////////////////////////////
                             if(!$(`#spreadsheet${active_row}111 td[data-x="3"][data-y="16"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="3"][data-y="16"]`).append("<span  class='ml-1'>%</span>");
                             if(!$(`#spreadsheet${active_row}111 td[data-x="4"][data-y="16"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="3"][data-y="16"]`).append("<span  class='ml-1'>%</span>");
                             if(!$(`#spreadsheet${active_row}111 td[data-x="5"][data-y="16"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="3"][data-y="16"]`).append("<span  class='ml-1'>%</span>");
@@ -1778,7 +1808,7 @@
                         [selected_method_name,0,0,0]
                     )
                 // }
-                if("{{$estate->category_id}}" == 3) //شقة
+                if("{{$estate->category_id}}" == 1) //شقة
                 {
                     data =
                     [
@@ -1844,7 +1874,8 @@
                             D39:'background-color: #EEECE1;color:#000;font-weight:bold',
                         },
                         onload:function(instance, cell, x, y, value) {
-                             //if there is not inner span
+                             //تسوية المساحة نسبة مئوية
+                            if(!$(`#spreadsheet${active_row}112 td[data-x="1"][data-y="12"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="1"][data-y="12"]`).append("<span  class='ml-1'>%</span>");
 
                             percentged_rows.forEach(y => {
 
@@ -1874,6 +1905,9 @@
                             })
                         },
                         oneditionend:function(instance, cell, x, y, value) {
+                            //تسوية المساحة نسبة مئوية
+                            if(!$(`#spreadsheet${active_row}112 td[data-x="1"][data-y="12"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="1"][data-y="12"]`).append("<span  class='ml-1'>%</span>");
+
                             //if there is not inner span
                             percentged_rows.forEach(y => {
 
@@ -1906,6 +1940,9 @@
 
                         },
                         onchange:function(instance, cell, x, y, value) {
+                            //تسوية المساحة نسبة مئوية
+                            if(!$(`#spreadsheet${active_row}112 td[data-x="1"][data-y="12"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="1"][data-y="12"]`).append("<span  class='ml-1'>%</span>");
+
                             if(!$(`#spreadsheet${active_row}112 td[data-x="3"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="3"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
                             if(!$(`#spreadsheet${active_row}112 td[data-x="4"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="4"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
                             if(!$(`#spreadsheet${active_row}112 td[data-x="5"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="5"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
@@ -1915,7 +1952,7 @@
                     })
                     return;
                 }
-                if("{{$estate->category_id}}" == 1) //فيلا
+                if("{{$estate->category_id}}" == 2) //فيلا
                 {
                     data =
                     [
@@ -1997,7 +2034,8 @@
                         onload:function(instance, cell, x, y, value) {
                             //if there is not inner span
 
-
+                            //تسوية المساحة نسبة مئوية
+                            if(!$(`#spreadsheet${active_row}112 td[data-x="1"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="1"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
 
                             percentged_rows.forEach(y => {
 
@@ -2028,6 +2066,8 @@
                             })
                         },
                         oneditionend:function(instance, cell, x, y, value) {
+                             //تسوية المساحة نسبة مئوية
+                             if(!$(`#spreadsheet${active_row}112 td[data-x="1"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="1"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
                             //if there is not inner span
                             if(percentged_rows.indexOf(y) != -1)
                             {
@@ -2060,6 +2100,9 @@
 
                         },
                         onchange:function(instance, cell, x, y, value) {
+                             //تسوية المساحة نسبة مئوية
+                             if(!$(`#spreadsheet${active_row}112 td[data-x="1"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="1"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
+
                             if(!$(`#spreadsheet${active_row}112 td[data-x="3"][data-y="16"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="3"][data-y="16"]`).append("<span  class='ml-1'>%</span>");
                             if(!$(`#spreadsheet${active_row}112 td[data-x="4"][data-y="16"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="4"][data-y="16"]`).append("<span  class='ml-1'>%</span>");
                             if(!$(`#spreadsheet${active_row}112 td[data-x="5"][data-y="16"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="5"][data-y="16"]`).append("<span  class='ml-1'>%</span>");
@@ -2077,6 +2120,8 @@
                 choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'+active_row+'112'), {
                     data:data,
                     columns: columns,
+                    tableOverflow:true,
+                    tableWidth:'950px',
                     mergeCells:{
                         C37:[4,3]
                     },
@@ -2090,7 +2135,11 @@
                     },
                     onload:function(instance, cell, x, y, value) {
                         //if there is not inner span
-
+                        //////////////////////////
+                        //تسوية المساحة نسبة مئوية
+                        if(!$(`#spreadsheet${active_row}112 td[data-x="1"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="1"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`#spreadsheet${active_row}112 td[data-x="1"][data-y="22"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="1"][data-y="22"]`).append("<span  class='ml-1'>%</span>");
+                        ///////////////////////////////
 
                         percentged_rows.forEach(y => {
 
@@ -2129,6 +2178,11 @@
                         })
                     },
                     oneditionend:function(instance, cell, x, y, value) {
+                        //////////////////////////
+                        //تسوية المساحة نسبة مئوية
+                        if(!$(`#spreadsheet${active_row}112 td[data-x="1"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="1"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`#spreadsheet${active_row}112 td[data-x="1"][data-y="22"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="1"][data-y="22"]`).append("<span  class='ml-1'>%</span>");
+                        ///////////////////////////////
                         //if there is not inner span
                         if(percentged_rows.indexOf(y) != -1)
                         {
@@ -2179,6 +2233,11 @@
 
                     },
                     onchange:function(instance, cell, x, y, value) {
+                        //////////////////////////
+                        //تسوية المساحة نسبة مئوية
+                        if(!$(`#spreadsheet${active_row}112 td[data-x="1"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="1"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
+                        if(!$(`#spreadsheet${active_row}112 td[data-x="1"][data-y="22"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="1"][data-y="22"]`).append("<span  class='ml-1'>%</span>");
+                        ///////////////////////////////
                             if(!$(`#spreadsheet${active_row}112 td[data-x="3"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="3"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
                             if(!$(`#spreadsheet${active_row}112 td[data-x="4"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="4"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
                             if(!$(`#spreadsheet${active_row}112 td[data-x="5"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="5"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
