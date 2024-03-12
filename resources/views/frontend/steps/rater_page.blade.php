@@ -122,6 +122,14 @@
     .cost_way {
         display: none
     }
+    #spreadsheet0211 thead td:not(:first-child){
+        white-space: break-spaces;
+    word-wrap: break-word;
+    display: inline-flex;
+    width: 100px;
+    height: 67px;
+    align-items: center;
+    }
 </style>
 @endsection
 @section('frontend-main')
@@ -876,7 +884,7 @@
 
                         if(!$(`#value_edit_table td[data-x="1"][data-y="0"]`).find("span").length) $(`#value_edit_table td[data-x="1"][data-y="0"]`).append("<span  class='ml-1'>%</span>");
                         $(`#value_edit_table td[data-x="2"][data-y="0"]`).text(
-                           (parseFloat($(`#value_edit_table td[data-x="1"][data-y="0"]`).text()) * 0.01 +1) * (parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text()))
+                           (parseFloat($(`#value_edit_table td[data-x="1"][data-y="0"]`).text()) * 0.01) * (parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text()))
                         )
                         $(`#value_edit_table td[data-x="3"][data-y="0"]`).text(
                             (parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text()) + parseFloat($(`#value_edit_table td[data-x="2"][data-y="0"]`).text())).toFixed(2)
@@ -886,7 +894,7 @@
 
                         if(!$(`#value_edit_table td[data-x="1"][data-y="0"]`).find("span").length) $(`#value_edit_table td[data-x="1"][data-y="0"]`).append("<span  class='ml-1'>%</span>");
                         $(`#value_edit_table td[data-x="2"][data-y="0"]`).text(
-                           (parseFloat($(`#value_edit_table td[data-x="1"][data-y="0"]`).text()) * 0.01 +1) * (parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text()))
+                           (parseFloat($(`#value_edit_table td[data-x="1"][data-y="0"]`).text()) * 0.01 ) * (parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text()))
                         )
                         $(`#value_edit_table td[data-x="3"][data-y="0"]`).text(
                             (parseFloat($(`#value_equalizer_table td[data-x="2"][data-y="3"]`).text()) + parseFloat($(`#value_edit_table td[data-x="2"][data-y="0"]`).text())).toFixed(2)
@@ -2136,7 +2144,7 @@
                         [selected_method_name,0,0,0]
                     )
                 }
-                data =[[1,'','','','','','','','','','','','','','','','','','','','','','','','','','']
+                data =[[1,'','','','','','','','',new Date().toJSON().slice(0, 10),'','','','','','','','','','','','','','','','','']
                 ,['الإجمالي',0,0,0,'',0,0,'','','','','',0,'',0,'',0,0,'','','','','','','',0,0]
                     ];
                     columns=[
@@ -2148,7 +2156,7 @@
                         {    type: 'number',        title:'اجمالي المصاريف التشغيلية' ,  mask:"0.00 ريال"               },
                         {    type: 'number',        title:'صافي الايجار السنوي' ,  mask:"0.00 ريال"              },
                         {    type: 'number',        title:'صافي الايجار السنوي للمتر المربع' ,  mask:"0.00 ريال"              },
-                        {    type: 'calendar',        title:'تاريخ انتهاء العقد'          },
+                        {    type: 'calendar',        title:'تاريخ انتهاء العقد'   ,options: { format:'YYYY-MM-DD' },       },
                         {    type: 'number',        title:'الفترة المتبقية لانتهاء العقد'  , mask:"0.00 سنة"       },
                         {    type: 'number',        title:'معدل العائد للأبدية قبل انتهاء العقد',     mask:"0.00%"        },
                         {    type: 'number',        title:'عامل شراء السنوات لفترة محددة',mask:'0.00'        },
@@ -2182,7 +2190,7 @@
                         mergeCells:{
                             // B40:[2,1]
                         },
-                        defaultColWidth: 200,
+                        defaultColWidth: 100,
                         tableOverflow: true,
                         tableWidth: `950px`,
                         tableOverflow:true,
@@ -2209,21 +2217,35 @@
                             for (let index = 0; index < rows_count; index++) {
                                   column_count+= ~~parseFloat( $(`#${instance.getAttribute('id')} td[data-x="${x}"][data-y="${index}"]`).text())
                             }
-                            $(`#${instance.getAttribute('id')} td[data-x="${x}"][data-y="${rows_count}"]`).text(column_count+` ${column_type}`)
+                            if(x == 3)  $(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${rows_count}"]`).text(column_count/rows_count+` ${column_type}`) //medium
+
+                            if([1,2,3,5,6,12,14,16,17,25,26].indexOf(x) != -1) $(`#${instance.getAttribute('id')} td[data-x="${x}"][data-y="${rows_count}"]`).text(column_count+` ${column_type}`)
                             //from basic assumptions table
                             w_record_value = parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="3"]').text())
                             l_record_value = parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="2"]').text())
                             n_record_value = parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="4"]').text())
                             t_record_value = parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="0"]').text())
+                            if($(`#${instance.getAttribute('id')} td[data-x="8"][data-y="0"]`).text().length && $('#basic_assumptions_table td[data-x="1"][data-y="5"]').length)
+                            {
+                                j_record_value =((new Date($(`#${instance.getAttribute('id')} td[data-x="8"][data-y="0"]`).text()).getTime() - new Date($('#basic_assumptions_table td[data-x="1"][data-y="5"]').text()).getTime()) / 31536000000 ).toFixed(2)
+                            }else
+                            {
+                                j_record_value =0;
+                                // j_record_value = ((new Date().getTime() - new Date($('#basic_assumptions_table td[data-x="1"][data-y="5"]').text()).getTime()) / 31536000000 ).toFixed(2)
+                            }
                             //from basic assumptions table
 
                             for (let index = 0; index <  instance.jexcel.getData().length; index++) {
+
+                                let calc_l = (((1-(1/Math.pow(((1+l_record_value *0.01),j_record_value))))/l_record_value) * 100).toFixed(2)
+
                                 instance.jexcel.setValue('D'+index+"",`=C${index}/B${index}`);
                                 instance.jexcel.setValue('F'+index+"",`=E${index}*C${index}*0.01`);
                                 instance.jexcel.setValue('G'+index+"",`=C${index}-F${index}`);
                                 instance.jexcel.setValue('H'+index+"",`=G${index}/B${index}`);
-                                instance.jexcel.setValue('L'+index+"",`=(1-(1/((1+${l_record_value}*0.01)^J${index})))/${l_record_value}`);
-                                instance.jexcel.setValue('M'+index+"",`=L${index}*G${index}`);
+                                instance.jexcel.setValue('J'+index+"",`${j_record_value}`);
+                                instance.jexcel.setValue('L'+index+"",`${calc_l}`);
+                                instance.jexcel.setValue('M'+index+"",`=(L${index}*G${index})`);
                                 instance.jexcel.setValue('N'+index+"",`=(1+${n_record_value}*0.01)*D${index}`);
                                 instance.jexcel.setValue('O'+index+"",`=N${index}*B${index}`);
                                 instance.jexcel.setValue('Q'+index+"",`=O${index}*P${index}*0.01`);
@@ -2232,8 +2254,8 @@
                                 instance.jexcel.setValue('T'+index+"",`=1-${t_record_value}*0.01`);
                                 instance.jexcel.setValue('U'+index+"",`=R${index}/B${index}`);
                                 instance.jexcel.setValue('W'+index+"",`=100/(${w_record_value})`);
-                                instance.jexcel.setValue('X'+index+"",`=ROUND(1/((1+${w_record_value*0.01})^(J${index})),2)`);
-                                instance.jexcel.setValue('Y'+index+"",`=X${index}*W${index}`);
+                                instance.jexcel.setValue('X'+index,`=1/((1+(${w_record_value}*0.01))^${j_record_value})`);
+                                instance.jexcel.setValue('Y'+index+"",`=(X${index}*W${index})`);
                                 instance.jexcel.setValue('Z'+index+"",`=Y${index}*V${index}*R${index}`);
                                 instance.jexcel.setValue('AA'+index+"",`=Z${index}+M${index}`);
                             }
@@ -2266,7 +2288,9 @@
                             for (let index = 0; index < rows_count; index++) {
                                   column_count+= ~~parseFloat( $(`#${instance.getAttribute('id')} td[data-x="${x}"][data-y="${index}"]`).text())
                             }
-                           $(`#${instance.getAttribute('id')} td[data-x="${x}"][data-y="${rows_count}"]`).text(column_count+` ${column_type}`)
+                            if(x == 3)  $(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${rows_count}"]`).text(column_count/rows_count+` ${column_type}`) //medium
+
+                            if([1,2,3,5,6,12,14,16,17,25,26].indexOf(x) != -1) $(`#${instance.getAttribute('id')} td[data-x="${x}"][data-y="${rows_count}"]`).text(column_count+` ${column_type}`)
                             //تحديث عدد الوحدات في جدول الافتراضات
                             $('#basic_assumptions_table td[data-x="1"][data-y="6"]').text(parseInt(rows_count))
 
@@ -2274,12 +2298,15 @@
                     })
                     var percentged_rows =[1,4,7]
                 var currency_rows =[0,2,3,5,6,9]
-                $('#spreadsheet'+active_row+'211').parent().append(`
-                <div id="investement_method_calculator" class="d-flex justify-content-between py-2">
-                    <div>
+                $('#spreadsheet'+active_row+'211').parent().prepend(`
+                <div>
                         <h6>الافتراضات الأساسية</h6>
                         <div id="basic_assumptions_table"></div>
-                    </div>
+                </div>
+                `)
+                $('#spreadsheet'+active_row+'211').parent().append(`
+                <div id="investement_method_calculator" class="">
+
                     <div>
                         <h6  class="d-flex justify-content-between align-items-center"><span>حساب قيمة العقار</span>
                             <button class="btn btn-sm  text-dark " style="       font-size: 13px;
@@ -2302,18 +2329,18 @@
                                 ['معدل العائد الى تاريخ انتهاء العقد',1],
                                 ['معدل العائد عند تجديد العقد',1],
                                 ['نسبة زيادة الايجار عند تجديد العقد',1],
-                                ['تاريخ التقييم','Y/MM/dd'],
+                                ['تاريخ التقييم',new Date().toJSON().slice(0, 10)],
                                 ['اجمالي عدد الوحدات في العقار',1],
                             ],
                             columns:   columns=[
-                                {    type: 'text',        title:'بيان' ,width:'280px'  ,readonly:true        },
-                                {    type: 'number',        title:'القيمة',width:'120px'       }
+                                {    type: 'text',        title:'بيان' ,width:'350px'  ,readonly:true        },
+                                {    type: 'number',        title:'القيمة',width:'200px'       }
                             ],
 
                             mergeCells:{
                                 // B40:[2,1]
                             },
-                            tableWidth: `470px`,
+                            tableWidth: `600px`,
                             tableOverflow:true,
                             allowDeleteRow:false,
                             allowInsertColumn:false,
@@ -2355,15 +2382,15 @@
                                 ['اجمالي القيمة السوقية للعقار',0],
                             ],
                             columns:   columns=[
-                                {    type: 'text',        title:'البيان' ,width:'250px' ,readonly:true       },
-                                {    type: 'number',        title:'المجموع',width:'120px'       }
+                                {    type: 'text',        title:'البيان' ,width:'350px' ,readonly:true       },
+                                {    type: 'number',        title:'المجموع',width:'200px'       }
                             ],
 
                             mergeCells:{
                                 A2:[2,1],
                                 A8:[2,1],
                             },
-                            tableWidth: `450px`,
+                            tableWidth: `600px`,
                             tableOverflow:true,
                             allowDeleteRow:false,
                             allowInsertColumn:false,
@@ -2442,7 +2469,7 @@
                                         parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="12"]`).text())])
                             }
                     })
-                    }, 3500);
+                    }, 1500);
                     return;
             break
             case 'investment_shortened':
