@@ -130,6 +130,11 @@
     height: 67px;
     align-items: center;
     }
+    #spreadsheet0211 .jexcel_selectall,#spreadsheet0211 .jexcel_row,#spreadsheet0211 colgroup > col:first-child,
+    #capitalization_direct .jexcel_selectall,#capitalization_direct .jexcel_row,#capitalization_direct  colgroup > col:first-child,
+    #basic_assumptions_table .jexcel_selectall,#basic_assumptions_table .jexcel_row,#basic_assumptions_table colgroup > col:first-child{
+        display: none !important
+    }
 </style>
 @endsection
 @section('frontend-main')
@@ -733,7 +738,11 @@
                     {
                         if(c ==1)
                         {
-
+                           if(parseInt(value) ==3)
+                           {
+                                let insert_capitalization_table = confirm('هل تريد إدراج جدول الرسملة؟')
+                                if(insert_capitalization_table) window.localStorage.setItem('insert_capitalization_table',1)
+                           }
                             prepareSheet(parseInt(value),false);
 
                         }else{
@@ -1148,15 +1157,6 @@
                         [$(`#value_equalizer_table td[data-x="0"][data-y="${row_number}"]`).text(),parseFloat($(`#${table_id} td[data-x="${x}"][data-y="${y}"]`).text()),0,parseFloat($(`#${table_id} td[data-x="${x}"][data-y="${y}"]`).text())])
 
         // if(!$(`#value_equalizer_table td[data-x="3"][data-y="${selected_methods.length}"]`).length)
-    }
-    var SUMCOL = function(instance, columnId) {
-                        var total = 0;
-                        for (var j = 0; j < instance.options.data.length; j++) {
-                            if (Number(instance.records[j][columnId].innerHTML)) {
-                                total += Number(instance.records[j][columnId].innerHTML);
-                            }
-                        }
-                        return total;
     }
    function handleSheet(type,columns,data)
    {
@@ -2299,14 +2299,17 @@
                     var percentged_rows =[1,4,7]
                 var currency_rows =[0,2,3,5,6,9]
                 $('#spreadsheet'+active_row+'211').parent().prepend(`
-                <div>
-                        <h6>الافتراضات الأساسية</h6>
-                        <div id="basic_assumptions_table"></div>
-                </div>
+                <div class="d-flex justify-content-between mt-2">
+                    <div>
+                            <h6>الافتراضات الأساسية</h6>
+                            <div id="basic_assumptions_table"></div>
+                    </div>
+
+
+                    </div>
                 `)
                 $('#spreadsheet'+active_row+'211').parent().append(`
-                <div id="investement_method_calculator" class="">
-
+                <div id="investement_method_calculator">
                     <div>
                         <h6  class="d-flex justify-content-between align-items-center"><span>حساب قيمة العقار</span>
                             <button class="btn btn-sm  text-dark " style="       font-size: 13px;
@@ -2333,14 +2336,14 @@
                                 ['اجمالي عدد الوحدات في العقار',1],
                             ],
                             columns:   columns=[
-                                {    type: 'text',        title:'بيان' ,width:'350px'  ,readonly:true        },
-                                {    type: 'number',        title:'القيمة',width:'200px'       }
+                                {    type: 'text',        title:'بيان' ,width:'320px'  ,readonly:true        },
+                                {    type: 'number',        title:'القيمة',width:'100px'       }
                             ],
 
                             mergeCells:{
                                 // B40:[2,1]
                             },
-                            tableWidth: `600px`,
+                            tableWidth: `450px`,
                             tableOverflow:true,
                             allowDeleteRow:false,
                             allowInsertColumn:false,
@@ -2364,6 +2367,84 @@
 
                             }
                     })
+                    if(window.localStorage.getItem('insert_capitalization_table') == 1)
+                    {
+                        $('#basic_assumptions_table').parent().parent().append(`
+                            <div>
+                                <h6>طريقة الرسملة المباشرة</h6>
+                                <div id="capitalization_direct"></div>
+                            </div>
+                        `)
+                        //capitalization direct
+                        var capitalization_direct = jspreadsheet(document.querySelector('#capitalization_direct'), {
+                                data:[
+                                    ['اجمالي الدخل السنوي',0],
+                                    ['نسبة خسائر الائتمان والأشغار',0],
+                                    ['خسائر الأشغار',0],
+                                    ['اجمالي الدخل الفعلي',0],
+                                    ['نسبة المصاريف التشغيلية من اجمالي الدخل السنوي',0],
+                                    ['النفقات التشغيلية',0],
+                                    ['صافي الدخل التشغيلي NOI',0],
+                                    ['معدل الرسملة',0],
+                                    ['معامل الشراء الى الأبد',0],
+                                    ['قيمة العقار',0]
+                                ],
+                                columns:   columns=[
+                                    {    type: 'text',        title:'البند' ,width:'320px' ,readonly:true       },
+                                    {    type: 'number',        title:'القيمة',width:'100px'       }
+                                ],
+
+                                mergeCells:{
+                                },
+                                tableWidth: `450px`,
+                                tableOverflow:true,
+                                allowDeleteRow:false,
+                                allowInsertColumn:false,
+                                allowInsertRow:false,
+                                style: {
+                                    // A2:'background-color: #B6DDE8;color:#000;font-weight:bold',
+                                    // A8:'background-color: #B6DDE8;color:#000;font-weight:bold',
+                                    // A13:'background-color: #B6DDE8;color:#000;font-weight:bold',
+                                    // B13:'color:#000;font-weight:bold',
+                                },
+                                onload:function(instance, cell, x, y, value) {
+                                    //set the signs
+                                    [0,2,3,5,6,9].forEach((y,i) => {
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال </span>");
+                                    })
+
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).append("<span  class='ml-1'>% </span>");
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).append("<span  class='ml-1'>% </span>");
+
+
+                                },
+                                oneditionend:function(instance, cell, x, y, value) {
+
+                                    let items = selected_methods.filter(item=> item.substring(1,4)=='211');
+
+
+                                    //set the signs
+                                    [0,2,3,5,6,9].forEach((y,i) => {
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال </span>");
+                                    })
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).append("<span  class='ml-1'>% </span>");
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).append("<span  class='ml-1'>% </span>");
+
+
+
+                                },
+                                onchange:function(instance, cell, x, y, value) {
+                                    //set the signs ريال والمساحة
+                                    [0,2,3,5,6,9].forEach((y,i) => {
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال </span>");
+                                    })
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).append("<span  class='ml-1'>% </span>");
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).append("<span  class='ml-1'>% </span>");
+
+
+                                }
+                        })
+                    }
                     //value calculator table
                     var value_calculator = jspreadsheet(document.querySelector('#value_calculator'), {
                             data:[
@@ -2382,7 +2463,7 @@
                                 ['اجمالي القيمة السوقية للعقار',0],
                             ],
                             columns:   columns=[
-                                {    type: 'text',        title:'البيان' ,width:'350px' ,readonly:true       },
+                                {    type: 'text',        title:'البيان' ,width:'450px' ,readonly:true       },
                                 {    type: 'number',        title:'المجموع',width:'200px'       }
                             ],
 
@@ -2390,7 +2471,7 @@
                                 A2:[2,1],
                                 A8:[2,1],
                             },
-                            tableWidth: `600px`,
+                            tableWidth: `700px`,
                             tableOverflow:true,
                             allowDeleteRow:false,
                             allowInsertColumn:false,
@@ -2469,6 +2550,7 @@
                                         parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="12"]`).text())])
                             }
                     })
+
                     }, 1500);
                     return;
             break
