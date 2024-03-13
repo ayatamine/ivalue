@@ -132,6 +132,7 @@
     }
     #spreadsheet0211 .jexcel_selectall,#spreadsheet0211 .jexcel_row,#spreadsheet0211 colgroup > col:first-child,
     #capitalization_direct .jexcel_selectall,#capitalization_direct .jexcel_row,#capitalization_direct  colgroup > col:first-child,
+    #value_calculator .jexcel_selectall,#value_calculator .jexcel_row,#value_calculator colgroup > col:first-child,
     #basic_assumptions_table .jexcel_selectall,#basic_assumptions_table .jexcel_row,#basic_assumptions_table colgroup > col:first-child{
         display: none !important
     }
@@ -558,6 +559,7 @@
             draggable: false
         });
 </script> --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     var childNumberprice = 2;
@@ -740,12 +742,27 @@
                         {
                            if(parseInt(value) ==3)
                            {
-                                let insert_capitalization_table = confirm('هل تريد إدراج جدول الرسملة؟')
-                                if(insert_capitalization_table) window.localStorage.setItem('insert_capitalization_table',1)
-                           }
-                            prepareSheet(parseInt(value),false);
+                                Swal.fire({
+                                    title: 'هل تريد إدراج جدول الرسملة؟',
+                                    showCancelButton: true,
+                                    confirmButtonText: "نعم",
+                                    cancelButtonText: `لا`
+                                    }).then((result) => {
+                                    /* Read more about isConfirmed, isDenied below */
+                                    if (result.value == true) {
+                                        window.localStorage.setItem('insert_capitalization_table',1)
+                                    } else if (result.isDenied) {
+                                        window.localStorage.removeItem('insert_capitalization_table')
+                                    }
+                                });
+                           }else
+                            {
+                                window.localStorage.removeItem('insert_capitalization_table')
+                            }
+                            if([4,5,6,7,8,9].indexOf(parseInt(value) == -1)) prepareSheet(parseInt(value),false);
 
-                        }else{
+                        }
+                        else{
                             prepareSheet(parseInt(value),true);
 
                         }
@@ -1122,7 +1139,6 @@
                     handleSheet('comparative_summation',columns,data);
                     break;
                 case 3://مفصل استثمار
-                        //columns for أرض
 
                     handleSheet('investment_detailed',columns,data);
                     break;
@@ -1134,6 +1150,19 @@
 
                 default:
                     handleSheet('comparative_heuristic',columns,data);
+                    break;
+            }
+        }else
+        {
+            switch (value) {
+
+                case 5://طريقة الارباح
+
+                    handleSheet('profits',columns,data);
+                    break;
+
+                default:
+                    // handleSheet('comparative_heuristic',columns,data);
                     break;
             }
         }
@@ -2643,6 +2672,297 @@
                             })
                             currency_rows.forEach(y => {
                                 if(!$(`#spreadsheet${active_row}212 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}212 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            })
+                             updateValueEqualizerTable(instance,1,9)
+                        }
+                    })
+                break
+            case 'profits':
+                Swal.fire({
+                    title: 'هل تريد إدراج جدول الرسملة؟',
+                    showCancelButton: true,
+                    confirmButtonText: "نعم",
+                    cancelButtonText: `لا`
+                    }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.value ==true) {
+                       Swal.fire({
+                        title: "طرق معدل الرسملة",
+                        input: "select",
+                        inputOptions: {
+                            method1: "طريقة الاستخلاص من السوق",
+                            method2: "طريقة العائد على المقرض",
+                            method3: "طريقة المسح السوقي",
+                        },
+                        inputPlaceholder: "اختر الطريقة",
+                        showCancelButton: true,
+                        inputValidator: (value) => {
+                            //add dom element
+
+                            switch (value) {
+                                case 'method1':
+                                    $(`#spreadsheet${active_row}25`).parent().prepend(`
+                                        <div>
+                                            <h6>طريقة الاستخلاص من السوق</h6>
+                                            <div id="capitalization_method"></div>
+                                        </div>
+                                    `)
+                                    //capitalization direct
+                                    var capitalization_method = jspreadsheet(document.querySelector('#capitalization_method'), {
+                                            data:[
+                                                ['الحي',"{{$estate->city?->zone?->name}}","{{$estate->city?->zone?->name}}","{{$estate->city?->zone?->name}}"],
+                                                ['نوع العقار',"{{$estate->kind?->name}}","{{$estate->kind?->name}}","{{$estate->kind?->name}}"],
+                                                ['المساحة (م2)',"{{$estate->land_size}}","{{$estate->land_size}}","{{$estate->land_size}}"],
+                                                ['الايجار السنوي(ريال)',0,0,0],
+                                                ['نسبة المصروفات المتوقعة من الايجار',0,0,0],
+                                                ['صافي الدخل السنوي (ريال)','=ROUND((1-B5*0.01)*B4 ,0)','=ROUND((1-C5*0.01)*C4 ,0)','=ROUND((1-D5*0.01)*D4 ,0)'],
+                                                ['تاريخ البيع',new Date().toJSON().slice(0, 10),new Date().toJSON().slice(0, 10),new Date().toJSON().slice(0, 10)],
+                                                ['قيمة البيع (ريال)',0,0,0],
+                                                ['شروط البيع',"نقدا بدون شروط","نقدا بدون شروط","نقدا بدون شروط"],
+                                                ['معدل الخصم','=ROUND((B6/B8)*100,2)','=ROUND((C6/C8)*100,2)','=ROUND((D6/D8)*100,2)'],
+                                                ['','متوسط معدل الرسملة','','=ROUND((D10+C10+B10)/3 ,2)']
+                                            ],
+                                            columns:   columns=[
+                                                {    type: 'text',        title:'اسم العقار' ,width:'320px' ,readonly:true       },
+                                                {    type: 'text',        title:'عقار 1' ,width:'150px'        },
+                                                {    type: 'text',        title:'عقار 2' ,width:'150px'       },
+                                                {    type: 'number',        title:'عقار 3',width:'150px'       }
+                                            ],
+
+                                            mergeCells:{
+                                                B11:[2,1]
+                                            },
+                                            tableWidth: `900px`,
+                                            tableOverflow:true,
+                                            allowDeleteRow:false,
+                                            allowInsertColumn:false,
+                                            allowInsertRow:false,
+                                            style: {
+                                                D11:'background-color: #B6DDE8;color:#000;font-weight:bold',
+                                                // A8:'background-color: #B6DDE8;color:#000;font-weight:bold',
+                                                // A13:'background-color: #B6DDE8;color:#000;font-weight:bold',
+                                                // B13:'color:#000;font-weight:bold',
+                                            },
+                                            onload:function(instance, cell, x, y, value) {
+                                                //set the signs
+                                                [4,9,10].forEach((y,i) => {
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                })
+
+
+                                            },
+                                            oneditionend:function(instance, cell, x, y, value) {
+
+                                            //set the signs
+                                            [4,9,10].forEach((y,i) => {
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                })
+
+
+                                            },
+                                            onchange:function(instance, cell, x, y, value) {
+                                            //set the signs
+                                            [4,9,10].forEach((y,i) => {
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                })
+                                            }
+                                    })
+                                    break;
+                                case 'method2':
+                                    $(`#spreadsheet${active_row}25`).parent().prepend(`
+                                        <div class="d-flex justify-content-between mt-2">
+                                            <div>
+                                                <h6>نسبة تغطية الدين</h6>
+                                                <div id="debt_coverage"></div>
+                                            </div>
+                                            <div>
+                                                <h6>تصحيح معدل الرسملة</h6>
+                                                <div id="capitalization_correction"></div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-2">
+                                            <div>
+                                                <h6>ثابت القرض العقاري</h6>
+                                                <div id="fixed_loan"></div>
+                                            </div>
+                                            <div>
+                                                <h6>نسبة القرض للقيمة</h6>
+                                                <div id="loan_value_ratio"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2">
+                                                <h6>طريقة العائد على المقرض"</h6>
+                                                <div id="capitalization_method"></div>
+                                        </div>
+                                    `)
+                                    //capitalization direct
+                                    var capitalization_method = jspreadsheet(document.querySelector('#capitalization_method'), {
+                                            data:[
+                                                ['صافي الدخل التشغيلي NOI',0],
+                                                ['نسبة التمويل الذاتي',0],
+                                                ['قيمة العقار',0],
+                                                ['معدل الفائدة',0],
+                                                ['فترة استحقاق القرض',0],
+
+                                            ],
+                                            columns:   columns=[
+                                                {    type: 'text',        title:'البند' ,width:'320px' ,readonly:true       },
+                                                {    type: 'text',        title:'القيمة' ,width:'200px'        },
+                                            ],
+
+                                            mergeCells:{
+                                                B11:[2,1]
+                                            },
+                                            tableWidth: `600px`,
+                                            tableOverflow:true,
+                                            allowDeleteRow:false,
+                                            allowInsertColumn:false,
+                                            allowInsertRow:false,
+                                            style: {
+                                                D11:'background-color: #B6DDE8;color:#000;font-weight:bold',
+                                                // A8:'background-color: #B6DDE8;color:#000;font-weight:bold',
+                                                // A13:'background-color: #B6DDE8;color:#000;font-weight:bold',
+                                                // B13:'color:#000;font-weight:bold',
+                                            },
+                                            onload:function(instance, cell, x, y, value) {
+                                                //set the signs
+                                                [4,9,10].forEach((y,i) => {
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                })
+
+
+                                            },
+                                            oneditionend:function(instance, cell, x, y, value) {
+
+                                            //set the signs
+                                            [4,9,10].forEach((y,i) => {
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                })
+
+
+                                            },
+                                            onchange:function(instance, cell, x, y, value) {
+                                            //set the signs
+                                            [4,9,10].forEach((y,i) => {
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                    if(!$(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
+                                                })
+                                            }
+                                    })
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        }
+                        });
+                    } else if (result.isDenied) {
+                    }
+                });
+
+                //25 means الاسلوب الثاني والطريقة رقم
+                if(selected_methods.indexOf(active_row+'25') != -1) return ;
+                //if it is the same row choice by checking if active_row+111 exist
+                [24,26].forEach((way,i)=>{
+                    if(selected_methods.indexOf(active_row+way) != -1 )
+                    {
+                        $('#spreadsheet'+active_row+way).parent().remove();
+                        selected_methods = selected_methods.filter(item => item != active_row+way)
+                    }
+                })
+                //process if the table doesnt exist
+                selected_methods.push(active_row+'25')
+                $('#spreadsheet_block').append(`
+                    <div>
+                        <hr class="my-1">
+                        <h6 >جدول طريقة الأرباح</h6>
+                        <div id="spreadsheet${active_row}25"></div>
+                    </div>
+                `)
+                if(parseInt(active_row) ==0)
+                {
+                    // let last_row_number = $(`#spreadsheet${active_row}111  tbody tr:last-child td`).data('y');
+                      $(`#value_equalizer_table td[data-x="0"][data-y="0"]`).text(
+                        selected_method_name
+                      );
+
+                }else{
+
+                    value_equalizer_table.setRowData(
+                        ["sddd",0,0,0]
+                    )
+                }
+                var percentged_rows =[5,11]
+                var currency_rows =[0,1,2,3,4,6,7,8,9,10,12,13];
+
+                choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'+active_row+'25'), {
+                        data:[
+                            ['متوسط إجمالي الدخل السنوي','0'],
+                            ['متوسط إجمالي المشتريات','0'],
+                            ['اجمالي الربح','=B1-B2'],
+                            ['متوسط التكاليف الغير مباشرة','0'],
+                            ['صافي الربح(الرصيد القابل للتوزيع)','=ROUND(B3-B4,3)'],
+                            ['نسبة حصة المشغل','0'],
+                            ['حصة المشغل','=ROUND(B6*B5*0.01,0)'],
+                            ['اجمالي الايجارات الاخرى','0'],
+                            ['اجمالي الايجار (القيمة السنوي)','=B5-B7+B8'],
+                            ['اجمالي مصروفات العقار','0'],
+                            ['صافي الايجار السنوي','=B9-B10'],
+                            ['معدل الرسملة','0'],
+                            ['معدل شراء السنوات','=ROUND(1/B12 , 3)'],
+                            ['قيمة العقار','=ROUND(B11*B13*0.01, 3)'],
+                        ],
+                        columns:   columns=[
+                            {    type: 'text',        title:'بيان'         },
+                            {    type: 'number',        title:'قيمة'       }
+                        ],
+
+                        mergeCells:{
+                            // B40:[2,1]
+                        },
+                        tableWidth: `950px`,
+                        tableOverflow:true,
+                        defaultColWidth:'430px',
+                        style: {
+                            B14:'background-color: #EEECE1;color:#000;font-weight:bold',
+                        },
+                        onload:function(instance, cell, x, y, value) {
+                            percentged_rows.forEach(y => {
+                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                            })
+                            currency_rows.forEach(y => {
+                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            })
+                             updateValueEqualizerTable(instance,1,9)
+                        },
+                        oneditionend:function(instance, cell, x, y, value) {
+                            percentged_rows.forEach(y => {
+                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                            })
+                            currency_rows.forEach(y => {
+                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            })
+                             updateValueEqualizerTable(instance,1,9)
+
+                        },
+                        onchange:function(instance, cell, x, y, value) {
+                            percentged_rows.forEach(y => {
+                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                            })
+                            currency_rows.forEach(y => {
+                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
                             })
                              updateValueEqualizerTable(instance,1,9)
                         }
