@@ -122,7 +122,7 @@
     .cost_way {
         display: none
     }
-    #spreadsheet0211 thead td:not(:first-child){
+    #spreadsheet0211 thead tr:not(:first-child) td:not(:first-child){
         white-space: break-spaces;
     word-wrap: break-word;
     display: inline-flex;
@@ -752,25 +752,6 @@
                     {
                         if(c ==1)
                         {
-                           if(parseInt(value) ==3)
-                           {
-                                Swal.fire({
-                                    title: 'هل تريد إدراج جدول الرسملة؟',
-                                    showCancelButton: true,
-                                    confirmButtonText: "نعم",
-                                    cancelButtonText: `لا`
-                                    }).then((result) => {
-                                    /* Read more about isConfirmed, isDenied below */
-                                    if (result.value == true) {
-                                        window.localStorage.setItem('insert_capitalization_table',1)
-                                    } else if (result.isDenied) {
-                                        window.localStorage.removeItem('insert_capitalization_table')
-                                    }
-                                });
-                           }else
-                            {
-                                window.localStorage.removeItem('insert_capitalization_table')
-                            }
                             if([4,5,6,7,8,9].indexOf(parseInt(value) == -1)) prepareSheet(parseInt(value),false);
 
                         }
@@ -2152,22 +2133,31 @@
                 */
                 if(selected_methods.indexOf(active_row+'211') != -1) return ;
                 //if it is the same row choice by checking if active_row+111 exist
-                if(selected_methods.indexOf(active_row+'212') != -1 )
-                {
-                    $('#spreadsheet'+active_row+'212').parent().remove();
-                    selected_methods = selected_methods.filter(item => item != active_row+'212')
-                }
+
+                ['212','25','26'].forEach(element => {
+                    if(selected_methods.indexOf(active_row+element) != -1 )
+                    {
+                        $('#spreadsheet'+active_row+element).parent().remove();
+                        selected_methods = selected_methods.filter(item => item != active_row+element)
+                    }
+                });
+
                 //process if the table doesnt exist
                 selected_methods.push(active_row+'211')
                 $('#spreadsheet_block').append(`
                     <div>
                         <hr class="my-1">
                         <h6  class="d-flex justify-content-between align-items-center"><span>جدول طريقة الاستثمار - مفصل</span>
-                            <button class="btn btn-sm  text-dark " style="     font-size: 13px;
-                            background: #f3f3f3;
-                            border: 1px solid #d4d4d4;
-                            padding: 6px 1rem;margin-left: 1.5rem;" id="add_investement_row" > + سطر جديد</button>
-                            </h6>
+                            <div>
+                                <button class="btn btn-sm  text-white " style="     font-size: 13px;
+                                background: #00a1b5;
+                                border: 1px solid #d4d4d4;
+                                padding: 6px 1rem;margin-left: 0.5rem;" id="insert_capitalization_table" >إدراج جدول الرسملة </button>
+                                <button class="btn btn-sm  text-dark " style="     font-size: 13px;
+                                background: #f3f3f3;
+                                border: 1px solid #d4d4d4;
+                                padding: 6px 1rem;margin-left: 1.5rem;" id="add_investement_row" > + سطر جديد</button>
+                            </div>
                         </h6>
                         <div id="spreadsheet${active_row}211"></div>
                     </div>
@@ -2185,7 +2175,7 @@
                         [selected_method_name,0,0,0]
                     )
                 }
-                data =[[1,'','','','','','','','',new Date().toJSON().slice(0, 10),'','','','','','','','','','','','','','','','','']
+                data =[[1,'','','','','','','','',new Date().toJSON().slice(0, 10),'','','','','','','','','','','','','','','']
                 ,['الإجمالي',0,0,0,'',0,0,'','','','','',0,'',0,'',0,0,'','','','','','','',0,0]
                     ];
                     columns=[
@@ -2199,7 +2189,7 @@
                         {    type: 'number',        title:'صافي الايجار السنوي للمتر المربع' ,  mask:"0.00 ريال"              },
                         {    type: 'calendar',        title:'تاريخ انتهاء العقد'   ,options: { format:'YYYY-MM-DD' },       },
                         {    type: 'number',        title:'الفترة المتبقية لانتهاء العقد'  , mask:"0.00 سنة"       },
-                        {    type: 'number',        title:'معدل العائد للأبدية قبل انتهاء العقد',     mask:"0.00%"        },
+                        {    type: 'number',        title:'معدل العائد للأبدية قبل انتهاء العقد',     mask:"0.00 %"        },
                         {    type: 'number',        title:'عامل شراء السنوات لفترة محددة',mask:'0.00'        },
                         {    type: 'text',        title:'القيمة السوقية',  mask:"0.00 ريال"  },
                         {    type: 'text',        title:'الايجار للمتر المربع بعد التجديد',  mask:"0.00 ريال"  },
@@ -2207,8 +2197,8 @@
                         {    type: 'number',        title:'نسبةالمصاريف التشغيلية2',     mask:"0.00%"        },
                         {    type: 'text',        title:'اجمالي المصاريف التشغيلية2',  mask:"0.00 ريال"  },
                         {    type: 'text',        title:'صافي الايجار السنوي2' ,  mask:"0.00 ريال"  ,decimal:','},
-                        {    type: 'text',        title:'صافي الايجار السنوي للمتر المربع2',  mask:"0.00 ريال"  },
-                        {    type: 'number',        title:'معدل الأشغال',    mask:"0.00%" ,       },
+                        // {    type: 'text',        title:'صافي الايجار السنوي للمتر المربع2',  mask:"0.00 ريال"  },
+                        // {    type: 'number',        title:'معدل الأشغال',    mask:"0.00%" ,       }, //20
                         {    type: 'text',        title:'الايجار السنوي للمتر المربع',  mask:"0.00 ريال"  },
                         {    type: 'number',        title:'معدل الأشغال2',     mask:"0.00%" ,       },
                         {    type: 'text',        title:'معدل العائد للأبدية بعد تجديد العقد' ,mask:'0.00' },
@@ -2235,6 +2225,8 @@
                         tableOverflow: true,
                         tableWidth: `950px`,
                         tableOverflow:true,
+                        allowInsertColumn:false,
+                        allowInsertRow:false,
                         style: {
                             // C40:'background-color: #EEECE1;color:#000;font-weight:bold',
                             // D40:'background-color: #EEECE1;color:#000;font-weight:bold',
@@ -2248,21 +2240,34 @@
                             // change footer background
                             $('#'+id).find('div.jexcel_content > table > tbody tr:last-child').css({'color':'#000','background-color':'#B6DDE8'})
 
+                            //add a new row on top
+                            $('#'+instance.getAttribute('id')).find('div.jexcel_content > table > thead').prepend(
+                                `
+                                <tr><td colspan="3" style="background-color:#F2F2F2;text-align:center">بيانات المستأجرين</td><td colspan="10" style="background-color:#EAF1DD;text-align:center">التقييم الى نهاية عقد الايجار الحالي</td>
+                                    <td colspan="12" style="background-color:#E5B8B7;text-align:center">التقييم عند تجديد العقد</td>
+                                    </tr>
+                                `
+                            )
                         },
                         oneditionend:function(instance, cell, x, y, value) {
 
                             let rows_count = $('#'+instance.getAttribute('id')).find('div.jexcel_content > table > tbody tr').length - 1 ;
                             let column_type =$(`#${instance.getAttribute('id')} td[data-x="${x}"][data-y="${rows_count}"]`).text().split(' ')[1]
 
+                            //write the signs m2, %, ريال
                             column_count=0;
                             for (let index = 0; index < rows_count; index++) {
                                   column_count+= ~~parseFloat( $(`#${instance.getAttribute('id')} td[data-x="${x}"][data-y="${index}"]`).text())
                             }
                             if(x == 3)  $(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${rows_count}"]`).text(column_count/rows_count+` ${column_type}`) //medium
 
-                            if([1,2,3,5,6,12,14,16,17,25,26].indexOf(x) != -1) $(`#${instance.getAttribute('id')} td[data-x="${x}"][data-y="${rows_count}"]`).text(column_count+` ${column_type}`)
+                            if([2,3,5,6,12,14,16,17,23,24].indexOf(x) != -1) $(`#${instance.getAttribute('id')} td[data-x="${x}"][data-y="${rows_count}"]`).text(column_count+` ${column_type}`)
+                            if(x == 1)  $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${rows_count}"]`).text(column_count/rows_count+` م2 `)
+
                             //from basic assumptions table
-                            w_record_value = parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="3"]').text())
+                            e_record_value = parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="1"]').text())
+                            k_record_value = parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="2"]').text())
+                            u_record_value = parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="3"]').text())
                             l_record_value = parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="2"]').text())
                             n_record_value = parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="4"]').text())
                             t_record_value = parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="0"]').text())
@@ -2278,27 +2283,35 @@
 
                             for (let index = 0; index <  instance.jexcel.getData().length; index++) {
 
-                                let calc_l = (((1-(1/Math.pow(((1+l_record_value *0.01),j_record_value))))/l_record_value) * 100).toFixed(2)
+                                let calc_l = (((1-(1/Math.pow((1+l_record_value *0.01),parseFloat(j_record_value))))/l_record_value) * 100).toFixed(2)
 
                                 instance.jexcel.setValue('D'+index+"",`=C${index}/B${index}`);
+                                instance.jexcel.setValue('E'+index+"",`${e_record_value}`);
                                 instance.jexcel.setValue('F'+index+"",`=E${index}*C${index}*0.01`);
                                 instance.jexcel.setValue('G'+index+"",`=C${index}-F${index}`);
                                 instance.jexcel.setValue('H'+index+"",`=G${index}/B${index}`);
                                 instance.jexcel.setValue('J'+index+"",`${j_record_value}`);
+                                instance.jexcel.setValue('K'+index+"",`${k_record_value}`);
                                 instance.jexcel.setValue('L'+index+"",`${calc_l}`);
                                 instance.jexcel.setValue('M'+index+"",`=(L${index}*G${index})`);
                                 instance.jexcel.setValue('N'+index+"",`=(1+${n_record_value}*0.01)*D${index}`);
                                 instance.jexcel.setValue('O'+index+"",`=N${index}*B${index}`);
+                                instance.jexcel.setValue('P'+index+"",`${e_record_value}`);
                                 instance.jexcel.setValue('Q'+index+"",`=O${index}*P${index}*0.01`);
                                 instance.jexcel.setValue('R'+index+"",`=O${index}-Q${index}`);
                                 instance.jexcel.setValue('S'+index+"",`=R${index}/B${index}`);
                                 instance.jexcel.setValue('T'+index+"",`=1-${t_record_value}*0.01`);
-                                instance.jexcel.setValue('U'+index+"",`=R${index}/B${index}`);
-                                instance.jexcel.setValue('W'+index+"",`=100/(${w_record_value})`);
-                                instance.jexcel.setValue('X'+index,`=1/((1+(${w_record_value}*0.01))^${j_record_value})`);
-                                instance.jexcel.setValue('Y'+index+"",`=(X${index}*W${index})`);
-                                instance.jexcel.setValue('Z'+index+"",`=Y${index}*V${index}*R${index}`);
-                                instance.jexcel.setValue('AA'+index+"",`=Z${index}+M${index}`);
+                                // instance.jexcel.setValue('U'+index+"",`=R${index}/B${index}`);
+                                instance.jexcel.setValue('U'+index+"",`=100/(${u_record_value})`);
+                                // instance.jexcel.setValue('W'+index+"",`=100/(${w_record_value})`);
+                                instance.jexcel.setValue('V'+index+"",`=1/((1+(${t_record_value}*0.01))^${j_record_value})`);
+                                instance.jexcel.setValue('W'+index,`=U${index}^V${index}`);
+                                instance.jexcel.setValue('X'+index,`W${index}*T${index}*0.01*R${index}`);
+                                instance.jexcel.setValue('Y'+index+"",`=Z${index}+M${index}`);
+
+                                // instance.jexcel.setValue('Y'+index+"",`Y${index}*V${index}*R${index}`);
+                                // instance.jexcel.setValue('Z'+index+"",`=W${index}*T${index}*0.01*R${index}`);
+                                // instance.jexcel.setValue('AA'+index+"",`=Z${index}+M${index}`);
                             }
                             //تحديث عدد الوحدات في جدول الافتراضات
                             $('#basic_assumptions_table td[data-x="1"][data-y="6"]').text(parseInt(rows_count))
@@ -2338,32 +2351,32 @@
                         }
                     })
                     var percentged_rows =[1,4,7]
-                var currency_rows =[0,2,3,5,6,9]
-                $('#spreadsheet'+active_row+'211').parent().prepend(`
-                <div class="d-flex justify-content-between mt-2">
-                    <div>
-                            <h6>الافتراضات الأساسية</h6>
-                            <div id="basic_assumptions_table"></div>
-                    </div>
+                    var currency_rows =[0,2,3,5,6,9]
+                    $('#spreadsheet'+active_row+'211').parent().prepend(`
+                    <div class="d-flex justify-content-between mt-2">
+                        <div>
+                                <h6>الافتراضات الأساسية</h6>
+                                <div id="basic_assumptions_table"></div>
+                        </div>
 
 
-                    </div>
-                `)
-                $('#spreadsheet'+active_row+'211').parent().append(`
-                <div id="investement_method_calculator">
-                    <div>
-                        <h6  class="d-flex justify-content-between align-items-center"><span>حساب قيمة العقار</span>
-                            <button class="btn btn-sm  text-dark " style="       font-size: 13px;
-                        background: #00a1b5;
-                        border: 1px solid #d4d4d4;
-                        padding: 6px 1rem;
-                        margin-left: 1.5rem;
-                        color: white !important;" id="show_investement_table_result" >  عرض النتيجة</button>
-                            </h6>
-                        <div id="value_calculator"></div>
-                    </div>
-                    </div>`)
-                setTimeout(() => {
+                        </div>
+                    `)
+                    $('#spreadsheet'+active_row+'211').parent().append(`
+                    <div id="investement_method_calculator">
+                        <div>
+                            <h6  class="d-flex justify-content-between align-items-center"><span>حساب قيمة العقار</span>
+                                <button class="btn btn-sm  text-dark " style="       font-size: 13px;
+                            background: #00a1b5;
+                            border: 1px solid #d4d4d4;
+                            padding: 6px 1rem;
+                            margin-left: 1.5rem;
+                            color: white !important;" id="show_investement_table_result" >  عرض النتيجة</button>
+                                </h6>
+                            <div id="value_calculator"></div>
+                        </div>
+                        </div>`)
+                    setTimeout(() => {
 
                     //assumption table
                     var basic_assumptions = jspreadsheet(document.querySelector('#basic_assumptions_table'), {
@@ -2403,89 +2416,45 @@
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
                                 })
 
+                                l_record_value = parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="2"]').text())
+                                n_record_value = parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="4"]').text())
+                                t_record_value = parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="0"]').text())
+                                u_record_value = parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="3"]').text())
+                                e_record_value = parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="1"]').text())
+
+                                let investement_table =selected_methods.filter(item=> item.substring(1,4) =='211')
+                                if(investement_table[0])
+                                {
+
+
+                                    for (let index = 0; index <  $(`#spreadsheet${investement_table[0]} tr`).length -2; index++) {
+                                        if($(`#spreadsheet${investement_table[0]} td[data-x="8"][data-y="0"]`).text().length && $('#basic_assumptions_table td[data-x="1"][data-y="5"]').length)
+                                        {
+                                            j_record_value =((new Date($(`#spreadsheet${investement_table[0]} td[data-x="8"][data-y="${index}"]`).text()).getTime() - new Date($('#basic_assumptions_table td[data-x="1"][data-y="5"]').text()).getTime()) / 31536000000 ).toFixed(2)
+                                        }else
+                                        {
+                                            j_record_value =0;
+                                        }
+                                        let calc_l = (((1-(1/Math.pow((1+l_record_value *0.01),parseFloat(j_record_value))))/l_record_value) * 100).toFixed(2)
+
+                                        $(`#spreadsheet${investement_table[0]} td[data-x="4"][data-y="${index}"]`).text(parseFloat(e_record_value)+'%')
+                                        $(`#spreadsheet${investement_table[0]} td[data-x="15"][data-y="${index}"]`).text(parseFloat(e_record_value)+'%')
+                                        $(`#spreadsheet${investement_table[0]} td[data-x="10"][data-y="${index}"]`).text(parseFloat($('#basic_assumptions_table td[data-x="1"][data-y="2"]').text())+'%')
+                                        $(`#spreadsheet${investement_table[0]} td[data-x="11"][data-y="${index}"]`).text(calc_l)
+                                        $(`#spreadsheet${investement_table[0]} td[data-x="20"][data-y="${index}"]`).text((100 / u_record_value)+'%')
+                                        $(`#spreadsheet${investement_table[0]} td[data-x="21"][data-y="${index}"]`).text((1/(Math.pow((1+(t_record_value*0.01)),j_record_value)))+'%')
+                                        $(`#spreadsheet${investement_table[0]} td[data-x="13"][data-y="${index}"]`).text((1+(parseFloat(n_record_value)*0.01))*parseFloat($(`#spreadsheet${investement_table[0]} td[data-x="3"][data-y="${index}"]`).text())+'ريال')
+                                        $(`#spreadsheet${investement_table[0]} td[data-x="19"][data-y="${index}"]`).text(`1-${t_record_value}*0.01`+'ريال')
+                                    }
+                                }
+
+
                             },
                             onchange:function(instance, cell, x, y, value) {
 
                             }
                     })
-                    if(window.localStorage.getItem('insert_capitalization_table') == 1)
-                    {
-                        $('#basic_assumptions_table').parent().parent().append(`
-                            <div>
-                                <h6>طريقة الرسملة المباشرة</h6>
-                                <div id="capitalization_direct"></div>
-                            </div>
-                        `)
-                        //capitalization direct
-                        var capitalization_direct = jspreadsheet(document.querySelector('#capitalization_direct'), {
-                                data:[
-                                    ['اجمالي الدخل السنوي',0],
-                                    ['نسبة خسائر الائتمان والأشغار',0],
-                                    ['خسائر الأشغار',0],
-                                    ['اجمالي الدخل الفعلي',0],
-                                    ['نسبة المصاريف التشغيلية من اجمالي الدخل السنوي',0],
-                                    ['النفقات التشغيلية',0],
-                                    ['صافي الدخل التشغيلي NOI',0],
-                                    ['معدل الرسملة',0],
-                                    ['معامل الشراء الى الأبد',0],
-                                    ['قيمة العقار',0]
-                                ],
-                                columns:   columns=[
-                                    {    type: 'text',        title:'البند' ,width:'320px' ,readonly:true       },
-                                    {    type: 'number',        title:'القيمة',width:'100px'       }
-                                ],
 
-                                mergeCells:{
-                                },
-                                tableWidth: `450px`,
-                                tableOverflow:true,
-                                allowDeleteRow:false,
-                                allowInsertColumn:false,
-                                allowInsertRow:false,
-                                style: {
-                                    // A2:'background-color: #B6DDE8;color:#000;font-weight:bold',
-                                    // A8:'background-color: #B6DDE8;color:#000;font-weight:bold',
-                                    // A13:'background-color: #B6DDE8;color:#000;font-weight:bold',
-                                    // B13:'color:#000;font-weight:bold',
-                                },
-                                onload:function(instance, cell, x, y, value) {
-                                    //set the signs
-                                    [0,2,3,5,6,9].forEach((y,i) => {
-                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال </span>");
-                                    })
-
-                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).append("<span  class='ml-1'>% </span>");
-                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).append("<span  class='ml-1'>% </span>");
-
-
-                                },
-                                oneditionend:function(instance, cell, x, y, value) {
-
-                                    let items = selected_methods.filter(item=> item.substring(1,4)=='211');
-
-
-                                    //set the signs
-                                    [0,2,3,5,6,9].forEach((y,i) => {
-                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال </span>");
-                                    })
-                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).append("<span  class='ml-1'>% </span>");
-                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).append("<span  class='ml-1'>% </span>");
-
-
-
-                                },
-                                onchange:function(instance, cell, x, y, value) {
-                                    //set the signs ريال والمساحة
-                                    [0,2,3,5,6,9].forEach((y,i) => {
-                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال </span>");
-                                    })
-                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).append("<span  class='ml-1'>% </span>");
-                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).append("<span  class='ml-1'>% </span>");
-
-
-                                }
-                        })
-                    }
                     //value calculator table
                     var value_calculator = jspreadsheet(document.querySelector('#value_calculator'), {
                             data:[
@@ -2601,11 +2570,14 @@
                 */
                 if(selected_methods.indexOf(active_row+'212') != -1) return ;
                 //if it is the same row choice by checking if active_row+111 exist
-                if(selected_methods.indexOf(active_row+'211') != -1 )
-                {
-                    $('#spreadsheet'+active_row+'211').parent().remove();
-                    selected_methods = selected_methods.filter(item => item != active_row+'211')
-                }
+
+                ['211','25','26'].forEach(element => {
+                    if(selected_methods.indexOf(active_row+element) != -1 )
+                    {
+                        $('#spreadsheet'+active_row+element).parent().remove();
+                        selected_methods = selected_methods.filter(item => item != active_row+element)
+                    }
+                });
                 //process if the table doesnt exist
                 selected_methods.push(active_row+'212')
                 $('#spreadsheet_block').append(`
@@ -2690,6 +2662,376 @@
                     })
                 break
             case 'profits':
+
+
+
+                //25 means الاسلوب الثاني والطريقة رقم
+                if(selected_methods.indexOf(active_row+'25') != -1) return ;
+                //if it is the same row choice by checking if active_row+111 exist
+                items_with_same_parent_to_remove = ['211','212','26'];
+                items_with_same_parent_to_remove.forEach(element => {
+                    if(selected_methods.indexOf(active_row+element) != -1 )
+                    {
+                        $('#spreadsheet'+active_row+element).parent().remove();
+                        selected_methods = selected_methods.filter(item => item != active_row+element)
+                    }
+                });
+
+                //process if the table doesnt exist
+                selected_methods.push(active_row+'25')
+                $('#spreadsheet_block').append(`
+                    <div>
+                        <hr class="my-1">
+                        <h6  class="d-flex justify-content-between align-items-center"><span>جدول طريقة الأرباح - مفصل</span>
+                            <div>
+                                <button class="btn btn-sm  text-white " style="     font-size: 13px;
+                                background: #00a1b5;
+                                border: 1px solid #d4d4d4;
+                                padding: 6px 1rem;margin-left: 0.5rem;" id="insert_capitalization_table_revenus" >إدراج جدول الرسملة </button>
+                                <button class="btn btn-sm  text-dark " style="     font-size: 13px;
+                                background: #f3f3f3;
+                                border: 1px solid #d4d4d4;
+                                padding: 6px 1rem;margin-left: 1.5rem;" id="add_investement_row" > + سطر جديد</button>
+                            </div>
+                        </h6>
+                        <div id="spreadsheet${active_row}25"></div>
+                    </div>
+
+                `)
+                if(parseInt(active_row) ==0)
+                {
+                    // let last_row_number = $(`#spreadsheet${active_row}111  tbody tr:last-child td`).data('y');
+                      $(`#value_equalizer_table td[data-x="0"][data-y="0"]`).text(
+                        selected_method_name
+                      );
+
+                }else{
+
+                    value_equalizer_table.setRowData(
+                        ["sddd",0,0,0]
+                    )
+                }
+                var percentged_rows =[5,11]
+                var currency_rows =[0,1,2,3,4,6,7,8,9,10,13];
+
+                choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'+active_row+'25'), {
+                        data:[
+                            ['متوسط إجمالي الدخل السنوي','0'],
+                            ['متوسط إجمالي المشتريات','0'],
+                            ['اجمالي الربح','=B1-B2'],
+                            ['متوسط التكاليف الغير مباشرة','0'],
+                            ['صافي الربح(الرصيد القابل للتوزيع)','=ROUND(B3-B4,3)'],
+                            ['نسبة حصة المشغل','0'],
+                            ['حصة المشغل','=ROUND(B6*B5*0.01,0)'],
+                            ['اجمالي الايجارات الاخرى','0'],
+                            ['اجمالي الايجار (القيمة السنوي)','=B5-B7+B8'],
+                            ['اجمالي مصروفات العقار','0'],
+                            ['صافي الايجار السنوي','=B9-B10'],
+                            ['معدل الرسملة','0'],
+                            ['معامل شراء السنوات','=(1/B12) * 100 '],
+                            ['قيمة العقار','=ROUND(B11*B13*0.01, 3)'],
+                        ],
+                        columns:   columns=[
+                            {    type: 'text',        title:'بيان'         },
+                            {    type: 'number',        title:'قيمة'       }
+                        ],
+
+                        mergeCells:{
+                            // B40:[2,1]
+                        },
+                        tableWidth: `950px`,
+                        tableOverflow:true,
+                        allowDeleteRow:false,
+                        allowInsertColumn:false,
+                        allowInsertRow:false,
+                        defaultColWidth:'430px',
+                        style: {
+                            B14:'background-color: #EEECE1;color:#000;font-weight:bold',
+                        },
+                        onload:function(instance, cell, x, y, value) {
+                            percentged_rows.forEach(y => {
+                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                            })
+                            currency_rows.forEach(y => {
+                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            })
+                             updateValueEqualizerTable(instance,1,9)
+                        },
+                        oneditionend:function(instance, cell, x, y, value) {
+                            percentged_rows.forEach(y => {
+                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                            })
+                            currency_rows.forEach(y => {
+                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            })
+                             updateValueEqualizerTable(instance,1,13)
+
+                        },
+                        onchange:function(instance, cell, x, y, value) {
+                            percentged_rows.forEach(y => {
+                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
+                            })
+                            currency_rows.forEach(y => {
+                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
+                            })
+                             updateValueEqualizerTable(instance,1,13)
+                        }
+                    })
+                break
+            default:
+            choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'), {
+                    data:data,
+                    columns: columns,
+                    mergeCells:{
+                    },
+                    style: {
+                    },
+            })
+            break;
+        }
+
+
+
+//    })
+    }
+    $(function () {
+
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        //get saved data
+        $.ajax({
+                url: `{{route('getSavedTables',['estate_id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')])}}`,
+                type: 'GET',
+                dataType: "json",
+                success: function(response) {
+                    console.log(response)
+                    rating_ways_table.setData(response.rating_ways_table_data)
+                    value_equalizer_table.setData(response.value_equalizer_table_data)
+                    value_edit_table.setData(response.value_edit_table_data)
+
+                    response.rating_ways_table_data.forEach((item,index)=>{
+                        let concat = item.toString().replaceAll(',','')
+                        switch (concat) {
+                            case '111':
+                                prepareSheet(1,true);
+                                choosen_tables_data[index].setData(response.choosen_tables_data[index])
+                                active_row++;
+                                break;
+                            case '112':
+                                console.log('ind',index)
+                                prepareSheet(2,true);
+                                choosen_tables_data[index].setData(response.choosen_tables_data[index])
+                                active_row++;
+                                break;
+
+
+                            default:
+                                break;
+                        }
+                    })
+                },
+                error: function(error) {
+                    // Handle an error response
+                }
+        });
+
+        $('#save-copy').click(function (e) {
+        e.preventDefault();
+            let rating_ways_table_data = rating_ways_table.getData();
+            let value_equalizer_table_data = value_equalizer_table.getData();
+            let value_edit_table_data = value_edit_table.getData();
+            // send ajax
+            let choosen_tables_data_final = choosen_tables_data.map(item => item.getData())
+            $.ajax({
+                url: `{{route('save_estate_rating_tables',['estate_id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')])}}`,
+                type: 'POST',
+                dataType: "json",
+                data: {
+                    rating_ways_table_data,
+                   value_equalizer_table_data,
+                   value_edit_table_data,
+                   choosen_tables_data:choosen_tables_data_final
+                },
+                success: function(response) {
+                    console.log(response)
+                },
+                error: function(error) {
+                    // Handle an error response
+                }
+            });
+
+        })
+        //add new row on rating_ways_table
+        $(document).on('click','#add_rating_way_row',function(e){
+            e.preventDefault()
+           if(rating_ways_table.getData().length ==3 || selected_methods.length ==3)
+           {
+            alert('انتهى عدد الأسطر المحدد')
+            return ;
+           }
+           rating_ways_table.insertRow();
+        })
+        $(document).on('click','#add_investement_row',function(e){
+            e.preventDefault()
+
+            selected_methods.forEach(item =>{
+                new_row_number =choosen_tables_data[parseInt(item.substr(0,1))].getData().length-1;
+                if(item.substring(1,4) =='211') choosen_tables_data[parseInt(item.substr(0,1))].insertRow([]
+                ,new_row_number,
+                new_row_number);
+            })
+
+        })
+        $(document).on('click','#show_investement_table_result',function(e){
+            e.preventDefault()
+            let items = selected_methods.filter(item=> item.substring(1,4)=='211');
+
+            if ( items.length){
+                let table_id = `#spreadsheet${items[0]}`
+                let length = $(table_id).find('div.jexcel_content > table > tbody tr').length - 1 ;
+                //from the investement detailied method table
+                b_record_value = parseFloat($(`${table_id} td[data-x="1"][data-y="${length}"]`).text())
+                c_record_value = parseFloat($(`${table_id} td[data-x="2"][data-y="${length}"]`).text())
+                d_record_value = parseFloat($(`${table_id} td[data-x="3"][data-y="${length}"]`).text())
+                f_record_value = parseFloat($(`${table_id} td[data-x="5"][data-y="${length}"]`).text())
+                g_record_value = parseFloat($(`${table_id} td[data-x="6"][data-y="${length}"]`).text())
+                m_record_value = parseFloat($(`${table_id} td[data-x="12"][data-y="${length}"]`).text())
+                o_record_value = parseFloat($(`${table_id} td[data-x="14"][data-y="${length}"]`).text())
+                q_record_value = parseFloat($(`${table_id} td[data-x="16"][data-y="${length}"]`).text())
+                r_record_value = parseFloat($(`${table_id} td[data-x="17"][data-y="${length}"]`).text())
+                z_record_value = parseFloat($(`${table_id} td[data-x="25"][data-y="${length}"]`).text())
+                aa_record_value = parseFloat($(`${table_id} td[data-x="26"][data-y="${length}"]`).text())
+
+                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="0"]`).text(b_record_value+'م2')
+                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="2"]`).text(c_record_value+' ريال ')
+                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="3"]`).text(d_record_value+' ريال.م2 ')
+                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="4"]`).text(f_record_value+' ريال ')
+                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="5"]`).text(g_record_value+' ريال ')
+                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="6"]`).text(m_record_value+' ريال ')
+                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="8"]`).text(o_record_value+' ريال ')
+                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="9"]`).text(q_record_value+' ريال ')
+                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="10"]`).text(r_record_value+' ريال ')
+                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="11"]`).text(z_record_value+' ريال ')
+                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="12"]`).text(aa_record_value+' ريال ')
+
+                //update value equalizer table
+                value_equalizer_table.setRowData(0,
+                                        [$(`#value_equalizer_table td[data-x="0"][data-y="0"]`).text(),
+                                        parseFloat($(`#investement_method_calculator #value_calculator  td[data-x="1"][data-y="12"]`).text()),0,
+                                        parseFloat($(`#investement_method_calculator #value_calculator  td[data-x="1"][data-y="12"]`).text())])
+            }
+
+        })
+        $(document).on('click','#insert_capitalization_table',function(e){
+            e.preventDefault()
+            if(window.localStorage.getItem('insert_capitalization_table') == 1)
+            {
+                $(this).text('إدراج جدول الرسملة')
+                $(this).css('background','#00a1b5')
+                $('#capitalization_direct').parent().remove()
+                window.localStorage.removeItem('insert_capitalization_table')
+                return;
+            }
+
+                $(this).text('حدف جدول الرسملة')
+                $(this).css('background','red')
+                window.localStorage.setItem('insert_capitalization_table',1)
+                 $('#basic_assumptions_table').parent().parent().append(`
+                        <div>
+                            <h6>طريقة الرسملة المباشرة</h6>
+                            <div id="capitalization_direct"></div>
+                        </div>
+                `)
+                        //capitalization direct
+                var capitalization_direct = jspreadsheet(document.querySelector('#capitalization_direct'), {
+                                data:[
+                                    ['اجمالي الدخل السنوي',0],
+                                    ['نسبة خسائر الائتمان والأشغار',0],
+                                    ['خسائر الأشغار',0],
+                                    ['اجمالي الدخل الفعلي',0],
+                                    ['نسبة المصاريف التشغيلية من اجمالي الدخل السنوي',0],
+                                    ['النفقات التشغيلية',0],
+                                    ['صافي الدخل التشغيلي NOI',0],
+                                    ['معدل الرسملة',0],
+                                    ['معامل الشراء الى الأبد',0],
+                                    ['قيمة العقار',0]
+                                ],
+                                columns:   columns=[
+                                    {    type: 'text',        title:'البند' ,width:'320px' ,readonly:true       },
+                                    {    type: 'number',        title:'القيمة',width:'100px'       }
+                                ],
+
+                                mergeCells:{
+                                },
+                                tableWidth: `450px`,
+                                tableOverflow:true,
+                                allowDeleteRow:false,
+                                allowInsertColumn:false,
+                                allowInsertRow:false,
+                                style: {
+                                    // A2:'background-color: #B6DDE8;color:#000;font-weight:bold',
+                                    // A8:'background-color: #B6DDE8;color:#000;font-weight:bold',
+                                    // A13:'background-color: #B6DDE8;color:#000;font-weight:bold',
+                                    // B13:'color:#000;font-weight:bold',
+                                },
+                                onload:function(instance, cell, x, y, value) {
+                                    //set the signs
+                                    [0,2,3,5,6,9].forEach((y,i) => {
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال </span>");
+                                    })
+
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).append("<span  class='ml-1'>% </span>");
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).append("<span  class='ml-1'>% </span>");
+
+
+                                },
+                                oneditionend:function(instance, cell, x, y, value) {
+
+                                    let items = selected_methods.filter(item=> item.substring(1,4)=='211');
+
+
+                                    //set the signs
+                                    [0,2,3,5,6,9].forEach((y,i) => {
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال </span>");
+                                    })
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).append("<span  class='ml-1'>% </span>");
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).append("<span  class='ml-1'>% </span>");
+
+
+
+                                },
+                                onchange:function(instance, cell, x, y, value) {
+                                    //set the signs ريال والمساحة
+                                    [0,2,3,5,6,9].forEach((y,i) => {
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال </span>");
+                                    })
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).append("<span  class='ml-1'>% </span>");
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).append("<span  class='ml-1'>% </span>");
+
+
+                                }
+                })
+               document.querySelector('#capitalization_direct').scrollIntoView()
+
+        })
+        $(document).on('click','#insert_capitalization_table_revenus',function(e){
+            e.preventDefault()
+            if(window.localStorage.getItem('insert_capitalization_table_revenus') == 1)
+            {
+                $(this).text('إدراج جدول الرسملة')
+                $(this).css('background','#00a1b5')
+                if($('#capitalization_method').length) $('#capitalization_method').parent().remove()
+                if($('#capitalization_related_methods').length) $('#capitalization_related_methods').parent().remove()
+                window.localStorage.removeItem('insert_capitalization_table_revenus')
+                return;
+            }
+
+
+                //start insert tables
                 Swal.fire({
                     title: 'هل تريد إدراج جدول الرسملة؟',
                     showCancelButton: true,
@@ -2789,29 +3131,31 @@
                                 case 'method2':
                                     $(`#spreadsheet${active_row}25`).parent().prepend(`
                                         <hr>
-                                        <div class="d-flex justify-content-between mt-2">
-                                            <div>
-                                                <h6>نسبة تغطية الدين</h6>
-                                                <div id="debt_coverage"></div>
+                                        <div id="capitalization_related_methods">
+                                            <div class="d-flex justify-content-between mt-2">
+                                                <div>
+                                                    <h6>نسبة تغطية الدين</h6>
+                                                    <div id="debt_coverage"></div>
+                                                </div>
+                                                <div>
+                                                    <h6>تصحيح معدل الرسملة</h6>
+                                                    <div id="capitalization_correction"></div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h6>تصحيح معدل الرسملة</h6>
-                                                <div id="capitalization_correction"></div>
+                                            <div class="d-flex justify-content-between mt-2">
+                                                <div>
+                                                    <h6>ثابت القرض العقاري</h6>
+                                                    <div id="fixed_loan"></div>
+                                                </div>
+                                                <div>
+                                                    <h6>نسبة القرض للقيمة</h6>
+                                                    <div id="loan_value_ratio"></div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="d-flex justify-content-between mt-2">
-                                            <div>
-                                                <h6>ثابت القرض العقاري</h6>
-                                                <div id="fixed_loan"></div>
+                                            <div class="mt-2">
+                                                    <h6>طريقة العائد على المقرض"</h6>
+                                                    <div id="capitalization_method"></div>
                                             </div>
-                                            <div>
-                                                <h6>نسبة القرض للقيمة</h6>
-                                                <div id="loan_value_ratio"></div>
-                                            </div>
-                                        </div>
-                                        <div class="mt-2">
-                                                <h6>طريقة العائد على المقرض"</h6>
-                                                <div id="capitalization_method"></div>
                                         </div>
                                     `)
                                     //capitalization direct
@@ -3074,256 +3418,16 @@
                                 default:
                                     break;
                             }
+                            $(this).text('حدف جدول الرسملة')
+                            $(this).css('background','red')
+                            window.localStorage.setItem('insert_capitalization_table_revenus',1)
 
                         }
                         });
                     } else if (result.isDenied) {
                     }
                 });
-
-                //25 means الاسلوب الثاني والطريقة رقم
-                if(selected_methods.indexOf(active_row+'25') != -1) return ;
-                //if it is the same row choice by checking if active_row+111 exist
-                [24,26].forEach((way,i)=>{
-                    if(selected_methods.indexOf(active_row+way) != -1 )
-                    {
-                        $('#spreadsheet'+active_row+way).parent().remove();
-                        selected_methods = selected_methods.filter(item => item != active_row+way)
-                    }
-                })
-                //process if the table doesnt exist
-                selected_methods.push(active_row+'25')
-                $('#spreadsheet_block').append(`
-                    <div>
-                        <hr class="my-1">
-                        <h6 >جدول طريقة الأرباح</h6>
-                        <div id="spreadsheet${active_row}25"></div>
-                    </div>
-                `)
-                if(parseInt(active_row) ==0)
-                {
-                    // let last_row_number = $(`#spreadsheet${active_row}111  tbody tr:last-child td`).data('y');
-                      $(`#value_equalizer_table td[data-x="0"][data-y="0"]`).text(
-                        selected_method_name
-                      );
-
-                }else{
-
-                    value_equalizer_table.setRowData(
-                        ["sddd",0,0,0]
-                    )
-                }
-                var percentged_rows =[5,11]
-                var currency_rows =[0,1,2,3,4,6,7,8,9,10,12,13];
-
-                choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'+active_row+'25'), {
-                        data:[
-                            ['متوسط إجمالي الدخل السنوي','0'],
-                            ['متوسط إجمالي المشتريات','0'],
-                            ['اجمالي الربح','=B1-B2'],
-                            ['متوسط التكاليف الغير مباشرة','0'],
-                            ['صافي الربح(الرصيد القابل للتوزيع)','=ROUND(B3-B4,3)'],
-                            ['نسبة حصة المشغل','0'],
-                            ['حصة المشغل','=ROUND(B6*B5*0.01,0)'],
-                            ['اجمالي الايجارات الاخرى','0'],
-                            ['اجمالي الايجار (القيمة السنوي)','=B5-B7+B8'],
-                            ['اجمالي مصروفات العقار','0'],
-                            ['صافي الايجار السنوي','=B9-B10'],
-                            ['معدل الرسملة','0'],
-                            ['معدل شراء السنوات','=ROUND(1/B12 , 3)'],
-                            ['قيمة العقار','=ROUND(B11*B13*0.01, 3)'],
-                        ],
-                        columns:   columns=[
-                            {    type: 'text',        title:'بيان'         },
-                            {    type: 'number',        title:'قيمة'       }
-                        ],
-
-                        mergeCells:{
-                            // B40:[2,1]
-                        },
-                        tableWidth: `950px`,
-                        tableOverflow:true,
-                        defaultColWidth:'430px',
-                        style: {
-                            B14:'background-color: #EEECE1;color:#000;font-weight:bold',
-                        },
-                        onload:function(instance, cell, x, y, value) {
-                            percentged_rows.forEach(y => {
-                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
-                            })
-                            currency_rows.forEach(y => {
-                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
-                            })
-                             updateValueEqualizerTable(instance,1,9)
-                        },
-                        oneditionend:function(instance, cell, x, y, value) {
-                            percentged_rows.forEach(y => {
-                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
-                            })
-                            currency_rows.forEach(y => {
-                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
-                            })
-                             updateValueEqualizerTable(instance,1,9)
-
-                        },
-                        onchange:function(instance, cell, x, y, value) {
-                            percentged_rows.forEach(y => {
-                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>");
-                            })
-                            currency_rows.forEach(y => {
-                                if(!$(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}25 td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>");
-                            })
-                             updateValueEqualizerTable(instance,1,9)
-                        }
-                    })
-                break
-            default:
-            choosen_tables_data[parseInt(active_row)] =jspreadsheet(document.getElementById('spreadsheet'), {
-                    data:data,
-                    columns: columns,
-                    mergeCells:{
-                    },
-                    style: {
-                    },
-            })
-            break;
-        }
-
-
-
-//    })
-    }
-    $(function () {
-
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        //get saved data
-        $.ajax({
-                url: `{{route('getSavedTables',['estate_id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')])}}`,
-                type: 'GET',
-                dataType: "json",
-                success: function(response) {
-                    console.log(response)
-                    rating_ways_table.setData(response.rating_ways_table_data)
-                    value_equalizer_table.setData(response.value_equalizer_table_data)
-                    value_edit_table.setData(response.value_edit_table_data)
-
-                    response.rating_ways_table_data.forEach((item,index)=>{
-                        let concat = item.toString().replaceAll(',','')
-                        switch (concat) {
-                            case '111':
-                                prepareSheet(1,true);
-                                choosen_tables_data[index].setData(response.choosen_tables_data[index])
-                                active_row++;
-                                break;
-                            case '112':
-                                console.log('ind',index)
-                                prepareSheet(2,true);
-                                choosen_tables_data[index].setData(response.choosen_tables_data[index])
-                                active_row++;
-                                break;
-
-
-                            default:
-                                break;
-                        }
-                    })
-                },
-                error: function(error) {
-                    // Handle an error response
-                }
-        });
-
-        $('#save-copy').click(function (e) {
-        e.preventDefault();
-            let rating_ways_table_data = rating_ways_table.getData();
-            let value_equalizer_table_data = value_equalizer_table.getData();
-            let value_edit_table_data = value_edit_table.getData();
-            // send ajax
-            let choosen_tables_data_final = choosen_tables_data.map(item => item.getData())
-            $.ajax({
-                url: `{{route('save_estate_rating_tables',['estate_id'=>$estate->id,'subdomain'=>Route::current()->parameter('subdomain')])}}`,
-                type: 'POST',
-                dataType: "json",
-                data: {
-                    rating_ways_table_data,
-                   value_equalizer_table_data,
-                   value_edit_table_data,
-                   choosen_tables_data:choosen_tables_data_final
-                },
-                success: function(response) {
-                    console.log(response)
-                },
-                error: function(error) {
-                    // Handle an error response
-                }
-            });
-
-        })
-        //add new row on rating_ways_table
-        $(document).on('click','#add_rating_way_row',function(e){
-            e.preventDefault()
-           if(rating_ways_table.getData().length ==3 || selected_methods.length ==3)
-           {
-            alert('انتهى عدد الأسطر المحدد')
-            return ;
-           }
-           rating_ways_table.insertRow();
-        })
-        $(document).on('click','#add_investement_row',function(e){
-            e.preventDefault()
-
-            selected_methods.forEach(item =>{
-                new_row_number =choosen_tables_data[parseInt(item.substr(0,1))].getData().length-1;
-                if(item.substring(1,4) =='211') choosen_tables_data[parseInt(item.substr(0,1))].insertRow([]
-                ,new_row_number,
-                new_row_number);
-            })
-
-        })
-        $(document).on('click','#show_investement_table_result',function(e){
-            e.preventDefault()
-            let items = selected_methods.filter(item=> item.substring(1,4)=='211');
-
-            if ( items.length){
-                let table_id = `#spreadsheet${items[0]}`
-                let length = $(table_id).find('div.jexcel_content > table > tbody tr').length - 1 ;
-                //from the investement detailied method table
-                b_record_value = parseFloat($(`${table_id} td[data-x="1"][data-y="${length}"]`).text())
-                c_record_value = parseFloat($(`${table_id} td[data-x="2"][data-y="${length}"]`).text())
-                d_record_value = parseFloat($(`${table_id} td[data-x="3"][data-y="${length}"]`).text())
-                f_record_value = parseFloat($(`${table_id} td[data-x="5"][data-y="${length}"]`).text())
-                g_record_value = parseFloat($(`${table_id} td[data-x="6"][data-y="${length}"]`).text())
-                m_record_value = parseFloat($(`${table_id} td[data-x="12"][data-y="${length}"]`).text())
-                o_record_value = parseFloat($(`${table_id} td[data-x="14"][data-y="${length}"]`).text())
-                q_record_value = parseFloat($(`${table_id} td[data-x="16"][data-y="${length}"]`).text())
-                r_record_value = parseFloat($(`${table_id} td[data-x="17"][data-y="${length}"]`).text())
-                z_record_value = parseFloat($(`${table_id} td[data-x="25"][data-y="${length}"]`).text())
-                aa_record_value = parseFloat($(`${table_id} td[data-x="26"][data-y="${length}"]`).text())
-
-                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="0"]`).text(b_record_value+'م2')
-                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="2"]`).text(c_record_value+' ريال ')
-                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="3"]`).text(d_record_value+' ريال.م2 ')
-                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="4"]`).text(f_record_value+' ريال ')
-                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="5"]`).text(g_record_value+' ريال ')
-                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="6"]`).text(m_record_value+' ريال ')
-                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="8"]`).text(o_record_value+' ريال ')
-                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="9"]`).text(q_record_value+' ريال ')
-                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="10"]`).text(r_record_value+' ريال ')
-                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="11"]`).text(z_record_value+' ريال ')
-                $(`#investement_method_calculator #value_calculator td[data-x="1"][data-y="12"]`).text(aa_record_value+' ريال ')
-
-                //update value equalizer table
-                value_equalizer_table.setRowData(0,
-                                        [$(`#value_equalizer_table td[data-x="0"][data-y="0"]`).text(),
-                                        parseFloat($(`#investement_method_calculator #value_calculator  td[data-x="1"][data-y="12"]`).text()),0,
-                                        parseFloat($(`#investement_method_calculator #value_calculator  td[data-x="1"][data-y="12"]`).text())])
-            }
-
+               document.querySelector('#capitalization_method').scrollIntoView()
 
         })
     })
