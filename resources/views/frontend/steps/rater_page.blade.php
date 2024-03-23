@@ -688,7 +688,7 @@
     var sheets = [ ];
     var choosen_tables_data=[]
     window.localStorage.removeItem('investement_methods_cell_merged')
-
+    window.localStorage.removeItem('add_redemption_value')
     methodsdropdownFilter = function(instance, cell, c, r, source) {
         var value = instance.jexcel.getValueFromCoords(c - 1, r);
         if (value == 1) {
@@ -3050,30 +3050,52 @@
                                         (parseFloat($(`#dcf_data td[data-x="1"][data-y="6"]`).text())*0.01) ).toFixed()+' ريال'
 
                                     )
-
+                                    //الحساب بعد القيمة الاستردادية
                                     $(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${index+1}"]`).text(
                                        (parseFloat($(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${index}"]`).text()) /
                                        Math.pow((1+(parseFloat($(`#dcf_data td[data-x="1"][data-y="6"]`).text()) *0.01)),
                                         parseFloat($(`#dcf_data td[data-x="1"][data-y="8"]`).text()))).toFixed() +' ريال'
                                     )
+                                    //قيمة العقار
                                     $(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${index+2}"]`).text(
                                         (parseFloat($(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${index-1}"]`).text()) +
                                         parseFloat($(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${index+1}"]`).text())).toFixed() +' ريال'
                                     )
                               }
-
+                              let total=0;
                               for (let index = 0; index < $(`#${instance.getAttribute('id')} tbody tr`).length-4; index++) {
-                                $(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${index}"]`).text(
-                                    (parseFloat($(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${index+1}"]`).text()) /
+                                let calculated_value =(parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${index}"]`).text()) /
                                     Math.pow((1+(parseFloat($(`#dcf_data td[data-x="1"][data-y="6"]`).text()) *0.01)),
-                                        $[index+1])).toFixed() +' ريال'
-                                )
+                                        index+1)).toFixed() ;
+                                //add to total
+                                total= total + parseFloat(calculated_value);
+                                $(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${index}"]`).text(calculated_value   +' ريال' )
 
                               }
-
+                              let table_length=$(`#${instance.getAttribute('id')} tbody tr`).length
+                              $(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${table_length-4}"]`).text(total +' ريال' )
+                              $(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${table_length-1}"]`).text(
+                                total + parseFloat($(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${table_length-2}"]`).text())+    ' ريال'
+                              )
+                              updateValueEqualizerTable(instance,2,table_length-1)
                         },
                         onchange:function(instance, cell, x, y, value) {
+                            let total=0;
+                              for (let index = 0; index < $(`#${instance.getAttribute('id')} tbody tr`).length-4; index++) {
+                                let calculated_value =(parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${index}"]`).text()) /
+                                    Math.pow((1+(parseFloat($(`#dcf_data td[data-x="1"][data-y="6"]`).text()) *0.01)),
+                                        index+1)).toFixed() ;
+                                //add to total
+                                total= total + parseFloat(calculated_value);
+                                $(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${index}"]`).text(calculated_value   +' ريال' )
 
+                              }
+                              let table_length=$(`#${instance.getAttribute('id')} tbody tr`).length
+                              $(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${table_length-4}"]`).text(total +' ريال' )
+                              $(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${table_length-1}"]`).text(
+                                total + parseFloat($(`#${instance.getAttribute('id')} td[data-x="2"][data-y="${table_length-2}"]`).text())+    ' ريال'
+                              )
+                              updateValueEqualizerTable(instance,2,table_length-1)
                         },
                         oninsertrow:function(instance) {
                               if(window.localStorage.getItem('add_redemption_value') == 1 )
@@ -3830,6 +3852,10 @@
                                                     if(!$(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="3"][data-y="${y}"]`).append("<span  class='ml-1'>% </span>");
                                                 })
                                                $(`#discount_rate td[data-x="1"][data-y="1"]`).text(parseFloat($(`#${instance.getAttribute('id')} td[data-x="3"][data-y="10"]`).text())+'%');
+                                               $(`#discount_rate td[data-x="1"][data-y="2"]`).text(
+                                                parseFloat($(`#discount_rate td[data-x="1"][data-y="1"]`))+
+                                                parseFloat($(`#discount_rate td[data-x="1"][data-y="2"]`))
+                                                +'%');
 
 
                                             },
@@ -3843,7 +3869,10 @@
                                                 })
 
                                                $(`#discount_rate td[data-x="1"][data-y="1"]`).text(parseFloat($(`#${instance.getAttribute('id')} td[data-x="3"][data-y="10"]`).text())+'%');
-
+                                               $(`#discount_rate td[data-x="1"][data-y="2"]`).text(
+                                                parseFloat($(`#discount_rate td[data-x="1"][data-y="1"]`))+
+                                                parseFloat($(`#discount_rate td[data-x="1"][data-y="2"]`))
+                                                +'%');
                                             },
                                             onchange:function(instance, cell, x, y, value) {
                                             //set the signs
@@ -3854,6 +3883,10 @@
                                                 })
 
                                                 $(`#discount_rate td[data-x="1"][data-y="1"]`).text(parseFloat($(`#${instance.getAttribute('id')} td[data-x="3"][data-y="10"]`).text())+'%');
+                                                $(`#discount_rate td[data-x="1"][data-y="2"]`).text(
+                                                parseFloat($(`#discount_rate td[data-x="1"][data-y="1"]`))+
+                                                parseFloat($(`#discount_rate td[data-x="1"][data-y="2"]`))
+                                                +'%');
                                             }
                                     })
                                     break;
@@ -4133,9 +4166,10 @@
                                                         // })
                                                         $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).text(parseFloat($(`#capitalization_method td[data-x="3"][data-y="10"]`).text())+'%');
                                                         $(`#dcf_data td[data-x="1"][data-y="6"]`).text(parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="2"]`).text())+'%');
-                                                        $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="3"]`).text(
-                                                            parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).text()) - parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="2"]`).text())
+                                                        $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="2"]`).text(
+                                                            parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="0"]`).text()) + parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).text()) +'%'
                                                         );
+                                                        $(`#dcf_data td[data-x="1"][data-y="6"]`).text( $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="2"]`).text());
                                                     },
                                                     oneditionend:function(instance, cell, x, y, value) {
                                                         //set the signs
@@ -4144,9 +4178,10 @@
                                                         // })
                                                         $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).text(parseFloat($(`#capitalization_method td[data-x="3"][data-y="10"]`).text())+'%');
                                                         $(`#dcf_data td[data-x="1"][data-y="6"]`).text(parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="2"]`).text())+'%');
-                                                        $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="3"]`).text(
-                                                            parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).text()) - parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="2"]`).text())
+                                                        $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="2"]`).text(
+                                                            parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="0"]`).text()) + parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).text()) +'%'
                                                         );
+                                                        $(`#dcf_data td[data-x="1"][data-y="6"]`).text( $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="2"]`).text());
                                                     },
                                                     onchange:function(instance, cell, x, y, value) {
                                                         //set the signs
@@ -4156,9 +4191,10 @@
                                                         $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).text(parseFloat($(`#capitalization_method td[data-x="3"][data-y="10"]`).text())+'%');
 
                                                         $(`#dcf_data td[data-x="1"][data-y="6"]`).text(parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="2"]`).text())+'%');
-                                                        $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="3"]`).text(
-                                                            parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).text()) - parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="2"]`).text())
+                                                        $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="2"]`).text(
+                                                            parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="0"]`).text()) + parseFloat($(`#${instance.getAttribute('id')} td[data-x="1"][data-y="1"]`).text()) +'%'
                                                         );
+                                                        $(`#dcf_data td[data-x="1"][data-y="6"]`).text( $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="2"]`).text());
                                                     }
                             })
                             $(this).text('حدف جدول الرسملة والخصم')
