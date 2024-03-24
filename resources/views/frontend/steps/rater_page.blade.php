@@ -689,7 +689,7 @@
     var choosen_tables_data=[]
     window.localStorage.removeItem('investement_methods_cell_merged')
     window.localStorage.removeItem('add_redemption_value')
-    window.localStorage.removeItem('calculate_building_value_for_rating_only')
+    window.localStorage.setItem('calculate_building_value_for_rating_only',2)
 
     methodsdropdownFilter = function(instance, cell, c, r, source) {
         var value = instance.jexcel.getValueFromCoords(c - 1, r);
@@ -1198,6 +1198,7 @@
                         $(`#rating_ways_table td[data-x="2"][data-y="${active_row}"]`).text()
         switch (type) {
             case 'comparative_comulative':
+                if(window.localStorage.getItem('calculate_building_value_for_rating_only') ==1) active_row =active_row+1 //if it is طريقة التكلفة الاحلال
                 /**
                 * 111 means user select أسلوب الاول والطريقة الاولى والتفصيل الأول
                 */
@@ -1209,31 +1210,46 @@
                     selected_methods = selected_methods.filter(item => item != active_row+'112')
                 }
                 //process if the table doesnt exist
-                selected_methods.push(active_row+'111')
-                $('#spreadsheet_block').append(`
-                    <div>
-                        <hr class="my-1">
-                        <h6 >جدول طريقة المقارنة - تراكمي - </h6>
-                        <div id="spreadsheet${active_row}111"></div>
-                    </div>
-                `)
+                if(window.localStorage.getItem('calculate_building_value_for_rating_only') ==2){
 
-                // if(parseInt(active_row) ==0)
-                // {
-                //     // let last_row_number = $(`#spreadsheet${active_row}111  tbody tr:last-child td`).data('y');
-                //       $(`#value_equalizer_table td[data-x="0"][data-y="0"]`).text(
-                //         selected_method_name
-                //       );
+                    selected_methods.push(active_row+'111')
+                    $('#spreadsheet_block').append(`
+                        <div>
+                            <hr class="my-1">
+                            <h6 >جدول طريقة المقارنة - تراكمي - </h6>
+                            <div id="spreadsheet${active_row}111"></div>
+                        </div>
+                    `)
+                      // if(parseInt(active_row) ==0)
+                    // {
+                    //     // let last_row_number = $(`#spreadsheet${active_row}111  tbody tr:last-child td`).data('y');
+                    //       $(`#value_equalizer_table td[data-x="0"][data-y="0"]`).text(
+                    //         selected_method_name
+                    //       );
 
-                // }else{
-                    // $(`#value_equalizer_table td[data-x="1"][data-y="0"]`).text(
-                    //     selected_method_name
-                    //   );
-                value_equalizer_table.setRowData(parseInt(active_row),
-                        [selected_method_name,0,0,0]
-                    )
-                // }
-                if("{{$estate->category_id}}" == 2) //شقة
+                    // }else{
+                        // $(`#value_equalizer_table td[data-x="1"][data-y="0"]`).text(
+                        //     selected_method_name
+                        //   );
+
+                    value_equalizer_table.setRowData(parseInt(active_row),
+                            [selected_method_name,0,0,0]
+                        )
+                    // }
+                }
+                if(!window.localStorage.getItem('calculate_building_value_for_rating_only'))
+                {
+                    $('#cost_replacement_tables').append(`
+                        <div>
+                            <hr class="my-1">
+                            <h6 >4- جدول طريقة المقارنة - تراكمي  - </h6>
+                            <div id="spreadsheet${active_row}111"></div>
+                        </div>
+                    `)
+                }
+
+
+                if("{{$estate->category_id}}" == 1) //شقة
                 {
                     data =
                     [
@@ -1329,6 +1345,7 @@
                             if(!$(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
 
                         })
+
                          //update جدول ترجيح
                          updateValueEqualizerTable(instance,3,39)
                     },
@@ -1365,6 +1382,14 @@
                             if(!$(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
 
                         })
+                         //update طريقة الاحلال
+                         if(!window.localStorage.getItem('calculate_building_value_for_rating_only'))
+                        {
+                            let table_id = document.querySelector('[id$="31"]').jexcel.setValue('B1',parseFloat(instance.jexcel.getCell('D40').innerText))
+                            // $(`#${table_id} td[data-x="1"][data-y="0"]`).text(parseFloat(instance.jexcel.getCell('D40').innerText))
+
+                            return
+                        }
                           //update جدول ترجيح
                           updateValueEqualizerTable(instance,3,39)
 
@@ -1378,13 +1403,14 @@
                         if(!$(`#spreadsheet${active_row}111 td[data-x="3"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="3"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
                         if(!$(`#spreadsheet${active_row}111 td[data-x="4"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="4"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
                         if(!$(`#spreadsheet${active_row}111 td[data-x="5"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="5"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
-                       //update جدول ترجيح
+
+                        //update جدول ترجيح
                        updateValueEqualizerTable(instance,3,39)
                     }
                 })
                 return;
                 }
-                if("{{$estate->category_id}}" == 1) //فيلا
+                if("{{$estate->category_id}}" == 2) //فيلا
                 {
 
                     data =
@@ -1490,6 +1516,7 @@
                                 if(!$(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
 
                             })
+
                             updateValueEqualizerTable(instance,3,42)
                         },
                         oneditionend:function(instance, cell, x, y, value) {
@@ -1525,6 +1552,14 @@
                                 if(!$(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
 
                             })
+                              //update طريقة الاحلال
+                            if(!window.localStorage.getItem('calculate_building_value_for_rating_only'))
+                            {
+                                let table_id = document.querySelector('[id$="31"]').jexcel.setValue('B1',parseFloat(instance.jexcel.getCell('D40').innerText))
+                                // $(`#${table_id} td[data-x="1"][data-y="0"]`).text(parseFloat(instance.jexcel.getCell('D43').innerText))
+
+                                return
+                            }
                             updateValueEqualizerTable(instance,3,42)
 
                         },
@@ -1604,6 +1639,7 @@
                             }
 
                         })
+
                         updateValueEqualizerTable(instance,1,37)
                     },
                     oneditionend:function(instance, cell, x, y, value) {
@@ -1644,6 +1680,16 @@
                                 if(!$(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
                             }
                         })
+                            //update طريقة الاحلال
+                            if(!window.localStorage.getItem('calculate_building_value_for_rating_only'))
+                            {
+                                let table_result_index = selected_methods.filter(item=> item.substring(1,3)=='31');
+                                if(table_result_index.length)
+                                {
+                                    choosen_tables_data[parseInt(table_result_index[0].substr(0,1))].setValue('B1',parseFloat(instance.jexcel.getCell('B38').innerText))
+                                }
+                                return
+                            }
                         updateValueEqualizerTable(instance,1,37)
 
                     },
@@ -1651,13 +1697,22 @@
                             if(!$(`#spreadsheet${active_row}111 td[data-x="3"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="3"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
                             if(!$(`#spreadsheet${active_row}111 td[data-x="4"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="4"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
                             if(!$(`#spreadsheet${active_row}111 td[data-x="5"][data-y="14"]`).find("span").length) $(`#spreadsheet${active_row}111 td[data-x="5"][data-y="14"]`).append("<span  class='ml-1'>%</span>");
+                            //update طريقة الاحلال
+                            if(!window.localStorage.getItem('calculate_building_value_for_rating_only'))
+                            {
+                                let table_id = document.querySelector('[id$="31"]').jexcel.setValue('B1',parseFloat(instance.jexcel.getCell('B38').innerText))
+                                // $(`#${table_id} td[data-x="1"][data-y="0"]`).text(parseFloat(instance.jexcel.getCell('D40').innerText))
 
+                                return
+                            }
                             updateValueEqualizerTable(instance,1,37)
 
                     }
                 })
                 break;
             case 'comparative_summation':
+                //if it is طريقة التكلفة الاحلال
+                if(window.localStorage.getItem('calculate_building_value_for_rating_only') ==1) active_row =active_row+1
                 /**
                 * 112 means user select أسلوب الاول والطريقة الاولى والتفصيل الثاني الدي هو جمع
                 */
@@ -1669,29 +1724,42 @@
                     selected_methods = selected_methods.filter(item => item != active_row+'111')
                 }
                 //process if the table doesnt exist
-                selected_methods.push(active_row+'112')
-                $('#spreadsheet_block').append(`
-                    <div>
-                        <hr class="my-1">
-                        <h6 >جدول طريقة المقارنة - جمع</h6>
-                        <div id="spreadsheet${active_row}112"></div>
-                    </div>
-                `)
+                 //process if the table doesnt exist
+                 if(window.localStorage.getItem('calculate_building_value_for_rating_only') ==2){
+                    selected_methods.push(active_row+'112')
+                    $('#spreadsheet_block').append(`
+                        <div>
+                            <hr class="my-1">
+                            <h6 >جدول طريقة المقارنة - جمع</h6>
+                            <div id="spreadsheet${active_row}112"></div>
+                        </div>
+                    `)
 
 
-                // if(parseInt(active_row) ==0)
-                // {
-                //     // let last_row_number = $(`#spreadsheet${active_row}111  tbody tr:last-child td`).data('y');
-                //       $(`#value_equalizer_table td[data-x="0"][data-y="0"]`).text(
-                //         selected_method_name
-                //       );
+                    // if(parseInt(active_row) ==0)
+                    // {
+                    //     // let last_row_number = $(`#spreadsheet${active_row}111  tbody tr:last-child td`).data('y');
+                    //       $(`#value_equalizer_table td[data-x="0"][data-y="0"]`).text(
+                    //         selected_method_name
+                    //       );
 
-                // }else{
+                    // }else{
 
-                    value_equalizer_table.setRowData(active_row,
-                        [selected_method_name,0,0,0]
-                    )
-                // }
+                        value_equalizer_table.setRowData(active_row,
+                            [selected_method_name,0,0,0]
+                        )
+                    // }
+                 }
+                if(!window.localStorage.getItem('calculate_building_value_for_rating_only'))
+                {
+                    $('#cost_replacement_tables').append(`
+                        <div>
+                            <hr class="my-1">
+                            <h6 >4- جدول طريقة المقارنة - جمع  - </h6>
+                            <div id="spreadsheet${active_row}111"></div>
+                        </div>
+                    `)
+                }
                 if("{{$estate->category_id}}" == 1) //شقة
                 {
                     data =
@@ -1787,6 +1855,7 @@
                                 if(!$(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
 
                             })
+
                             updateValueEqualizerTable(instance,3,38)
                         },
                         oneditionend:function(instance, cell, x, y, value) {
@@ -1820,6 +1889,14 @@
                                 if(!$(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
 
                             })
+                               //update طريقة الاحلال
+                            if(!window.localStorage.getItem('calculate_building_value_for_rating_only'))
+                            {
+                                let table_id = document.querySelector('[id$="31"]').jexcel.setValue('B1',parseFloat(instance.jexcel.getCell('D39').innerText))
+                                // $(`#${table_id} td[data-x="1"][data-y="0"]`).text(parseFloat(instance.jexcel.getCell('D40').innerText))
+
+                                return
+                            }
                             //update value equalizer table
                             updateValueEqualizerTable(instance,3,38)
 
@@ -1949,6 +2026,7 @@
                                 if(!$(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
 
                             })
+
                              updateValueEqualizerTable(instance,3,41)
                         },
                         oneditionend:function(instance, cell, x, y, value) {
@@ -1982,6 +2060,14 @@
                                 if(!$(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
 
                             })
+                            //update طريقة الاحلال
+                            if(!window.localStorage.getItem('calculate_building_value_for_rating_only'))
+                            {
+                                let table_id = document.querySelector('[id$="31"]').jexcel.setValue('B1',parseFloat(instance.jexcel.getCell('D42').innerText))
+                                // $(`#${table_id} td[data-x="1"][data-y="0"]`).text(parseFloat(instance.jexcel.getCell('D40').innerText))
+
+                                return
+                            }
                             updateValueEqualizerTable(instance,3,41)
 
                         },
@@ -2062,6 +2148,7 @@
                             if(!$(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="5"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>");
                             }
                         })
+
                         updateValueEqualizerTable(instance,1,38)
                     },
                     oneditionend:function(instance, cell, x, y, value) {
@@ -2115,6 +2202,14 @@
                             if(!$(`#spreadsheet${active_row}112 td[data-x="3"][data-y="22"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="3"][data-y="22"]`).append("<span  class='ml-1'>%</span>");
                             if(!$(`#spreadsheet${active_row}112 td[data-x="4"][data-y="22"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="4"][data-y="22"]`).append("<span  class='ml-1'>%</span>");
                             if(!$(`#spreadsheet${active_row}112 td[data-x="5"][data-y="22"]`).find("span").length) $(`#spreadsheet${active_row}112 td[data-x="5"][data-y="22"]`).append("<span  class='ml-1'>%</span>");
+                              //update طريقة الاحلال
+                            if(!window.localStorage.getItem('calculate_building_value_for_rating_only'))
+                            {
+                                let table_id = document.querySelector('[id$="31"]').jexcel.setValue('B1',parseFloat(instance.jexcel.getCell('D39').innerText))
+                                // $(`#${table_id} td[data-x="1"][data-y="0"]`).text(parseFloat(instance.jexcel.getCell('D40').innerText))
+
+                                return
+                            }
                             updateValueEqualizerTable(instance,1,38)
 
 
@@ -3143,7 +3238,7 @@
                         <hr class="my-1">
                         <h6  class="d-flex justify-content-between align-items-center"><span>طريقة تكلفة الاحلال</span></h6>
                         <hr class="my-1">
-                        <div>
+                        <div id="cost_replacement_tables">
                             <div class="mt-2">
                                 <h6>1- جدول دليل الأسعار الاسترشادية</h6>
                                 <div id="prices_guide"></div>
@@ -3190,8 +3285,34 @@
                     /* Read more about isConfirmed, isDenied below */
                     if (result.value ==true) {
                         window.localStorage.setItem('calculate_building_value_for_rating_only',1)
-                    }else{
+                    }
+                    else{
                         window.localStorage.removeItem('calculate_building_value_for_rating_only')
+                        Swal.fire({
+                                title: "طرق معدل الرسملة",
+                                input: "select",
+                                inputOptions: {
+                                    method1: "طريقة المقارنة - تراكمي",
+                                    method2: "طريقة المقارنة - جمع",
+                                },
+                                inputPlaceholder: "اختر طريقة المعاملات المقارنة",
+                                showCancelButton: true,
+                                inputValidator: (value) => {
+                                    //add dom element
+
+                                    switch (value) {
+                                        case 'method1':
+                                            prepareSheet(1,true)
+                                            break;
+                                        case 'method2':
+                                            prepareSheet(2,true)
+                                            break;
+                                        default:
+                                        prepareSheet(2,true)
+                                        break
+                                    }
+                                }
+                            })
                     }
                 })
 
