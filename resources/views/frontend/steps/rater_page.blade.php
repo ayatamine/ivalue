@@ -3236,7 +3236,15 @@
                 $('#spreadsheet_block').append(`
                     <div>
                         <hr class="my-1">
-                        <h6  class="d-flex justify-content-between align-items-center"><span>طريقة تكلفة الاحلال</span></h6>
+                        <h6  class="d-flex justify-content-between align-items-center"><span>طريقة تكلفة الاحلال</span>
+                            <div>
+                                <button class="btn btn-sm  text-white " style="     font-size: 13px;
+                                background: #00a1b5;
+                                border: 1px solid #d4d4d4;
+                                padding: 6px 1rem;margin-left: 0.5rem;" id="calculate_building_value_for_rating_only" >حساب قيمة المباني </button>
+
+                            </div>
+                        </h6>
                         <hr class="my-1">
                         <div id="cost_replacement_tables">
                             <div class="mt-2">
@@ -3275,47 +3283,8 @@
 
                 //process if the table doesnt exist
                 selected_methods.push(active_row+'31')
-                    //start insert tables
-                    Swal.fire({
-                    title: 'هل تريد حساب قيمة المباني لغرض التقييم فقط',
-                    showCancelButton: true,
-                    confirmButtonText: "نعم",
-                    cancelButtonText: `لا`
-                    }).then((result) => {
-                    /* Read more about isConfirmed, isDenied below */
-                    if (result.value ==true) {
-                        window.localStorage.setItem('calculate_building_value_for_rating_only',1)
-                    }
-                    else{
-                        window.localStorage.removeItem('calculate_building_value_for_rating_only')
-                        Swal.fire({
-                                title: "طرق معدل الرسملة",
-                                input: "select",
-                                inputOptions: {
-                                    method1: "طريقة المقارنة - تراكمي",
-                                    method2: "طريقة المقارنة - جمع",
-                                },
-                                inputPlaceholder: "اختر طريقة المعاملات المقارنة",
-                                showCancelButton: true,
-                                inputValidator: (value) => {
-                                    //add dom element
 
-                                    switch (value) {
-                                        case 'method1':
-                                            prepareSheet(1,true)
-                                            break;
-                                        case 'method2':
-                                            prepareSheet(2,true)
-                                            break;
-                                        default:
-                                        prepareSheet(2,true)
-                                        break
-                                    }
-                                }
-                            })
-                    }
-                })
-
+                //start insert tables
                 let prices_guide_table_data,construction_cost_table_data,value_after_depreciation_table_data = [];
                 var prices_guide,construction_costs,value_after_depreciation;
                 value_after_depreciation_table_data= [
@@ -3460,6 +3429,15 @@
                                 })
                             },
                             onchange:function(instance, cell, x, y, value) {
+                                if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="6"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="6"]`).append("<span  class='ml-1'>%</span>")
+                                if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="4"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="4"]`).append("<span  class='ml-1'>ريال - م.ط</span>")
+                                if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="9"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="9"]`).append("<span  class='ml-1'>ريال لكل م3 </span>")
+
+                                let area_rows =[3,5,7,8,10,11,12]
+                                if(area_rows.indexOf(y) !=-1)  {
+                                    if(x ==1){
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال لكل م2</span>")
+                                }}
                                 construction_costs.setValue('B2',
                                     construction_costs.getValue('B1')* instance.jexcel.getValue('B4')
                                 )
@@ -3602,8 +3580,8 @@
                                     instance.jexcel.setValue('B25',
                                         '=ROUND(B42+B19,3)'
                                     )
-                                //update the depreciation table cell
-                                value_after_depreciation.jexcel.setValue('B6',parseFloat(instance.jexcel.getCell('B25').innerText))
+                                    //update the depreciation table cell
+                                    value_after_depreciation.setValue('B6',parseFloat(instance.jexcel.getCell('B25').innerText))
                                 },
                                 onchange:function(instance, cell, x, y, value) {
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="4"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="4"]`).append("<span  class='ml-1'> م.ط</span>")
@@ -3611,62 +3589,61 @@
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="10"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="10"]`).append("<span  class='ml-1'>م3 </span>")
 
                                     let currency_rows =[1,3,5,7,9,11,13,15,17,18,23,24]
-                                    currency_rows.forEach(y=> {
-                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال </span>")
-
-                                    })
+                                    if(currency_rows.indexOf(y) !=-1){
+                                        if(x ==1){    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال </span>")
+                                    }}
+                                    if(currency_rows.indexOf(y) !=-1)  {
+                                    if(x ==1){
                                     let area_rows =[0,2,6,8,12,14,16]
-                                    area_rows.forEach(y=> {
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> م2</span>")
-
-                                    })
+                                    }}
                                     let percentaged_rows =[20,21,22]
-                                    percentaged_rows.forEach(y=> {
+                                    if(percentaged_rows.indexOf(y) !=-1)  {
+                                    if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> %</span>")
+                                    }}
+                                    // //watch table updates
+                                    // instance.jexcel.setValue('B2',
+                                    //     instance.jexcel.getValue('B1')* prices_guide.getValue('B4')
+                                    // )
+                                    // instance.jexcel.setValue('B4',
+                                    //     instance.jexcel.getValue('B3')* parseFloat(prices_guide.getCell('B8').innerText)
+                                    // )
+                                    // instance.jexcel.setValue('B6',
+                                    //     instance.jexcel.getValue('B5')* prices_guide.getValue('B5')
+                                    // )
+                                    // instance.jexcel.setValue('B8',
+                                    //     instance.jexcel.getValue('B7')* 0.01 *  prices_guide.getValue('B6')
+                                    // )
+                                    // instance.jexcel.setValue('B10',
+                                    //     parseFloat(instance.jexcel.getValue('B9')) * parseFloat(prices_guide.getCell('B9').innerText)
+                                    // )
+                                    // instance.jexcel.setValue('B12',
+                                    //     instance.jexcel.getValue('B11')* parseFloat(prices_guide.getCell('B10').innerText)
+                                    // )
+                                    // instance.jexcel.setValue('B14',
+                                    //     instance.jexcel.getValue('B13')* prices_guide.getValue('B11')
+                                    // )
+                                    // instance.jexcel.setValue('B16',
+                                    //     instance.jexcel.getValue('B15')* prices_guide.getValue('B12')
+                                    // )
+                                    // instance.jexcel.setValue('B18',
+                                    //     instance.jexcel.getValue('B17')* prices_guide.getValue('B13')
+                                    // )
+                                    // instance.jexcel.setValue('B19',
+                                    //     instance.jexcel.getValue('B18')+ instance.jexcel.getValue('B16')+ instance.jexcel.getValue('B14')+
+                                    //     instance.jexcel.getValue('B12')+ instance.jexcel.getValue('B10')+ instance.jexcel.getValue('B8')+
+                                    //     instance.jexcel.getValue('B4')+ instance.jexcel.getValue('B2')
 
-                                    })
-                                    //watch table updates
-                                    instance.jexcel.setValue('B2',
-                                        instance.jexcel.getValue('B1')* prices_guide.getValue('B4')
-                                    )
-                                    instance.jexcel.setValue('B4',
-                                        instance.jexcel.getValue('B3')* parseFloat(prices_guide.getCell('B8').innerText)
-                                    )
-                                    instance.jexcel.setValue('B6',
-                                        instance.jexcel.getValue('B5')* prices_guide.getValue('B5')
-                                    )
-                                    instance.jexcel.setValue('B8',
-                                        instance.jexcel.getValue('B7')* 0.01 *  prices_guide.getValue('B6')
-                                    )
-                                    instance.jexcel.setValue('B10',
-                                        parseFloat(instance.jexcel.getValue('B9')) * parseFloat(prices_guide.getCell('B9').innerText)
-                                    )
-                                    instance.jexcel.setValue('B12',
-                                        instance.jexcel.getValue('B11')* parseFloat(prices_guide.getCell('B10').innerText)
-                                    )
-                                    instance.jexcel.setValue('B14',
-                                        instance.jexcel.getValue('B13')* prices_guide.getValue('B11')
-                                    )
-                                    instance.jexcel.setValue('B16',
-                                        instance.jexcel.getValue('B15')* prices_guide.getValue('B12')
-                                    )
-                                    instance.jexcel.setValue('B18',
-                                        instance.jexcel.getValue('B17')* prices_guide.getValue('B13')
-                                    )
-                                    instance.jexcel.setValue('B19',
-                                        instance.jexcel.getValue('B18')+ instance.jexcel.getValue('B16')+ instance.jexcel.getValue('B14')+
-                                        instance.jexcel.getValue('B12')+ instance.jexcel.getValue('B10')+ instance.jexcel.getValue('B8')+
-                                        instance.jexcel.getValue('B4')+ instance.jexcel.getValue('B2')
-
-                                    )
-                                    instance.jexcel.setValue('B24',
-                                        '=ROUND(B23*0.01*B19*(B22*0.01*B20*B21*0.01) ,3)'
-                                    )
-                                    instance.jexcel.setValue('B25',
-                                        '=ROUND(B42+B19,3)'
-                                    )
+                                    // )
+                                    // instance.jexcel.setValue('B24',
+                                    //     '=ROUND(B23*0.01*B19*(B22*0.01*B20*B21*0.01) ,3)'
+                                    // )
+                                    // instance.jexcel.setValue('B25',
+                                    //     '=ROUND(B42+B19,3)'
+                                    // )
                                     //update the depreciation table cell
-                                    value_after_depreciation.jexcel.setValue('B6',parseFloat(instance.jexcel.getCell('B25').innerText))
+                                    value_after_depreciation.setValue('B6',parseFloat(instance.jexcel.getCell('B25').innerText))
                                 }
                         })
                         break;
@@ -3764,10 +3741,11 @@
                                 if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="7"]`).append("<span  class='ml-1'>ريال لكل م3 </span>")
 
                                 let area_rows =[3,5,6]
-                                area_rows.forEach(y=> {
+                                if(area_rows.indexOf(y) !=-1){
+                                        if(x ==1){
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال لكل م2</span>")
 
-                                })
+                                }}
 
                             },
                             onchange:function(instance, cell, x, y, value) {
@@ -3824,20 +3802,22 @@
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="4"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="4"]`).append("<span  class='ml-1'> م.ط</span>")
 
                                     let area_rows =[0,1,9]
-                                    area_rows.forEach(y=> {
+                                    if(area_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> م2</span>")
 
-                                    })
+                                    }}
                                     let percentaged_rows =[13,14,15]
-                                    percentaged_rows.forEach(y=> {
+                                    if(percentaged_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>")
 
-                                    })
+                                    }}
                                     let currency_rows =[2,3,5,7,8,10,11,12]
-                                    currency_rows.forEach(y=> {
+                                    if(currency_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>")
-
-                                    })
+                                    }}
 
                                 },
                                 oneditionend:function(instance, cell, x, y, value) {
@@ -3846,20 +3826,22 @@
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="4"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="4"]`).append("<span  class='ml-1'> م.ط</span>")
 
                                     let area_rows =[0,1,9]
-                                    area_rows.forEach(y=> {
+                                    if(area_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> م2</span>")
 
-                                    })
+                                    }}
                                     let percentaged_rows =[13,14,15]
-                                    percentaged_rows.forEach(y=> {
+                                    if(percentaged_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>")
 
-                                    })
+                                    }}
                                     let currency_rows =[2,3,5,7,8,10,11,12]
-                                    currency_rows.forEach(y=> {
+                                    if(currency_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>")
-
-                                    })
+                                    }}
                                     //watch table updates
                                     instance.jexcel.setValue('B3',
                                         instance.jexcel.getValue('B1')* prices_guide.getValue('B4')
@@ -3890,27 +3872,29 @@
                                         instance.jexcel.getValue('B16')+ instance.jexcel.getValue('B11')
                                     )
                                     //update the depreciation table cell
-                                    value_after_depreciation.jexcel.setValue('B6',parseFloat(prices_guide.getCell('B17').innerText))
+                                    value_after_depreciation.setValue('B6',parseFloat(prices_guide.getCell('B17').innerText))
                                 },
                                 onchange:function(instance, cell, x, y, value) {
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="6"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="6"]`).append("<span  class='ml-1'>م3</span>")
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="4"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="4"]`).append("<span  class='ml-1'> م.ط</span>")
 
-                                    let percentaged_rows =[0,1,9]
-                                    percentaged_rows.forEach(y=> {
+                                    let area_rows =[0,1,9]
+                                    if(area_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> م2</span>")
 
-                                    })
-                                    let currency_rows =[13,14,15]
-                                    currency_rows.forEach(y=> {
+                                    }}
+                                    let percentaged_rows =[13,14,15]
+                                    if(percentaged_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>")
 
-                                    })
-                                    let area_rows =[2,3,5,7,8,10,11,12]
-                                    area_rows.forEach(y=> {
-                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>")
-
-                                    })
+                                    }}
+                                    let currency_rows =[2,3,5,7,8,10,11,12]
+                                    if(currency_rows.indexOf(y)!=-1){
+                                        if(x ==1){
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>")
+                                    }}
                                     //watch table updates
                                     instance.jexcel.setValue('B3',
                                         instance.jexcel.getValue('B1')* prices_guide.getValue('B4')
@@ -3941,7 +3925,7 @@
                                         instance.jexcel.getValue('B16')+ instance.jexcel.getValue('B11')
                                     )
                                     //update the depreciation table cell
-                                    value_after_depreciation.jexcel.setValue('B6',parseFloat(instance.jexcel.getCell('B17').innerText))
+                                    value_after_depreciation.setValue('B6',parseFloat(instance.jexcel.getCell('B17').innerText))
                                 }
                         })
                         break;
@@ -4018,15 +4002,17 @@
                                 if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="10"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="10"]`).append("<span  class='ml-1'>ريال - م.ط</span>")
 
                                 let area_rows =[3,4,6,11]
-                                area_rows.forEach(y=> {
+                                if(area_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال لكل م2</span>")
 
-                                })
+                                }}
                                 let area_rows_square =[5,7,8,9]
-                                area_rows_square.forEach(y=> {
+                                if(area_rows_square.indexOf(y)!=-1){
+                                        if(x ==1){
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال لكل م3</span>")
 
-                                })
+                                }}
 
                             },
                             oneditionend:function(instance, cell, x, y, value) {
@@ -4077,15 +4063,17 @@
                                 if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="10"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="10"]`).append("<span  class='ml-1'>ريال - م.ط</span>")
 
                                 let area_rows =[3,4,6,11]
-                                area_rows.forEach(y=> {
+                                if(area_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال لكل م2</span>")
 
-                                })
+                                }}
                                 let area_rows_square =[5,7,8,9]
-                                area_rows_square.forEach(y=> {
+                                if(area_rows_square.indexOf(y)!=-1){
+                                        if(x ==1){
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال لكل م3</span>")
 
-                                })
+                                }}
 
                             },
                             onchange:function(instance, cell, x, y, value) {
@@ -4131,6 +4119,22 @@
                                 construction_costs.setValue('B28',
                                     construction_costs.getValue('B27')+ construction_costs.getValue('B22')
                                 )
+                                if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="6"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="6"]`).append("<span  class='ml-1'>ريال - م.ط</span>")
+                                if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="12"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="12"]`).append("<span  class='ml-1'>ريال - م.ط</span>")
+                                if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="10"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="10"]`).append("<span  class='ml-1'>ريال - م.ط</span>")
+
+                                let area_rows =[3,4,6,11]
+                                if(area_rows.indexOf(y)!=-1){
+                                        if(x ==1){
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال لكل م2</span>")
+
+                                }}
+                                let area_rows_square =[5,7,8,9]
+                                if(area_rows_square.indexOf(y)!=-1){
+                                        if(x ==1){
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال لكل م3</span>")
+
+                                }}
                             }
                         })
                         construction_costs =jspreadsheet(document.getElementById('construction_costs'), {
@@ -4158,59 +4162,147 @@
 
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="13"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="13"]`).append("<span  class='ml-1'>م3</span>")
                                     let height_rows =[3,5,17]
-                                    height_rows.forEach(y=> {
+                                    if(height_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> م.ط</span>")
-                                    })
+                                    }}
                                     let percentaged_rows =[23,24,25]
-                                    percentaged_rows.forEach(y=> {
+                                    if(percentaged_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> %</span>")
 
-                                    })
+                                    }}
                                     let currency_rows =[2,4,6,8,10,12,14,16,18,20,21,,26,27]
-                                    currency_rows.forEach(y=> {
+                                    if(currency_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>")
 
-                                    })
+                                    }}
                                     let area_rows =[1,7,9,11]
-                                    area_rows.forEach(y=> {
+                                    if(area_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>")
 
-                                    })
+                                    }}
                                     let area_rows_square =[13,15,19]
-                                    area_rows_square.forEach(y=> {
+                                    if(area_rows_square.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>م3</span>")
 
-                                    })
+                                    }}
 
                                 },
                                 oneditionend:function(instance, cell, x, y, value) {
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="22"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="22"]`).append("<span  class='ml-1'> سنة</span>")
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="13"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="13"]`).append("<span  class='ml-1'>م3</span>")
+                                    let height_rows =[3,5,17]
+                                    if(height_rows.indexOf(y)!=-1){
+                                        if(x ==1){
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> م.ط</span>")
+                                    }}
+                                    let percentaged_rows =[23,24,25]
+                                    if(percentaged_rows.indexOf(y)!=-1){
+                                        if(x ==1){
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> %</span>")
+
+                                    }}
+                                    let currency_rows =[2,4,6,8,10,12,14,16,18,20,21,,26,27]
+                                    if(currency_rows.indexOf(y)!=-1){
+                                        if(x ==1){
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>")
+
+                                    }}
+                                    let area_rows =[1,7,9,11]
+                                    if(area_rows.indexOf(y)!=-1){
+                                        if(x ==1){
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>")
+
+                                    }}
+                                    let area_rows_square =[13,15,19]
+                                    if(area_rows_square.indexOf(y)!=-1){
+                                        if(x ==1){
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>م3</span>")
+
+                                    }}
+                                    //watch table updates
+                                    instance.jexcel.setValue('B3',
+                                        instance.jexcel.getValue('B2')* prices_guide.getValue('B4')
+                                    )
+                                    instance.jexcel.setValue('B5',
+                                        instance.jexcel.getValue('B2')* parseFloat(prices_guide.getCell('B13').innerText)
+                                    )
+                                    instance.jexcel.setValue('B7',
+                                        instance.jexcel.getValue('B6')* prices_guide.getValue('B11')
+                                    )
+                                    instance.jexcel.setValue('B9',
+                                        instance.jexcel.getValue('B8')* prices_guide.getValue('B5')
+                                    )
+                                    instance.jexcel.setValue('B11',
+                                        instance.jexcel.getValue('B10')* parseFloat(prices_guide.getCell('B12').innerText)
+                                    )
+                                    instance.jexcel.setValue('B13',
+                                        instance.jexcel.getValue('B12')* parseFloat(prices_guide.getCell('B10').innerText)
+                                    )
+                                    instance.jexcel.setValue('B15',
+                                        instance.jexcel.getValue('B14')* parseFloat(prices_guide.getCell('B9').innerText)
+                                    )
+                                    instance.jexcel.setValue('B17',
+                                        instance.jexcel.getValue('B16')* parseFloat(prices_guide.getCell('B8').innerText)
+                                    )
+                                    instance.jexcel.setValue('B19',
+                                        instance.jexcel.getValue('B18')* parseFloat(prices_guide.getCell('B7').innerText)
+                                    )
+                                    instance.jexcel.setValue('B21',
+                                        instance.jexcel.getValue('B20')* parseFloat(prices_guide.getCell('B6').innerText)
+                                    )
+                                    instance.jexcel.setValue('B22',
+                                        instance.jexcel.getValue('B21')+ instance.jexcel.getValue('B19')+ instance.jexcel.getValue('B7')+
+                                        instance.jexcel.getValue('B17')+ instance.jexcel.getValue('B15')+ instance.jexcel.getValue('B13')+
+                                        instance.jexcel.getValue('B11')+ instance.jexcel.getValue('B9') + instance.jexcel.getValue('B7')+
+                                        instance.jexcel.getValue('B5')+ instance.jexcel.getValue('B3')
+                                    )
+                                    instance.jexcel.setValue('B27',
+                                        instance.jexcel.getValue('B26')*0.01* instance.jexcel.getValue('B22')*(instance.jexcel.getValue('B25')*0.01*instance.jexcel.getValue('B23')*instance.jexcel.getValue('B24')*0.01)
+                                    )
+                                    instance.jexcel.setValue('B28',
+                                        instance.jexcel.getValue('B27')+ instance.jexcel.getValue('B22')
+                                    )
+                                    //update the depreciation table cell
+                                    value_after_depreciation.setValue('B6',parseFloat(instance.jexcel.getCell('B28').innerText))
+                                },
+                                onchange:function(instance, cell, x, y, value) {
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="22"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="22"]`).append("<span  class='ml-1'> سنة</span>")
 
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="13"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="13"]`).append("<span  class='ml-1'>م3</span>")
                                     let height_rows =[3,5,17]
-                                    height_rows.forEach(y=> {
+                                    if(height_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> م.ط</span>")
-                                    })
+                                    }}
                                     let percentaged_rows =[23,24,25]
-                                    percentaged_rows.forEach(y=> {
+                                    if(percentaged_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> %</span>")
 
-                                    })
+                                    }}
                                     let currency_rows =[2,4,6,8,10,12,14,16,18,20,21,,26,27]
-                                    currency_rows.forEach(y=> {
+                                    if(currency_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>")
 
-                                    })
+                                    }}
                                     let area_rows =[1,7,9,11]
-                                    area_rows.forEach(y=> {
+                                    if(area_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>")
 
-                                    })
+                                    }}
                                     let area_rows_square =[13,15,19]
-                                    area_rows_square.forEach(y=> {
+                                    if(area_rows_square.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>م3</span>")
 
-                                    })
+                                    }}
                                     //watch table updates
                                     instance.jexcel.setValue('B3',
                                         instance.jexcel.getValue('B2')* prices_guide.getValue('B4')
@@ -4255,72 +4347,7 @@
                                         instance.jexcel.getValue('B27')+ instance.jexcel.getValue('B22')
                                     )
                                     //update the depreciation table cell
-                                    value_after_depreciation.jexcel.setValue('B6',parseFloat(instance.jexcel.getCell('B28').innerText))
-                                },
-                                onchange:function(instance, cell, x, y, value) {
-                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="6"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="6"]`).append("<span  class='ml-1'>م3</span>")
-                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="4"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="4"]`).append("<span  class='ml-1'> م.ط</span>")
-
-                                    let percentaged_rows =[0,1,9]
-                                    percentaged_rows.forEach(y=> {
-                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> م2</span>")
-
-                                    })
-                                    let currency_rows =[13,14,15]
-                                    currency_rows.forEach(y=> {
-                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>")
-
-                                    })
-                                    let area_rows =[2,3,5,7,8,10,11,12]
-                                    area_rows.forEach(y=> {
-                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>%</span>")
-
-                                    })
-                                    //watch table updates
-                                    instance.jexcel.setValue('B3',
-                                        instance.jexcel.getValue('B2')* prices_guide.getValue('B4')
-                                    )
-                                    instance.jexcel.setValue('B5',
-                                        instance.jexcel.getValue('B2')* parseFloat(prices_guide.getCell('B13').innerText)
-                                    )
-                                    instance.jexcel.setValue('B7',
-                                        instance.jexcel.getValue('B6')* prices_guide.getValue('B11')
-                                    )
-                                    instance.jexcel.setValue('B9',
-                                        instance.jexcel.getValue('B8')* prices_guide.getValue('B5')
-                                    )
-                                    instance.jexcel.setValue('B11',
-                                        instance.jexcel.getValue('B10')* parseFloat(prices_guide.getCell('B12').innerText)
-                                    )
-                                    instance.jexcel.setValue('B13',
-                                        instance.jexcel.getValue('B12')* parseFloat(prices_guide.getCell('B10').innerText)
-                                    )
-                                    instance.jexcel.setValue('B15',
-                                        instance.jexcel.getValue('B14')* parseFloat(prices_guide.getCell('B9').innerText)
-                                    )
-                                    instance.jexcel.setValue('B17',
-                                        instance.jexcel.getValue('B16')* parseFloat(prices_guide.getCell('B8').innerText)
-                                    )
-                                    instance.jexcel.setValue('B19',
-                                        instance.jexcel.getValue('B18')* parseFloat(prices_guide.getCell('B7').innerText)
-                                    )
-                                    instance.jexcel.setValue('B21',
-                                        instance.jexcel.getValue('B20')* parseFloat(prices_guide.getCell('B6').innerText)
-                                    )
-                                    instance.jexcel.setValue('B22',
-                                        instance.jexcel.getValue('B21')+ instance.jexcel.getValue('B19')+ instance.jexcel.getValue('B7')+
-                                        instance.jexcel.getValue('B17')+ instance.jexcel.getValue('B15')+ instance.jexcel.getValue('B13')+
-                                        instance.jexcel.getValue('B11')+ instance.jexcel.getValue('B9') + instance.jexcel.getValue('B7')+
-                                        instance.jexcel.getValue('B5')+ instance.jexcel.getValue('B3')
-                                    )
-                                    instance.jexcel.setValue('B27',
-                                        instance.jexcel.getValue('B26')*0.01* instance.jexcel.getValue('B22')*(instance.jexcel.getValue('B25')*0.01*instance.jexcel.getValue('B23')*instance.jexcel.getValue('B24')*0.01)
-                                    )
-                                    instance.jexcel.setValue('B28',
-                                        instance.jexcel.getValue('B27')+ instance.jexcel.getValue('B22')
-                                    )
-                                    //update the depreciation table cell
-                                    value_after_depreciation.jexcel.setValue('B6',parseFloat(instance.jexcel.getCell('B28').innerText))
+                                    value_after_depreciation.setValue('B6',parseFloat(instance.jexcel.getCell('B28').innerText))
                                 }
                         })
                     break;
@@ -4398,11 +4425,11 @@
                                     construction_costs.getValue('B13')+ construction_costs.getValue('B8')
                                 )
                                 let currency_rows =[3,4,5]
-                                currency_rows.forEach(y=> {
+                                if(currency_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال لكل م2</span>")
 
-                                })
-
+                                }}
                             },
                             onchange:function(instance, cell, x, y, value) {
                                 construction_costs.setValue('B3',
@@ -4423,6 +4450,12 @@
                                 construction_costs.setValue('14',
                                     construction_costs.getValue('B13')+ construction_costs.getValue('B8')
                                 )
+                                let currency_rows =[3,4,5]
+                                if(currency_rows.indexOf(y)!=-1){
+                                        if(x ==1){
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال لكل م2</span>")
+
+                                }}
                             }
                         })
                         construction_costs =jspreadsheet(document.getElementById('construction_costs'), {
@@ -4449,39 +4482,45 @@
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="8"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="8"]`).append("<span  class='ml-1'> سنة</span>")
 
                                     let percentaged_rows =[9,10,11]
-                                    percentaged_rows.forEach(y=> {
+                                    if(percentaged_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> %</span>")
 
-                                    })
+                                    }}
                                     let currency_rows =[2,4,6,7,12,13]
-                                    currency_rows.forEach(y=> {
+                                    if(currency_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>")
 
-                                    })
+                                    }}
                                     let area_rows =[1,3,5]
-                                    area_rows.forEach(y=> {
+                                    if(area_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>")
 
-                                    })
+                                    }}
 
                                 },
                                 oneditionend:function(instance, cell, x, y, value) {
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="8"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="8"]`).append("<span  class='ml-1'> سنة</span>")
-
                                     let percentaged_rows =[9,10,11]
-                                    percentaged_rows.forEach(y=> {
+                                    if(percentaged_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> %</span>")
 
-                                    })
+                                    }}
                                     let currency_rows =[2,4,6,7,12,13]
-                                    currency_rows.forEach(y=> {
+                                    if(currency_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>")
 
-                                    })
+                                    }}
                                     let area_rows =[1,3,5]
-                                    area_rows.forEach(y=> {
+                                    if(area_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>")
-                                    })
+
+                                    }}
                                     //watch table updates
                                     instance.jexcel.setValue('B3',
                                     instance.jexcel.getValue('B2')* prices_guide.getValue('B5')
@@ -4502,10 +4541,28 @@
                                         instance.jexcel.getValue('B13')+ instance.jexcel.getValue('B8')
                                     )
                                     //update the depreciation table cell
-                                    value_after_depreciation.jexcel.setValue('B6',parseFloat(instance.jexcel.getCell('B14').innerText))
+                                    value_after_depreciation.setValue('B6',parseFloat(instance.jexcel.getCell('B14').innerText))
                                 },
                                 onchange:function(instance, cell, x, y, value) {
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="8"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="8"]`).append("<span  class='ml-1'> سنة</span>")
+                                    let percentaged_rows =[9,10,11]
+                                    if(percentaged_rows.indexOf(y)!=-1){
+                                        if(x ==1){
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> %</span>")
 
+                                    }}
+                                    let currency_rows =[2,4,6,7,12,13]
+                                    if(currency_rows.indexOf(y)!=-1){
+                                        if(x ==1){
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>")
+
+                                    }}
+                                    let area_rows =[1,3,5]
+                                    if(area_rows.indexOf(y)!=-1){
+                                        if(x ==1){
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>")
+
+                                    }}
                                     //watch table updates
                                     instance.jexcel.setValue('B3',
                                     instance.jexcel.getValue('B2')* prices_guide.getValue('B5')
@@ -4526,7 +4583,7 @@
                                         instance.jexcel.getValue('B13')+ instance.jexcel.getValue('B8')
                                     )
                                     //update the depreciation table cell
-                                    value_after_depreciation.jexcel.setValue('B6',parseFloat(instance.jexcel.getCell('B14').innerText))
+                                    value_after_depreciation.setValue('B6',parseFloat(instance.jexcel.getCell('B14').innerText))
                                 }
                         })
                     break;
@@ -4588,6 +4645,12 @@
 
                             },
                             oneditionend:function(instance, cell, x, y, value) {
+                                let currency_rows =[3,4,5,6,7,8]
+                                if(currency_rows.indexOf(y)!=-1){
+                                        if(x ==1){
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال لكل م2</span>")
+
+                                }}
                                 construction_costs.setValue('B2',
                                     construction_costs.getValue('B1')* instance.jexcel.getValue('B4')
                                 )
@@ -4616,14 +4679,14 @@
                                 construction_costs.setValue('14',
                                     construction_costs.getValue('B13')+ construction_costs.getValue('B8')
                                 )
+
+                            },
+                            onchange:function(instance, cell, x, y, value) {
                                 let currency_rows =[3,4,5,6,7,8]
                                 currency_rows.forEach(y=> {
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال لكل م2</span>")
 
                                 })
-
-                            },
-                            onchange:function(instance, cell, x, y, value) {
                                 construction_costs.setValue('B2',
                                     construction_costs.getValue('B1')* instance.jexcel.getValue('B4')
                                 )
@@ -4677,39 +4740,45 @@
                                 onload:function(instance, cell, x, y, value) {
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="8"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="8"]`).append("<span  class='ml-1'> سنة</span>")
                                     let percentaged_rows =[9,10,11]
-                                    percentaged_rows.forEach(y=> {
+                                    if(percentaged_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> %</span>")
 
-                                    })
+                                    }}
                                     let currency_rows =[2,4,6,7,12,13]
-                                    currency_rows.forEach(y=> {
+                                    if(currency_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>")
 
-                                    })
+                                    }}
                                     let area_rows =[1,3,5]
-                                    area_rows.forEach(y=> {
+                                    if(area_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>")
 
-                                    })
+                                    }}
 
                                 },
                                 oneditionend:function(instance, cell, x, y, value) {
                                     if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="8"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="8"]`).append("<span  class='ml-1'> سنة</span>")
-
                                     let percentaged_rows =[9,10,11]
-                                    percentaged_rows.forEach(y=> {
+                                    if(percentaged_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> %</span>")
 
-                                    })
+                                    }}
                                     let currency_rows =[2,4,6,7,12,13]
-                                    currency_rows.forEach(y=> {
+                                    if(currency_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>")
 
-                                    })
+                                    }}
                                     let area_rows =[1,3,5]
-                                    area_rows.forEach(y=> {
+                                    if(area_rows.indexOf(y)!=-1){
+                                        if(x ==1){
                                         if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>")
-                                    })
+
+                                    }}
                                     //watch table updates
                                     instance.jexcel.setValue('B2',
                                         instance.jexcel.getValue('B1')* prices_guide.getValue('B4')
@@ -4740,10 +4809,28 @@
                                         instance.jexcel.getValue('B13')+ instance.jexcel.getValue('B8')
                                     )
                                     //update the depreciation table cell
-                                    value_after_depreciation.jexcel.setValue('B6',parseFloat(instance.jexcel.getCell('B14').innerText))
+                                    value_after_depreciation.setValue('B6',parseFloat(instance.jexcel.getCell('B14').innerText))
                                 },
                                 onchange:function(instance, cell, x, y, value) {
+                                    if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="8"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="8"]`).append("<span  class='ml-1'> سنة</span>")
+                                    let percentaged_rows =[9,10,11]
+                                    if(percentaged_rows.indexOf(y)!=-1){
+                                        if(x ==1){
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'> %</span>")
 
+                                    }}
+                                    let currency_rows =[2,4,6,7,12,13]
+                                    if(currency_rows.indexOf(y)!=-1){
+                                        if(x ==1){
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>ريال</span>")
+
+                                    }}
+                                    let area_rows =[1,3,5]
+                                    if(area_rows.indexOf(y)!=-1){
+                                        if(x ==1){
+                                        if(!$(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).find("span").length) $(`#${instance.getAttribute('id')} td[data-x="1"][data-y="${y}"]`).append("<span  class='ml-1'>م2</span>")
+
+                                    }}
                                   //watch table updates
                                   instance.jexcel.setValue('B2',
                                         instance.jexcel.getValue('B1')* prices_guide.getValue('B4')
@@ -4774,7 +4861,7 @@
                                         instance.jexcel.getValue('B13')+ instance.jexcel.getValue('B8')
                                     )
                                     //update the depreciation table cell
-                                    value_after_depreciation.jexcel.setValue('B6',parseFloat(instance.jexcel.getCell('B14').innerText))
+                                    value_after_depreciation.setValue('B6',parseFloat(instance.jexcel.getCell('B14').innerText))
                                 }
                         })
                     break;
@@ -4870,9 +4957,6 @@
 
 
             break
-            case 12:
-
-            break;
             default:
                 alert('الطريقة ليست متوفرة بعد')
 
@@ -6010,6 +6094,71 @@
          $(this).text('جدول الرسملة والخصم')
         $(this).css('background','#00a1b5')
          $(this).attr('id','insert_discount_rate')
+    })
+    $(document).on('click','#calculate_building_value_for_rating_only',function(e){
+        e.preventDefault()
+
+        // $('.capitalization_methods').remove()
+        // $('#discount_rate').remove()
+        //  $(this).text('حساب قيمة المبان')
+        // $(this).css('background','#00a1b5')
+        //  $(this).attr('id','insert_discount_rate')
+         Swal.fire({
+                    title: 'هل تريد حساب قيمة المباني لغرض التقييم فقط',
+                    showCancelButton: true,
+                    confirmButtonText: "نعم",
+                    cancelButtonText: `لا`
+                    }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.value ==true) {
+                        window.localStorage.setItem('calculate_building_value_for_rating_only',1)
+
+                    }
+                    else{
+                        window.localStorage.removeItem('calculate_building_value_for_rating_only')
+                        Swal.fire({
+                                title: "طرق المعاملات المقارن",
+                                input: "select",
+                                inputOptions: {
+                                    method1: "طريقة المقارنة - تراكمي",
+                                    method2: "طريقة المقارنة - جمع",
+                                },
+                                inputPlaceholder: "اختر طريقة المعاملات المقارنة",
+                                showCancelButton: true,
+                                inputValidator: (value) => {
+                                    //add dom element
+
+                                    switch (value) {
+                                        case 'method1':
+                                            prepareSheet(1,true)
+                                            break;
+                                        case 'method2':
+                                            prepareSheet(2,true)
+                                            break;
+                                        default:
+                                        prepareSheet(2,true)
+                                        break
+                                    }
+                                    $(this).text('حدف جدول حساب قيمة المباني(معاملات مقارنة)')
+                                    $(this).css('background','red')
+                                    $(this).attr('id','remove_calculate_building_value_for_rating_only')
+                                    alert("تم إدراج جدول المعاملات المقارنة خطوة رقم 4");
+                                }
+                        })
+
+                    }
+                })
+    })
+    $(document).on('click','#remove_calculate_building_value_for_rating_only',function(e){
+        e.preventDefault()
+
+
+        $(`#${document.querySelector('[id$="111"]')?.id}`).parent().remove()
+        $(`#${document.querySelector('[id$="112"]')?.id}`).parent().remove()
+         $(this).text('حساب قيمة المباني (معاملات مقارنة)')
+        $(this).css('background','#00a1b5')
+         $(this).attr('id','calculate_building_value_for_rating_only')
+         alert('تم حدف جدول المعاملات المقارنة')
     })
 
         // function change(instance, cell, x, y, value) {
